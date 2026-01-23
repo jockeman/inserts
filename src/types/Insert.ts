@@ -18,7 +18,8 @@ export interface Insert {
   stealth: string;
   darkvision: string;
   // Monster-specific fields
-  monsterType: string; // e.g., "Small Humanoid (Angulotl)"
+  monsterSize: string; // e.g., "Small"
+  monsterType: string; // e.g., "Humanoid (Angulotl)"
   cr: string; // Challenge Rating
   speed: string; // e.g., "20 ft., climb 20 ft., swim 30 ft."
   str: string;

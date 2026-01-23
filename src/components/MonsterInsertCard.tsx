@@ -1,5 +1,5 @@
 import { Insert } from '../types/Insert';
-import { calcModifier, formatBonus } from '../utils/cardHelpers';
+import { calcModifier, calcModifierOnly, formatBonus } from '../utils/cardHelpers';
 
 interface MonsterInsertCardProps {
   insert: Insert;
@@ -9,6 +9,28 @@ interface MonsterInsertCardProps {
 }
 
 export default function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHeight }: MonsterInsertCardProps) {
+  // Helper to remove HP calculation from small cards
+  const formatHP = (hp: string) => {
+    if (isLarge || !hp) return hp;
+    // Remove dice calculation in parentheses for small cards
+    return hp.replace(/\s*\([^)]*\)\s*/, '');
+  };
+
+  // Helper to format trait/action/bonus action text (bold first part before period)
+  const formatAbilityText = (text: string) => {
+    const firstPeriodIndex = text.indexOf('.');
+    if (firstPeriodIndex === -1) return text;
+    
+    const name = text.substring(0, firstPeriodIndex);
+    const description = text.substring(firstPeriodIndex);
+    
+    return (
+      <>
+        <b>{name}</b>{description}
+      </>
+    );
+  };
+
   return (
     <div style={{
       position: 'absolute', left: '2mm', top: 0,
@@ -16,40 +38,53 @@ export default function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmC
       border: '1px solid #bbb', borderRadius: '1mm', overflow: 'hidden',
       padding: '1mm', fontSize: isLarge ? '2.8mm' : '3.2mm', boxSizing: 'border-box',
     }}>
-      <div style={{ fontWeight: 'bold', fontSize: isLarge ? '3.5mm' : '4mm', marginBottom: '0.5mm', textAlign: 'center' }}>
-        {insert.name || 'Name'}
-      </div>
-      
-      {insert.monsterType && (
-        <div style={{ textAlign: 'center', fontSize: isLarge ? '2.5mm' : '2.8mm', marginBottom: '0.5mm', fontStyle: 'italic' }}>
-          {insert.monsterType}
-        </div>
-      )}
-      {insert.cr && (
-        <div style={{ textAlign: 'center', marginBottom: '0.5mm', paddingBottom: '0.5mm', borderBottom: '1px solid #ccc', fontSize: isLarge ? '2.5mm' : '2.8mm' }}>
-          <b>CR {insert.cr}</b>
-        </div>
+      {isLarge ? (
+        <>
+          <div style={{ fontWeight: 'bold', fontSize: '3.5mm', marginBottom: '0.5mm', textAlign: 'center' }}>
+            {insert.name || 'Name'}{insert.cr && ` (CR ${insert.cr})`}
+          </div>
+          {(insert.monsterSize || insert.monsterType) && (
+            <div style={{ textAlign: 'center', fontSize: '2.5mm', marginBottom: '0.5mm', paddingBottom: '0.5mm', borderBottom: '1px solid #ccc', fontStyle: 'italic' }}>
+              {[insert.monsterSize, insert.monsterType].filter(Boolean).join(' ')}
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <div style={{ fontWeight: 'bold', fontSize: '4mm', marginBottom: '0.5mm', textAlign: 'center' }}>
+            {insert.name || 'Name'}
+          </div>
+          {(insert.monsterSize || insert.cr) && (
+            <div style={{ textAlign: 'center', fontSize: '2.8mm', marginBottom: '0.5mm', paddingBottom: '0.5mm', borderBottom: '1px solid #ccc', fontStyle: 'italic' }}>
+              {[insert.monsterSize, insert.cr && `CR ${insert.cr}`].filter(Boolean).join(' • ')}
+            </div>
+          )}
+        </>
       )}
       <div style={{ fontSize: isLarge ? '2.5mm' : '2.8mm', lineHeight: 1.2 }}>
-        {insert.ac && <div><b>AC</b> {insert.ac}</div>}
-        {insert.hp && <div><b>HP</b> {insert.hp}</div>}
+        {(insert.ac || insert.hp) && (
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span><b>AC</b> {insert.ac || '-'}</span>
+            <span><b>HP</b> {formatHP(insert.hp) || '-'}</span>
+          </div>
+        )}
         {insert.speed && <div><b>Speed</b> {insert.speed}</div>}
         
         {(insert.str || insert.dex || insert.con || insert.int || insert.wis || insert.cha) && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1mm', margin: '1mm 0', fontSize: isLarge ? '2.3mm' : '2.5mm' }}>
-            {insert.str && <div><b>STR</b> {calcModifier(insert.str)}</div>}
-            {insert.dex && <div><b>DEX</b> {calcModifier(insert.dex)}</div>}
-            {insert.con && <div><b>CON</b> {calcModifier(insert.con)}</div>}
-            {insert.int && <div><b>INT</b> {calcModifier(insert.int)}</div>}
-            {insert.wis && <div><b>WIS</b> {calcModifier(insert.wis)}</div>}
-            {insert.cha && <div><b>CHA</b> {calcModifier(insert.cha)}</div>}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: isLarge ? '1mm' : '0.5mm', margin: '1mm 0', fontSize: isLarge ? '2.3mm' : '2.5mm' }}>
+            {insert.str && <div><b>STR</b> {isLarge ? calcModifier(insert.str) : calcModifierOnly(insert.str)}</div>}
+            {insert.dex && <div><b>DEX</b> {isLarge ? calcModifier(insert.dex) : calcModifierOnly(insert.dex)}</div>}
+            {insert.con && <div><b>CON</b> {isLarge ? calcModifier(insert.con) : calcModifierOnly(insert.con)}</div>}
+            {insert.int && <div><b>INT</b> {isLarge ? calcModifier(insert.int) : calcModifierOnly(insert.int)}</div>}
+            {insert.wis && <div><b>WIS</b> {isLarge ? calcModifier(insert.wis) : calcModifierOnly(insert.wis)}</div>}
+            {insert.cha && <div><b>CHA</b> {isLarge ? calcModifier(insert.cha) : calcModifierOnly(insert.cha)}</div>}
           </div>
         )}
         
-        {insert.savingThrows && <div><b>Saving Throws</b> {insert.savingThrows}</div>}
+        {insert.savingThrows && <div><b>{isLarge ? 'Saving Throws' : 'Saves'}</b> {insert.savingThrows}</div>}
         {insert.skills && <div><b>Skills</b> {insert.skills}</div>}
-        {insert.damageImmunities && <div><b>Damage Immunities</b> {insert.damageImmunities}</div>}
-        {insert.damageResistances && <div><b>Damage Resistances</b> {insert.damageResistances}</div>}
+        {insert.damageImmunities && <div><b>Immunities</b> {insert.damageImmunities}</div>}
+        {insert.damageResistances && <div><b>Resistances</b> {insert.damageResistances}</div>}
         {insert.senses && <div><b>Senses</b> {insert.senses}</div>}
         {insert.languages && <div><b>Languages</b> {insert.languages}</div>}
         {insert.proficiencyBonus && <div><b>Proficiency Bonus</b> {formatBonus(insert.proficiencyBonus)}</div>}
@@ -57,7 +92,7 @@ export default function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmC
         {isLarge && insert.traits && (
           <div style={{ marginTop: '1mm', borderTop: '1px solid #ccc', paddingTop: '0.5mm' }}>
             {insert.traits.split('\n').filter(t => t.trim()).map((trait, i) => (
-              <div key={i} style={{ marginBottom: '0.5mm' }}>{trait}</div>
+              <div key={i} style={{ marginBottom: '0.5mm' }}>{formatAbilityText(trait)}</div>
             ))}
           </div>
         )}
@@ -66,7 +101,7 @@ export default function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmC
           <div style={{ marginTop: '1mm', borderTop: '1px solid #ccc', paddingTop: '0.5mm' }}>
             <div style={{ fontWeight: 'bold' }}>Actions</div>
             {insert.actions.split('\n').filter(a => a.trim()).map((action, i) => (
-              <div key={i} style={{ marginBottom: '0.5mm' }}>{action}</div>
+              <div key={i} style={{ marginBottom: '0.5mm' }}>{formatAbilityText(action)}</div>
             ))}
           </div>
         )}
@@ -75,7 +110,7 @@ export default function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmC
           <div style={{ marginTop: '1mm', borderTop: '1px solid #ccc', paddingTop: '0.5mm' }}>
             <div style={{ fontWeight: 'bold' }}>Bonus Actions</div>
             {insert.bonusActions.split('\n').filter(b => b.trim()).map((bonus, i) => (
-              <div key={i} style={{ marginBottom: '0.5mm' }}>{bonus}</div>
+              <div key={i} style={{ marginBottom: '0.5mm' }}>{formatAbilityText(bonus)}</div>
             ))}
           </div>
         )}

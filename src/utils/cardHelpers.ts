@@ -7,6 +7,15 @@ export const calcModifier = (stat: string): string => {
   return `${value} (${sign}${modifier})`;
 };
 
+// Helper function to calculate only the modifier (for small cards)
+export const calcModifierOnly = (stat: string): string => {
+  const value = parseInt(stat);
+  if (isNaN(value)) return '';
+  const modifier = Math.floor((value - 10) / 2);
+  const sign = modifier >= 0 ? '+' : '';
+  return `${sign}${modifier}`;
+};
+
 // Helper function to format bonus with + sign
 export const formatBonus = (bonus: string): string => {
   if (!bonus) return '';

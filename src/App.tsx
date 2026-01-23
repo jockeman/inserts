@@ -22,6 +22,7 @@ const emptyInsert: Insert = {
   survival: '',
   stealth: '',
   darkvision: '',
+  monsterSize: '',
   monsterType: '',
   cr: '',
   speed: '',
@@ -95,6 +96,10 @@ function App() {
     }
   }
 
+  function deselectAll() {
+    setInserts(arr => arr.map(insert => ({ ...insert, selected: false })));
+  }
+
   return (
     <div>
       <h1 className="screen-only">RPG Initiative Tracker Inserts</h1>
@@ -107,6 +112,9 @@ function App() {
           <>
             <button onClick={() => window.print()} style={{ padding: '8px 16px', fontSize: '1.1em' }}>
               Print All Inserts
+            </button>
+            <button onClick={deselectAll} style={{ padding: '8px 16px', fontSize: '1.1em' }}>
+              Deselect All
             </button>
             <button onClick={clearAll} style={{ padding: '8px 16px', fontSize: '1.1em', background: '#fee', color: '#c00' }}>
               Clear All

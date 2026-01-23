@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Insert } from '../types/Insert';
 import ImageInput from './ImageInput';
+import { parseMonsterStatBlock } from '../utils/monsterParser';
 
 interface InsertFormProps {
   insert: Insert;
@@ -9,6 +11,19 @@ interface InsertFormProps {
 export default function InsertForm({ insert, onUpdate }: InsertFormProps) {
   const isMonster = insert.cardType === 'monster';
   const isLarge = insert.size === 'large';
+  const [statBlockText, setStatBlockText] = useState('');
+  const [showParser, setShowParser] = useState(false);
+  
+  const handleParse = () => {
+    const parsed = parseMonsterStatBlock(statBlockText);
+    Object.entries(parsed).forEach(([key, value]) => {
+      if (value !== undefined) {
+        onUpdate(key as keyof Insert, value as string);
+      }
+    });
+    setStatBlockText('');
+    setShowParser(false);
+  };
   
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -51,18 +66,65 @@ export default function InsertForm({ insert, onUpdate }: InsertFormProps) {
         </div>
       </div>
       
+      {isMonster && (
+        <div style={{ padding: '12px', background: '#f0f0f0', borderRadius: '4px' }}>
+          {!showParser ? (
+            <button 
+              onClick={() => setShowParser(true)}
+              style={{ width: '100%' }}
+            >
+              📋 Parse Monster Stat Block
+            </button>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <label>
+                Paste monster stat block text here:<br />
+                <textarea 
+                  value={statBlockText}
+                  onChange={(e) => setStatBlockText(e.target.value)}
+                  style={{ width: '100%', minHeight: '100px', fontFamily: 'monospace', fontSize: '12px' }}
+                  placeholder="Paste stat block text..."
+                />
+              </label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={handleParse} style={{ flex: 1 }}>
+                  Parse & Fill Form
+                </button>
+                <button onClick={() => { setShowParser(false); setStatBlockText(''); }} style={{ flex: 1 }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+      
       {isMonster ? (
         <>
           {/* Monster-specific fields */}
-          <div>
-            <label>
-              Type (e.g., "Small Humanoid (Angulotl)")<br />
-              <input 
-                value={insert.monsterType} 
-                onChange={(e) => onUpdate('monsterType', e.target.value)}
-                style={{ width: '100%' }}
-              />
-            </label>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <div style={{ flex: 1 }}>
+              <label>
+                Size<br />
+                <input 
+                  value={insert.monsterSize} 
+                  onChange={(e) => onUpdate('monsterSize', e.target.value)}
+                  style={{ width: '100%' }}
+                  placeholder="e.g., Small"
+                />
+              </label>
+            </div>
+            <div style={{ flex: 2 }}>
+              <label>
+                Type<br />
+                <input 
+                  value={insert.monsterType} 
+                  onChange={(e) => onUpdate('monsterType', e.target.value)}
+                  style={{ width: '100%' }}
+                  placeholder="e.g., Humanoid (Angulotl)"
+                />
+              </label>
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <div style={{ flex: 1 }}>
