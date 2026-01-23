@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { TextInput, FileInput, Image, Stack } from '@mantine/core';
 
 interface ImageInputProps {
   value: string;
@@ -6,10 +6,7 @@ interface ImageInputProps {
 }
 
 export default function ImageInput({ value, onChange }: ImageInputProps) {
-  const fileInput = useRef<HTMLInputElement>(null);
-
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  function handleFile(file: File | null) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -19,23 +16,20 @@ export default function ImageInput({ value, onChange }: ImageInputProps) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <input
-        type="text"
+    <Stack gap="xs">
+      <TextInput
         placeholder="Image URL or leave blank to upload"
         value={value && value.startsWith('data:') ? '' : value || ''}
-        onChange={e => onChange(e.target.value)}
-        style={{ marginBottom: 4 }}
+        onChange={(e) => onChange(e.currentTarget.value)}
       />
-      <input
-        type="file"
+      <FileInput
+        placeholder="Upload image"
         accept="image/*"
-        ref={fileInput}
         onChange={handleFile}
       />
       {value && (
-        <img src={value} alt="preview" style={{ maxWidth: 80, maxHeight: 80, marginTop: 4 }} />
+        <Image src={value} alt="preview" maw={80} mah={80} fit="contain" />
       )}
-    </div>
+    </Stack>
   );
 }

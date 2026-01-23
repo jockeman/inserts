@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { Title, Group, Button } from '@mantine/core';
 import CardEditor from './components/CardEditor';
 import PrintArea from './components/PrintArea';
 import { Insert } from './types/Insert';
@@ -102,26 +103,26 @@ function App() {
 
   return (
     <div>
-      <h1 className="screen-only">RPG Initiative Tracker Inserts</h1>
+      <Title order={1} className="screen-only" mb="xl">RPG Initiative Tracker Inserts</Title>
       
-      <div className="screen-only" style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
-        <button onClick={addEmptyCard} style={{ padding: '8px 16px', fontSize: '1.1em' }}>
+      <Group className="screen-only" mb="xl" gap="md">
+        <Button onClick={addEmptyCard} size="md">
           + Add New Card
-        </button>
+        </Button>
         {inserts.length > 0 && (
           <>
-            <button onClick={() => window.print()} style={{ padding: '8px 16px', fontSize: '1.1em' }}>
+            <Button onClick={() => window.print()} size="md" variant="default">
               Print All Inserts
-            </button>
-            <button onClick={deselectAll} style={{ padding: '8px 16px', fontSize: '1.1em' }}>
+            </Button>
+            <Button onClick={deselectAll} size="md" variant="default">
               Deselect All
-            </button>
-            <button onClick={clearAll} style={{ padding: '8px 16px', fontSize: '1.1em', background: '#fee', color: '#c00' }}>
+            </Button>
+            <Button onClick={clearAll} size="md" color="red" variant="light">
               Clear All
-            </button>
+            </Button>
           </>
         )}
-      </div>
+      </Group>
 
       <div className="cards-editor screen-only" style={{ display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'flex-start', alignContent: 'flex-start' }}>
         {inserts.map((insert, i) => (
