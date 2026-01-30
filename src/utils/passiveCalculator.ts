@@ -1,26 +1,25 @@
-import { ProficiencyLevel } from './skillConfig';
+import type { ProficiencyLevel } from './skillConfig';
 
-export function calculateModifier(score: string): number {
-  const numScore = parseInt(score, 10);
-  if (isNaN(numScore)) return 0;
-  return Math.floor((numScore - 10) / 2);
+export function calculateModifier(score: number): number {
+  if (Number.isNaN(score)) return 0;
+  return Math.floor((score - 10) / 2);
 }
 
 export function calculatePassive(
-  abilityScore: string,
+  abilityScore: number,
   profLevel: ProficiencyLevel,
-  profBonus: string,
-  manualMod: string
-): string {
+  profBonus: number,
+  manualMod: number
+): number {
   const abilityMod = calculateModifier(abilityScore);
-  const profBonusNum = parseInt(profBonus, 10) || 0;
-  const manualModNum = parseInt(manualMod, 10) || 0;
-  
+  const profBonusNum = profBonus || 0;
+  const manualModNum = manualMod || 0;
+
   let profMultiplier = 0;
   if (profLevel === 'proficient') profMultiplier = 1;
   if (profLevel === 'expert') profMultiplier = 2;
-  
-  const total = 10 + abilityMod + (profBonusNum * profMultiplier) + manualModNum;
-  
-  return total.toString();
+
+  const total = 10 + abilityMod + profBonusNum * profMultiplier + manualModNum;
+
+  return total;
 }

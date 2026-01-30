@@ -1,4 +1,5 @@
-import { ProficiencyLevel } from '../utils/skillConfig';
+import type { ClassName } from '../utils/classConfig';
+import type { ProficiencyLevel } from '../utils/skillConfig';
 
 /**
  * InsertInputs represents the data that is stored in localStorage.
@@ -6,45 +7,40 @@ import { ProficiencyLevel } from '../utils/skillConfig';
  */
 export interface InsertInputs {
   // Basic info
+  id: string; // Unique identifier for the insert
   name: string;
   image: string;
   cardType: 'player' | 'player-advanced' | 'monster';
   size: 'small' | 'large';
   selected: boolean;
-  
+
   // Player/Monster common fields (inputs)
   race: string;
-  class: string;
-  ac: string;
-  
+  class: ClassName;
+  ac: number;
+
   // Simple player card fields (all inputs)
-  perception: string;
-  insight: string;
-  investigation: string;
-  arcana: string;
-  nature: string;
-  survival: string;
-  stealth: string;
-  
-  // Advanced player fields - ability scores (inputs)
-  level: string;
-  playerStr: string;
-  playerDex: string;
-  playerCon: string;
-  playerInt: string;
-  playerWis: string;
-  playerCha: string;
-  
+  perception: number;
+  insight: number;
+  investigation: number;
+  arcana: number;
+  nature: number;
+  survival: number;
+  stealth: number;
+
+  // Advanced player fields
+  level: number;
+
   // Advanced player - override flags (inputs)
   proficiencyBonusOverride: boolean;
   maxHPOverride: boolean;
   darkvisionOverride: boolean;
-  
+
   // Advanced player - manual override values (inputs when override is true)
-  playerProficiencyBonus: string;
-  hp: string;
-  darkvision: string;
-  
+  playerProficiencyBonus: number;
+  hp: number;
+  darkvision: number;
+
   // Advanced player - proficiency levels (inputs)
   profAcrobatics: ProficiencyLevel;
   profAnimalHandling: ProficiencyLevel;
@@ -64,38 +60,42 @@ export interface InsertInputs {
   profSleightOfHand: ProficiencyLevel;
   profStealth: ProficiencyLevel;
   profSurvival: ProficiencyLevel;
-  
+
   // Advanced player - manual modifiers (inputs)
-  modAcrobatics: string;
-  modAnimalHandling: string;
-  modArcana: string;
-  modAthletics: string;
-  modDeception: string;
-  modHistory: string;
-  modInsight: string;
-  modIntimidation: string;
-  modInvestigation: string;
-  modMedicine: string;
-  modNature: string;
-  modPerception: string;
-  modPerformance: string;
-  modPersuasion: string;
-  modReligion: string;
-  modSleightOfHand: string;
-  modStealth: string;
-  modSurvival: string;
-  
+  modAcrobatics: number;
+  modAnimalHandling: number;
+  modArcana: number;
+  modAthletics: number;
+  modDeception: number;
+  modHistory: number;
+  modInsight: number;
+  modIntimidation: number;
+  modInvestigation: number;
+  modMedicine: number;
+  modNature: number;
+  modPerception: number;
+  modPerformance: number;
+  modPersuasion: number;
+  modReligion: number;
+  modSleightOfHand: number;
+  modStealth: number;
+  modSurvival: number;
+
+  // Ability scores (shared between player and monster)
+  str: number;
+  dex: number;
+  con: number;
+  int: number;
+  wis: number;
+  cha: number;
+
   // Monster-specific fields (all inputs)
   monsterSize: string;
   monsterType: string;
-  cr: string;
+  cr: string; // Challenge Rating (e.g., "1/4", "2", "10")
   speed: string;
-  str: string;
-  dex: string;
-  con: string;
-  int: string;
-  wis: string;
-  cha: string;
+  acType: string; // Armor type (e.g., "natural armor", "leather armor")
+  hpFormula: string; // Dice formula for HP (e.g., "33d20 + 330")
   savingThrows: string;
   skills: string;
   damageImmunities: string;
@@ -104,7 +104,7 @@ export interface InsertInputs {
   conditionImmunities: string;
   senses: string;
   languages: string;
-  proficiencyBonus: string;
+  proficiencyBonus: number;
   traits: string;
   actions: string;
   bonusActions: string;
@@ -117,15 +117,15 @@ export interface InsertInputs {
 export interface Insert extends InsertInputs {
   // Advanced player - calculated passive skill values
   // These are calculated from ability scores, proficiency levels, proficiency bonus, and modifiers
-  acrobatics: string;
-  animalHandling: string;
-  athletics: string;
-  deception: string;
-  history: string;
-  intimidation: string;
-  medicine: string;
-  performance: string;
-  persuasion: string;
-  religion: string;
-  sleightOfHand: string;
+  acrobatics: number;
+  animalHandling: number;
+  athletics: number;
+  deception: number;
+  history: number;
+  intimidation: number;
+  medicine: number;
+  performance: number;
+  persuasion: number;
+  religion: number;
+  sleightOfHand: number;
 }

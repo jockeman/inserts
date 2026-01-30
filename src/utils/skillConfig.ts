@@ -1,5 +1,5 @@
-import { Insert } from '../types/Insert';
-import { UserPreferences } from '../types/UserPreferences';
+import type { Insert } from '../types/Insert';
+import type { UserPreferences } from '../types/UserPreferences';
 
 export type AbilityType = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
 export type ProficiencyLevel = 'none' | 'proficient' | 'expert';

@@ -1,5 +1,5 @@
-import { Modal, Checkbox, Stack, Group, Button, Text } from '@mantine/core';
-import { UserPreferences, DEFAULT_SKILL_VISIBILITY } from '../types/UserPreferences';
+import { Button, Checkbox, Group, Modal, Stack, Text } from '@mantine/core';
+import { DEFAULT_SKILL_VISIBILITY, type UserPreferences } from '../types/UserPreferences';
 import { ALL_SKILLS } from '../utils/skillConfig';
 
 interface SkillVisibilitySettingsProps {
@@ -9,14 +9,14 @@ interface SkillVisibilitySettingsProps {
   onUpdate: (partial: Partial<UserPreferences>) => void;
 }
 
-export default function SkillVisibilitySettings({ 
-  opened, 
-  onClose, 
-  preferences, 
-  onUpdate 
+export default function SkillVisibilitySettings({
+  opened,
+  onClose,
+  preferences,
+  onUpdate,
 }: SkillVisibilitySettingsProps) {
   console.log('SkillVisibilitySettings render:', { opened, preferences });
-  
+
   const handleToggle = (skillKey: string, checked: boolean) => {
     onUpdate({
       skillVisibility: {
@@ -27,18 +27,24 @@ export default function SkillVisibilitySettings({
   };
 
   const selectAll = () => {
-    const allTrue = Object.keys(ALL_SKILLS).reduce((acc, key) => ({
-      ...acc,
-      [key]: true,
-    }), {} as typeof preferences.skillVisibility);
+    const allTrue = Object.keys(ALL_SKILLS).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: true,
+      }),
+      {} as typeof preferences.skillVisibility
+    );
     onUpdate({ skillVisibility: allTrue });
   };
 
   const deselectAll = () => {
-    const allFalse = Object.keys(ALL_SKILLS).reduce((acc, key) => ({
-      ...acc,
-      [key]: false,
-    }), {} as typeof preferences.skillVisibility);
+    const allFalse = Object.keys(ALL_SKILLS).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: false,
+      }),
+      {} as typeof preferences.skillVisibility
+    );
     onUpdate({ skillVisibility: allFalse });
   };
 
@@ -56,9 +62,9 @@ export default function SkillVisibilitySettings({
     cha: [] as string[],
   };
 
-  Object.entries(ALL_SKILLS).forEach(([key, info]) => {
+  for (const [key, info] of Object.entries(ALL_SKILLS)) {
     skillsByAbility[info.ability].push(key);
-  });
+  }
 
   const abilityLabels = {
     str: 'Strength',
@@ -101,9 +107,11 @@ export default function SkillVisibilitySettings({
 
         {Object.entries(abilityLabels).map(([ability, label]) => (
           <div key={ability}>
-            <Text size="sm" fw={600} mb="xs">{label}</Text>
+            <Text size="sm" fw={600} mb="xs">
+              {label}
+            </Text>
             <Stack gap="xs">
-              {skillsByAbility[ability as keyof typeof skillsByAbility].map(skillKey => (
+              {skillsByAbility[ability as keyof typeof skillsByAbility].map((skillKey) => (
                 <Checkbox
                   key={skillKey}
                   label={ALL_SKILLS[skillKey].label}

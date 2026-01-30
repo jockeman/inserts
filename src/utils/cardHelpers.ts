@@ -1,27 +1,25 @@
 // Helper function to calculate ability modifier
-export const calcModifier = (stat: string): string => {
-  const value = parseInt(stat);
-  if (isNaN(value)) return '';
-  const modifier = Math.floor((value - 10) / 2);
+export const formatModifier = (stat: number): string => {
+  if (Number.isNaN(stat)) return '';
+  const modifier = Math.floor((stat - 10) / 2);
   const sign = modifier >= 0 ? '+' : '';
-  return `${value} (${sign}${modifier})`;
+  return `${stat} (${sign}${modifier})`;
 };
 
 // Helper function to calculate only the modifier (for small cards)
-export const calcModifierOnly = (stat: string): string => {
-  const value = parseInt(stat);
-  if (isNaN(value)) return '';
-  const modifier = Math.floor((value - 10) / 2);
+export const formatModifierOnly = (stat: number): string => {
+  if (Number.isNaN(stat)) return '';
+  const modifier = Math.floor((stat - 10) / 2);
   const sign = modifier >= 0 ? '+' : '';
   return `${sign}${modifier}`;
 };
 
 // Helper function to format bonus with + sign
-export const formatBonus = (bonus: string): string => {
-  if (!bonus) return '';
-  const trimmed = bonus.trim();
-  if (trimmed.startsWith('+') || trimmed.startsWith('-')) return trimmed;
-  return `+${trimmed}`;
+export const formatBonus = (bonus: number | string): string => {
+  if (bonus === 0 || !bonus) return '';
+  const value = typeof bonus === 'number' ? bonus : Number.parseInt(bonus.trim());
+  if (Number.isNaN(value)) return '';
+  return value >= 0 ? `+${value}` : `${value}`;
 };
 
 // Calculate dimensions based on size

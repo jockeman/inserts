@@ -1,6 +1,6 @@
+import { Button, Group, Paper, Stack, Textarea, TextInput } from '@mantine/core';
 import { useState } from 'react';
-import { Stack, Group, TextInput, Textarea, Button, Paper } from '@mantine/core';
-import { Insert } from '../types/Insert';
+import type { Insert } from '../types/Insert';
 import { parseMonsterStatBlock } from '../utils/monsterParser';
 
 interface MonsterFormProps {
@@ -12,31 +12,28 @@ export default function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
   const isLarge = insert.size === 'large';
   const [statBlockText, setStatBlockText] = useState('');
   const [showParser, setShowParser] = useState(false);
-  
+
   const handleParse = () => {
     const parsed = parseMonsterStatBlock(statBlockText);
-    Object.entries(parsed).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(parsed)) {
       if (value !== undefined) {
         onUpdate(key as keyof Insert, value as string);
       }
-    });
+    }
     setStatBlockText('');
     setShowParser(false);
   };
-  
+
   return (
     <Stack gap="md">
       <Paper p="md" withBorder>
         {!showParser ? (
-          <Button 
-            onClick={() => setShowParser(true)}
-            fullWidth
-          >
+          <Button onClick={() => setShowParser(true)} fullWidth>
             📋 Parse Monster Stat Block
           </Button>
         ) : (
           <Stack gap="sm">
-            <Textarea 
+            <Textarea
               label="Paste monster stat block text here:"
               value={statBlockText}
               onChange={(e) => setStatBlockText(e.target.value)}
@@ -45,178 +42,189 @@ export default function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
               placeholder="Paste stat block text..."
             />
             <Group grow>
-              <Button onClick={handleParse}>
-                Parse & Fill Form
-              </Button>
-              <Button variant="default" onClick={() => { setShowParser(false); setStatBlockText(''); }}>
+              <Button onClick={handleParse}>Parse & Fill Form</Button>
+              <Button
+                variant="default"
+                onClick={() => {
+                  setShowParser(false);
+                  setStatBlockText('');
+                }}
+              >
                 Cancel
               </Button>
             </Group>
           </Stack>
         )}
       </Paper>
-      
+
       <Group grow>
-        <TextInput 
+        <TextInput
           label="Size"
-          value={insert.monsterSize} 
+          value={insert.monsterSize}
           onChange={(e) => onUpdate('monsterSize', e.target.value)}
           placeholder="e.g., Small"
         />
-        <TextInput 
+        <TextInput
           label="Type"
-          value={insert.monsterType} 
+          value={insert.monsterType}
           onChange={(e) => onUpdate('monsterType', e.target.value)}
           placeholder="e.g., Humanoid (Angulotl)"
           style={{ flex: 2 }}
         />
       </Group>
-      
+
       <Group grow>
-        <TextInput 
+        <TextInput
           label="CR"
-          value={insert.cr} 
+          value={insert.cr}
           onChange={(e) => onUpdate('cr', e.target.value)}
           placeholder="e.g., 1/4"
         />
-        <TextInput 
+        <TextInput
           label="Speed"
-          value={insert.speed} 
+          value={insert.speed}
           onChange={(e) => onUpdate('speed', e.target.value)}
           placeholder="e.g., 20 ft., swim 30 ft."
         />
       </Group>
-      
+
       <Group grow>
-        <TextInput 
-          label="AC"
-          value={insert.ac} 
-          onChange={(e) => onUpdate('ac', e.target.value)}
-        />
-        <TextInput 
-          label="HP"
-          value={insert.hp} 
-          onChange={(e) => onUpdate('hp', e.target.value)}
-          placeholder="e.g., 14 (4d6)"
+        <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', e.target.value)} />
+        <TextInput
+          label="AC Type"
+          value={insert.acType}
+          onChange={(e) => onUpdate('acType', e.target.value)}
+          placeholder="e.g., natural armor"
         />
       </Group>
-      
+
       <Group grow>
-        <TextInput 
+        <TextInput
+          label="HP"
+          value={insert.hp}
+          onChange={(e) => onUpdate('hp', e.target.value)}
+          placeholder="e.g., 365"
+        />
+        <TextInput
+          label="HP Formula"
+          value={insert.hpFormula}
+          onChange={(e) => onUpdate('hpFormula', e.target.value)}
+          placeholder="e.g., 33d20 + 330"
+        />
+      </Group>
+
+      <Group grow>
+        <TextInput
           label="STR"
-          value={insert.str} 
+          value={insert.str}
           onChange={(e) => onUpdate('str', e.target.value)}
           type="number"
           placeholder="e.g., 7"
         />
-        <TextInput 
+        <TextInput
           label="DEX"
-          value={insert.dex} 
+          value={insert.dex}
           onChange={(e) => onUpdate('dex', e.target.value)}
           type="number"
           placeholder="e.g., 15"
         />
-        <TextInput 
+        <TextInput
           label="CON"
-          value={insert.con} 
+          value={insert.con}
           onChange={(e) => onUpdate('con', e.target.value)}
           type="number"
           placeholder="e.g., 11"
         />
       </Group>
-      
+
       <Group grow>
-        <TextInput 
+        <TextInput
           label="INT"
-          value={insert.int} 
+          value={insert.int}
           onChange={(e) => onUpdate('int', e.target.value)}
           type="number"
           placeholder="e.g., 10"
         />
-        <TextInput 
+        <TextInput
           label="WIS"
-          value={insert.wis} 
+          value={insert.wis}
           onChange={(e) => onUpdate('wis', e.target.value)}
           type="number"
           placeholder="e.g., 14"
         />
-        <TextInput 
+        <TextInput
           label="CHA"
-          value={insert.cha} 
+          value={insert.cha}
           onChange={(e) => onUpdate('cha', e.target.value)}
           type="number"
           placeholder="e.g., 8"
         />
       </Group>
-      
-      <TextInput 
+
+      <TextInput
         label="Saving Throws"
-        value={insert.savingThrows} 
+        value={insert.savingThrows}
         onChange={(e) => onUpdate('savingThrows', e.target.value)}
         placeholder="e.g., Str +2, Dex +4"
       />
-      
-      <TextInput 
+
+      <TextInput
         label="Skills"
-        value={insert.skills} 
+        value={insert.skills}
         onChange={(e) => onUpdate('skills', e.target.value)}
         placeholder="e.g., Perception +4, Stealth +4"
       />
-      
-      <TextInput 
+
+      <TextInput
         label="Damage Immunities"
-        value={insert.damageImmunities} 
+        value={insert.damageImmunities}
         onChange={(e) => onUpdate('damageImmunities', e.target.value)}
       />
-      
-      <TextInput 
+
+      <TextInput
         label="Damage Resistances"
-        value={insert.damageResistances} 
+        value={insert.damageResistances}
         onChange={(e) => onUpdate('damageResistances', e.target.value)}
       />
-      
-      <TextInput 
+
+      <TextInput
         label="Senses"
-        value={insert.senses} 
+        value={insert.senses}
         onChange={(e) => onUpdate('senses', e.target.value)}
         placeholder="e.g., darkvision 60 ft., passive Perception 14"
       />
-      
+
       <Group grow>
-        <TextInput 
-          label="Languages"
-          value={insert.languages} 
-          onChange={(e) => onUpdate('languages', e.target.value)}
-        />
-        <TextInput 
+        <TextInput label="Languages" value={insert.languages} onChange={(e) => onUpdate('languages', e.target.value)} />
+        <TextInput
           label="Proficiency Bonus"
-          value={insert.proficiencyBonus} 
+          value={insert.proficiencyBonus}
           onChange={(e) => onUpdate('proficiencyBonus', e.target.value)}
           placeholder="e.g., +2"
         />
       </Group>
-      
+
       {isLarge && (
         <>
-          <Textarea 
+          <Textarea
             label="Traits (one per line)"
-            value={insert.traits} 
+            value={insert.traits}
             onChange={(e) => onUpdate('traits', e.target.value)}
             minRows={3}
             placeholder="e.g., Amphibious. The blade can breathe air and water."
           />
-          
-          <Textarea 
+
+          <Textarea
             label="Actions (one per line)"
-            value={insert.actions} 
+            value={insert.actions}
             onChange={(e) => onUpdate('actions', e.target.value)}
             minRows={3}
             placeholder="e.g., Machete. Melee Weapon Attack: +4 to hit..."
           />
-          
-          <Textarea 
+
+          <Textarea
             label="Bonus Actions (one per line)"
-            value={insert.bonusActions} 
+            value={insert.bonusActions}
             onChange={(e) => onUpdate('bonusActions', e.target.value)}
             minRows={3}
           />

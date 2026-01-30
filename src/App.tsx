@@ -1,53 +1,54 @@
-
-import { useState, useEffect } from 'react';
-import { Title, Group, Button } from '@mantine/core';
+import { Button, Group, Title } from '@mantine/core';
+import { useEffect, useState } from 'react';
 import CardEditor from './components/CardEditor';
 import PrintArea from './components/PrintArea';
-import { Insert } from './types/Insert';
-import { useUserPreferences } from './hooks/useUserPreferences';
 import SkillVisibilitySettings from './components/SkillVisibilitySettings';
-import { calculateAdvancedPlayerValues } from './utils/advancedPlayerCalculations';
+import { useUserPreferences } from './hooks/useUserPreferences';
+import type { Insert } from './types/Insert';
+import { generateId } from './utils/idGenerator';
+import { calculateAdvancedPlayerValues } from './utils/playerCalculations';
 import './App.css';
 
 const emptyInsert: Insert = {
+  id: '', // Will be generated when added
   name: '',
   image: '',
   cardType: 'player',
   size: 'small',
-  race: '',
-  class: '',
-  ac: '',
-  hp: '',
-  perception: '',
-  insight: '',
-  investigation: '',
-  arcana: '',
-  nature: '',
-  survival: '',
-  stealth: '',
-  darkvision: '',
-  level: '',
-  playerStr: '',
-  playerDex: '',
-  playerCon: '',
-  playerInt: '',
-  playerWis: '',
-  playerCha: '',
-  playerProficiencyBonus: '',
+  race: 'Human',
+  class: 'Fighter',
+  ac: 0,
+  hp: 0,
+  perception: 0,
+  insight: 0,
+  investigation: 0,
+  arcana: 0,
+  nature: 0,
+  survival: 0,
+  stealth: 0,
+  darkvision: 0,
+  level: 1,
+  str: 10,
+  dex: 10,
+  con: 10,
+  int: 10,
+  wis: 10,
+  cha: 10,
+  playerProficiencyBonus: 2,
   proficiencyBonusOverride: false,
   maxHPOverride: false,
   darkvisionOverride: false,
-  acrobatics: '',
-  animalHandling: '',
-  athletics: '',
-  deception: '',
-  history: '',
-  intimidation: '',
-  medicine: '',
-  performance: '',
-  persuasion: '',
-  religion: '',
-  sleightOfHand: '',
+  acrobatics: 0,
+  animalHandling: 0,
+  athletics: 0,
+  deception: 0,
+  history: 0,
+  intimidation: 0,
+  medicine: 0,
+  performance: 0,
+  persuasion: 0,
+  religion: 0,
+  sleightOfHand: 0,
   profAcrobatics: 'none',
   profAnimalHandling: 'none',
   profArcana: 'none',
@@ -66,34 +67,30 @@ const emptyInsert: Insert = {
   profSleightOfHand: 'none',
   profStealth: 'none',
   profSurvival: 'none',
-  modAcrobatics: '',
-  modAnimalHandling: '',
-  modArcana: '',
-  modAthletics: '',
-  modDeception: '',
-  modHistory: '',
-  modInsight: '',
-  modIntimidation: '',
-  modInvestigation: '',
-  modMedicine: '',
-  modNature: '',
-  modPerception: '',
-  modPerformance: '',
-  modPersuasion: '',
-  modReligion: '',
-  modSleightOfHand: '',
-  modStealth: '',
-  modSurvival: '',
+  modAcrobatics: 0,
+  modAnimalHandling: 0,
+  modArcana: 0,
+  modAthletics: 0,
+  modDeception: 0,
+  modHistory: 0,
+  modInsight: 0,
+  modIntimidation: 0,
+  modInvestigation: 0,
+  modMedicine: 0,
+  modNature: 0,
+  modPerception: 0,
+  modPerformance: 0,
+  modPersuasion: 0,
+  modReligion: 0,
+  modSleightOfHand: 0,
+  modStealth: 0,
+  modSurvival: 0,
   monsterSize: '',
   monsterType: '',
   cr: '',
   speed: '',
-  str: '',
-  dex: '',
-  con: '',
-  int: '',
-  wis: '',
-  cha: '',
+  acType: '',
+  hpFormula: '',
   savingThrows: '',
   skills: '',
   damageImmunities: '',
@@ -102,7 +99,7 @@ const emptyInsert: Insert = {
   conditionImmunities: '',
   senses: '',
   languages: '',
-  proficiencyBonus: '',
+  proficiencyBonus: 0,
   traits: '',
   actions: '',
   bonusActions: '',
@@ -122,7 +119,8 @@ function App() {
         return parsed.map((insert: Insert) => {
           const withDefaults = {
             ...insert,
-            selected: insert.selected !== undefined ? insert.selected : true
+            id: insert.id || generateId(), // Generate ID for old inserts without one
+            selected: insert.selected !== undefined ? insert.selected : true,
           };
           // Apply calculations for advanced player cards
           if (withDefaults.cardType === 'player-advanced') {
@@ -130,7 +128,7 @@ function App() {
           }
           return withDefaults;
         });
-      } catch (e) {
+      } catch (_e) {
         return [];
       }
     }
@@ -142,35 +140,39 @@ function App() {
   }, [inserts]);
 
   function addEmptyCard() {
-    setInserts(arr => [...arr, { ...emptyInsert }]);
+    setInserts((arr) => [...arr, { ...emptyInsert, id: generateId() }]);
   }
 
-  function updateInsert(idx: number, field: keyof Insert, value: string) {
-    setInserts(arr => arr.map((insert, i) => {
-      if (i !== idx) return insert;
-      const updated = { ...insert, [field]: value };
-      // Apply calculations for advanced player cards
-      if (updated.cardType === 'player-advanced') {
-        return calculateAdvancedPlayerValues(updated);
-      }
-      return updated;
-    }));
+  function updateInsert(id: string, field: keyof Insert, value: string) {
+    setInserts((arr) =>
+      arr.map((insert) => {
+        if (insert.id !== id) return insert;
+        const updated = { ...insert, [field]: value };
+        // Apply calculations for advanced player cards
+        if (updated.cardType === 'player-advanced') {
+          return calculateAdvancedPlayerValues(updated);
+        }
+        return updated;
+      })
+    );
   }
 
-  function updateInsertBoolean(idx: number, field: keyof Insert, value: boolean) {
-    setInserts(arr => arr.map((insert, i) => {
-      if (i !== idx) return insert;
-      const updated = { ...insert, [field]: value };
-      // Apply calculations for advanced player cards
-      if (updated.cardType === 'player-advanced') {
-        return calculateAdvancedPlayerValues(updated);
-      }
-      return updated;
-    }));
+  function updateInsertBoolean(id: string, field: keyof Insert, value: boolean) {
+    setInserts((arr) =>
+      arr.map((insert) => {
+        if (insert.id !== id) return insert;
+        const updated = { ...insert, [field]: value };
+        // Apply calculations for advanced player cards
+        if (updated.cardType === 'player-advanced') {
+          return calculateAdvancedPlayerValues(updated);
+        }
+        return updated;
+      })
+    );
   }
 
-  function removeInsert(idx: number) {
-    setInserts(arr => arr.filter((_, i) => i !== idx));
+  function removeInsert(id: string) {
+    setInserts((arr) => arr.filter((insert) => insert.id !== id));
   }
 
   function clearAll() {
@@ -180,13 +182,15 @@ function App() {
   }
 
   function deselectAll() {
-    setInserts(arr => arr.map(insert => ({ ...insert, selected: false })));
+    setInserts((arr) => arr.map((insert) => ({ ...insert, selected: false })));
   }
 
   return (
     <div>
-      <Title order={1} className="screen-only" mb="xl">RPG Initiative Tracker Inserts</Title>
-      
+      <Title order={1} className="screen-only" mb="xl">
+        RPG Initiative Tracker Inserts
+      </Title>
+
       <Group className="screen-only" mb="xl" gap="md">
         <Button onClick={addEmptyCard} size="md">
           + Add New Card
@@ -209,22 +213,25 @@ function App() {
         </Button>
       </Group>
 
-      <SkillVisibilitySettings 
+      <SkillVisibilitySettings
         opened={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         preferences={preferences}
         onUpdate={updatePreferences}
       />
 
-      <div className="cards-editor screen-only" style={{ display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'flex-start', alignContent: 'flex-start' }}>
+      <div
+        className="cards-editor screen-only"
+        style={{ display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'flex-start', alignContent: 'flex-start' }}
+      >
         {inserts.map((insert, i) => (
           <CardEditor
-            key={i}
+            key={insert.id}
             insert={insert}
             index={i}
-            onUpdate={(field, value) => updateInsert(i, field, value)}
-            onUpdateBoolean={(field, value) => updateInsertBoolean(i, field, value)}
-            onRemove={() => removeInsert(i)}
+            onUpdate={(field, value) => updateInsert(insert.id, field, value)}
+            onUpdateBoolean={(field, value) => updateInsertBoolean(insert.id, field, value)}
+            onRemove={() => removeInsert(insert.id)}
             preferences={preferences}
           />
         ))}

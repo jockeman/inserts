@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { UserPreferences, USER_PREFS_KEY, DEFAULT_PREFERENCES } from '../types/UserPreferences';
+import { useEffect, useState } from 'react';
+import { DEFAULT_PREFERENCES, USER_PREFS_KEY, type UserPreferences } from '../types/UserPreferences';
 
 export function useUserPreferences(): [UserPreferences, (partial: Partial<UserPreferences>) => void] {
   const [preferences, setPreferences] = useState<UserPreferences>(() => {
@@ -7,7 +7,7 @@ export function useUserPreferences(): [UserPreferences, (partial: Partial<UserPr
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {
+      } catch (_e) {
         return DEFAULT_PREFERENCES;
       }
     }
@@ -19,7 +19,7 @@ export function useUserPreferences(): [UserPreferences, (partial: Partial<UserPr
   }, [preferences]);
 
   const updatePreferences = (partial: Partial<UserPreferences>) => {
-    setPreferences(prev => ({ ...prev, ...partial }));
+    setPreferences((prev) => ({ ...prev, ...partial }));
   };
 
   return [preferences, updatePreferences];

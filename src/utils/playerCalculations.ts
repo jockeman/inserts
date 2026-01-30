@@ -1,33 +1,33 @@
-import { Insert, InsertInputs } from '../types/Insert';
+import type { Insert, InsertInputs } from '../types/Insert';
+import { calculateMaxHP, calculateProficiencyBonus } from './levelCalculations';
 import { calculatePassive } from './passiveCalculator';
-import { calculateProficiencyBonus, calculateMaxHP } from './levelCalculations';
 import { getDarkvisionForRace } from './raceConfig';
-import { ALL_SKILLS,ProficiencyLevel } from './skillConfig';
+import { ALL_SKILLS, type ProficiencyLevel } from './skillConfig';
 
 const ABILITY_FIELD_MAP = {
-  str: 'playerStr',
-  dex: 'playerDex',
-  con: 'playerCon',
-  int: 'playerInt',
-  wis: 'playerWis',
-  cha: 'playerCha',
+  str: 'str',
+  dex: 'dex',
+  con: 'con',
+  int: 'int',
+  wis: 'wis',
+  cha: 'cha',
 } as const;
 
 /**
  * Calculates all derived values for an advanced player card.
  * Takes InsertInputs (stored data) and returns complete Insert with calculated values.
- * 
+ *
  * Inputs (from InsertInputs):
  * - name, image, cardType, size
  * - race, class, ac, level
- * - playerStr, playerDex, playerCon, playerInt, playerWis, playerCha
+ * - str, dex, con, int, wis, cha (ability scores)
  * - profAcrobatics, profAnimalHandling, etc. (proficiency levels)
  * - modAcrobatics, modAnimalHandling, etc. (manual modifiers)
  * - proficiencyBonusOverride, maxHPOverride, darkvisionOverride (override flags)
  * - playerProficiencyBonus (if override is true)
  * - hp (if maxHPOverride is true)
  * - darkvision (if darkvisionOverride is true)
- * 
+ *
  * Calculated (added to output):
  * - playerProficiencyBonus (if override is false)
  * - hp (if maxHPOverride is false)
@@ -39,39 +39,36 @@ export function calculateAdvancedPlayerValues(inputs: InsertInputs): Insert {
 
   // Calculate proficiency bonus if not overridden
   if (!result.proficiencyBonusOverride && result.level) {
-    const profBonus = calculateProficiencyBonus(result.level);
-    result.playerProficiencyBonus = `+${profBonus}`;
+    result.playerProficiencyBonus = calculateProficiencyBonus(result.level);
   }
 
   // Calculate max HP if not overridden
-  if (!result.maxHPOverride && result.level && result.class && result.playerCon) {
-    const maxHP = calculateMaxHP(result.level, result.class, result.playerCon);
-    result.hp = maxHP.toString();
+  if (!result.maxHPOverride && result.level && result.class && result.con) {
+    result.hp = calculateMaxHP(result.level, result.class, result.con);
   }
 
   // Calculate darkvision if not overridden
   if (!result.darkvisionOverride && result.race) {
-    const darkvision = getDarkvisionForRace(result.race);
-    result.darkvision = darkvision > 0 ? darkvision.toString() : '';
+    result.darkvision = getDarkvisionForRace(result.race);
   }
 
   // Calculate all passive skill values
-  Object.entries(ALL_SKILLS).forEach(([_skillKey, skillInfo]) => {
+  for (const skillInfo of Object.values(ALL_SKILLS)) {
     const abilityField = ABILITY_FIELD_MAP[skillInfo.ability];
-    const abilityScore = result[abilityField] as string;
+    const abilityScore = result[abilityField] as number;
     const profLevel = result[skillInfo.profField] as ProficiencyLevel;
-    const manualMod = result[skillInfo.modField] as string;
+    const manualMod = result[skillInfo.modField] as number;
 
-    if (abilityScore && result.playerProficiencyBonus) {
+    if (abilityScore && result.playerProficiencyBonus !== undefined) {
       const passiveValue = calculatePassive(
         abilityScore,
         profLevel || 'none',
         result.playerProficiencyBonus,
-        manualMod || ''
+        manualMod || 0
       );
-      result[skillInfo.passiveField] = passiveValue;
+      (result as any)[skillInfo.passiveField] = passiveValue;
     }
-  });
+  }
 
   return result;
 }

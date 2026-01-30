@@ -1,5 +1,5 @@
-import { Insert } from '../types/Insert';
-import { UserPreferences } from '../types/UserPreferences';
+import type { Insert } from '../types/Insert';
+import type { UserPreferences } from '../types/UserPreferences';
 import InsertCard from './InsertCard';
 
 interface PrintAreaProps {
@@ -12,15 +12,22 @@ export default function PrintArea({ inserts, preferences }: PrintAreaProps) {
     <>
       {/* Print layout: A4, multiple cards per page */}
       <div id="print-area" className="print-only">
-        <div style={{
-          width: '210mm', minHeight: '297mm',
-          display: 'flex', flexWrap: 'wrap',
-          background: '#fff', margin: '0 auto',
-          boxSizing: 'border-box',
-        }}>
-          {inserts.filter(insert => insert.selected).map((insert, i) => (
-            <InsertCard insert={insert} key={i} index={i} preferences={preferences} />
-          ))}
+        <div
+          style={{
+            width: '210mm',
+            minHeight: '297mm',
+            display: 'flex',
+            flexWrap: 'wrap',
+            background: '#fff',
+            margin: '0 auto',
+            boxSizing: 'border-box',
+          }}
+        >
+          {inserts
+            .filter((insert) => insert.selected)
+            .map((insert, i) => (
+              <InsertCard insert={insert} key={insert.id} index={i} preferences={preferences} />
+            ))}
         </div>
       </div>
 

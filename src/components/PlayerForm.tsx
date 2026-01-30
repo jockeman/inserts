@@ -1,9 +1,9 @@
-import { Stack, Group, TextInput, Select, Text } from '@mantine/core';
-import { Insert } from '../types/Insert';
-import { UserPreferences } from '../types/UserPreferences';
-import { getVisibleSkills } from '../utils/skillConfig';
-import { getRaceOptions } from '../utils/raceConfig';
+import { Group, Select, Stack, Text, TextInput } from '@mantine/core';
+import type { Insert } from '../types/Insert';
+import type { UserPreferences } from '../types/UserPreferences';
 import { getClassOptions } from '../utils/classConfig';
+import { getRaceOptions } from '../utils/raceConfig';
+import { getVisibleSkills } from '../utils/skillConfig';
 
 interface PlayerFormProps {
   insert: Insert;
@@ -13,67 +13,63 @@ interface PlayerFormProps {
 
 export default function PlayerForm({ insert, onUpdate, preferences }: PlayerFormProps) {
   const visibleSkills = getVisibleSkills(preferences);
-  
+
   return (
     <Stack gap="md">
-      <Select 
+      <Select
         label="Race"
-        value={insert.race} 
+        value={insert.race}
         onChange={(value) => onUpdate('race', value || '')}
         data={getRaceOptions()}
       />
-      
-      <Select 
+
+      <Select
         label="Class"
-        value={insert.class} 
+        value={insert.class}
         onChange={(value) => onUpdate('class', value || '')}
         data={getClassOptions()}
       />
-      
+
       <Group grow>
-        <TextInput 
-          label="AC"
-          value={insert.ac} 
-          onChange={(e) => onUpdate('ac', e.target.value)}
-        />
-        <TextInput 
-          label="Max HP"
-          value={insert.hp} 
-          onChange={(e) => onUpdate('hp', e.target.value)}
-        />
+        <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', e.target.value)} />
+        <TextInput label="Max HP" value={insert.hp} onChange={(e) => onUpdate('hp', e.target.value)} />
       </Group>
 
       {visibleSkills.length > 0 && (
-        <Text size="sm" fw={600} mt="md">Skills (Passive Values)</Text>
+        <Text size="sm" fw={600} mt="md">
+          Skills (Passive Values)
+        </Text>
       )}
-      
-      {visibleSkills.map(([skillKey, skillInfo], index) => {
-        if (index % 2 === 0) {
-          const nextSkill = visibleSkills[index + 1];
-          return (
-            <Group grow key={skillKey}>
-              <TextInput 
-                label={`Passive ${skillInfo.label}`}
-                value={insert[skillInfo.passiveField] as string} 
-                onChange={(e) => onUpdate(skillInfo.passiveField, e.target.value)}
-              />
-              {nextSkill && (
-                <TextInput 
-                  label={`Passive ${nextSkill[1].label}`}
-                  value={insert[nextSkill[1].passiveField] as string} 
-                  onChange={(e) => onUpdate(nextSkill[1].passiveField, e.target.value)}
+
+      {visibleSkills
+        .map(([skillKey, skillInfo], index) => {
+          if (index % 2 === 0) {
+            const nextSkill = visibleSkills[index + 1];
+            return (
+              <Group grow key={skillKey}>
+                <TextInput
+                  label={`Passive ${skillInfo.label}`}
+                  value={insert[skillInfo.passiveField] as string}
+                  onChange={(e) => onUpdate(skillInfo.passiveField, e.target.value)}
                 />
-              )}
-            </Group>
-          );
-        }
-        return null;
-      }).filter(Boolean)}
-      
+                {nextSkill && (
+                  <TextInput
+                    label={`Passive ${nextSkill[1].label}`}
+                    value={insert[nextSkill[1].passiveField] as string}
+                    onChange={(e) => onUpdate(nextSkill[1].passiveField, e.target.value)}
+                  />
+                )}
+              </Group>
+            );
+          }
+          return null;
+        })
+        .filter(Boolean)}
+
       <Group grow>
-        <TextInput 
+        <TextInput
           label="Darkvision (ft)"
-          value={insert.darkvision} 
+          value={insert.darkvision}
           onChange={(e) => onUpdate('darkvision', e.target.value)}
           type="number"
           min={0}

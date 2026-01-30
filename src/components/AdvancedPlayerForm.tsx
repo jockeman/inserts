@@ -1,9 +1,9 @@
-import { Stack, Group, TextInput, Select, SegmentedControl, Badge, Text, Checkbox } from '@mantine/core';
-import { Insert } from '../types/Insert';
-import { UserPreferences } from '../types/UserPreferences';
-import { getVisibleSkills } from '../utils/skillConfig';
-import { getRaceOptions } from '../utils/raceConfig';
+import { Badge, Checkbox, Group, SegmentedControl, Select, Stack, Text, TextInput } from '@mantine/core';
+import type { Insert } from '../types/Insert';
+import type { UserPreferences } from '../types/UserPreferences';
 import { getClassOptions } from '../utils/classConfig';
+import { getRaceOptions } from '../utils/raceConfig';
+import { getVisibleSkills } from '../utils/skillConfig';
 
 interface AdvancedPlayerFormProps {
   insert: Insert;
@@ -12,39 +12,40 @@ interface AdvancedPlayerFormProps {
   preferences: UserPreferences;
 }
 
-export default function AdvancedPlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: AdvancedPlayerFormProps) {
+export default function AdvancedPlayerForm({
+  insert,
+  onUpdate,
+  onUpdateBoolean,
+  preferences,
+}: AdvancedPlayerFormProps) {
   const visibleSkills = getVisibleSkills(preferences);
 
   return (
     <Stack gap="md">
-      <Select 
+      <Select
         label="Race"
-        value={insert.race} 
+        value={insert.race}
         onChange={(value) => onUpdate('race', value || '')}
         data={getRaceOptions()}
       />
 
       <Group grow>
-        <TextInput 
+        <TextInput
           label="Level"
-          value={insert.level} 
+          value={insert.level}
           onChange={(e) => onUpdate('level', e.target.value)}
           type="number"
           min={1}
           max={20}
         />
-        <TextInput 
-          label="AC"
-          value={insert.ac} 
-          onChange={(e) => onUpdate('ac', e.target.value)}
-        />
+        <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', e.target.value)} />
       </Group>
 
       <div>
         <Group align="flex-end" gap="xs">
-          <TextInput 
+          <TextInput
             label="Max HP"
-            value={insert.hp} 
+            value={insert.hp}
             onChange={(e) => onUpdate('hp', e.target.value)}
             disabled={!insert.maxHPOverride}
             style={{ flex: 1 }}
@@ -56,25 +57,25 @@ export default function AdvancedPlayerForm({ insert, onUpdate, onUpdateBoolean, 
             mb={4}
           />
         </Group>
-        {!insert.maxHPOverride && insert.level && insert.class && insert.playerCon && (
+        {!insert.maxHPOverride && insert.level && insert.class && insert.con && (
           <Text size="xs" c="dimmed" mt={4}>
             Auto-calculated from level, class, and CON
           </Text>
         )}
       </div>
 
-      <Select 
+      <Select
         label="Class"
-        value={insert.class} 
+        value={insert.class}
         onChange={(value) => onUpdate('class', value || '')}
         data={getClassOptions()}
       />
 
       <div>
         <Group align="flex-end" gap="xs">
-          <TextInput 
+          <TextInput
             label="Proficiency Bonus"
-            value={insert.playerProficiencyBonus} 
+            value={insert.playerProficiencyBonus}
             onChange={(e) => onUpdate('playerProficiencyBonus', e.target.value)}
             placeholder="+2"
             disabled={!insert.proficiencyBonusOverride}
@@ -95,55 +96,29 @@ export default function AdvancedPlayerForm({ insert, onUpdate, onUpdateBoolean, 
       </div>
 
       <Group grow>
-        <TextInput 
-          label="STR"
-          value={insert.playerStr} 
-          onChange={(e) => onUpdate('playerStr', e.target.value)}
-          type="number"
-        />
-        <TextInput 
-          label="DEX"
-          value={insert.playerDex} 
-          onChange={(e) => onUpdate('playerDex', e.target.value)}
-          type="number"
-        />
-        <TextInput 
-          label="CON"
-          value={insert.playerCon} 
-          onChange={(e) => onUpdate('playerCon', e.target.value)}
-          type="number"
-        />
-      </Group>
-      
-      <Group grow>
-        <TextInput 
-          label="INT"
-          value={insert.playerInt} 
-          onChange={(e) => onUpdate('playerInt', e.target.value)}
-          type="number"
-        />
-        <TextInput 
-          label="WIS"
-          value={insert.playerWis} 
-          onChange={(e) => onUpdate('playerWis', e.target.value)}
-          type="number"
-        />
-        <TextInput 
-          label="CHA"
-          value={insert.playerCha} 
-          onChange={(e) => onUpdate('playerCha', e.target.value)}
-          type="number"
-        />
+        <TextInput label="STR" value={insert.str} onChange={(e) => onUpdate('str', e.target.value)} type="number" />
+        <TextInput label="DEX" value={insert.dex} onChange={(e) => onUpdate('dex', e.target.value)} type="number" />
+        <TextInput label="CON" value={insert.con} onChange={(e) => onUpdate('con', e.target.value)} type="number" />
       </Group>
 
-      <Text size="sm" fw={600} mt="md">Skills (Passive Values)</Text>
+      <Group grow>
+        <TextInput label="INT" value={insert.int} onChange={(e) => onUpdate('int', e.target.value)} type="number" />
+        <TextInput label="WIS" value={insert.wis} onChange={(e) => onUpdate('wis', e.target.value)} type="number" />
+        <TextInput label="CHA" value={insert.cha} onChange={(e) => onUpdate('cha', e.target.value)} type="number" />
+      </Group>
+
+      <Text size="sm" fw={600} mt="md">
+        Skills (Passive Values)
+      </Text>
       {visibleSkills.map(([skillKey, skillInfo]) => {
         const passiveValue = insert[skillInfo.passiveField] as string;
         return (
           <div key={skillKey}>
             <Group gap="xs" align="flex-end">
               <div style={{ flex: 1 }}>
-                <Text size="sm" fw={500}>{skillInfo.label}</Text>
+                <Text size="sm" fw={500}>
+                  {skillInfo.label}
+                </Text>
                 <SegmentedControl
                   value={insert[skillInfo.profField] as string}
                   onChange={(value) => onUpdate(skillInfo.profField, value)}
@@ -156,7 +131,7 @@ export default function AdvancedPlayerForm({ insert, onUpdate, onUpdateBoolean, 
                   fullWidth
                 />
               </div>
-              <TextInput 
+              <TextInput
                 placeholder="+0"
                 value={insert[skillInfo.modField] as string}
                 onChange={(e) => onUpdate(skillInfo.modField, e.target.value)}
@@ -174,9 +149,9 @@ export default function AdvancedPlayerForm({ insert, onUpdate, onUpdateBoolean, 
 
       <div>
         <Group align="flex-end" gap="xs">
-          <TextInput 
+          <TextInput
             label="Darkvision (ft)"
-            value={insert.darkvision} 
+            value={insert.darkvision}
             onChange={(e) => onUpdate('darkvision', e.target.value)}
             type="number"
             min={0}

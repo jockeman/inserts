@@ -1,10 +1,10 @@
-import { Stack, Group, TextInput, Select } from '@mantine/core';
-import { Insert } from '../types/Insert';
-import { UserPreferences } from '../types/UserPreferences';
+import { Group, Select, Stack, TextInput } from '@mantine/core';
+import type { Insert } from '../types/Insert';
+import type { UserPreferences } from '../types/UserPreferences';
+import AdvancedPlayerForm from './AdvancedPlayerForm';
 import ImageInput from './ImageInput';
 import MonsterForm from './MonsterForm';
 import PlayerForm from './PlayerForm';
-import AdvancedPlayerForm from './AdvancedPlayerForm';
 
 interface InsertFormProps {
   insert: Insert;
@@ -16,49 +16,47 @@ interface InsertFormProps {
 export default function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: InsertFormProps) {
   const isMonster = insert.cardType === 'monster';
   const isAdvancedPlayer = insert.cardType === 'player-advanced';
-  
+
   return (
     <Stack gap="md">
-      <TextInput 
-        label="Name"
-        value={insert.name} 
-        onChange={(e) => onUpdate('name', e.target.value)}
-      />
-      
+      <TextInput label="Name" value={insert.name} onChange={(e) => onUpdate('name', e.target.value)} />
+
       <Group grow>
-        <Select 
+        <Select
           label="Card Type"
-          value={insert.cardType} 
+          value={insert.cardType}
           onChange={(value) => onUpdate('cardType', value || 'player')}
           data={[
             { value: 'player', label: 'Player' },
             { value: 'player-advanced', label: 'Player (Advanced)' },
-            { value: 'monster', label: 'Monster' }
+            { value: 'monster', label: 'Monster' },
           ]}
         />
-        <Select 
+        <Select
           label="Size"
-          value={insert.size} 
+          value={insert.size}
           onChange={(value) => onUpdate('size', value || 'small')}
           data={[
             { value: 'small', label: 'Small (37x77mm)' },
-            { value: 'large', label: 'Large (64x89mm)' }
+            { value: 'large', label: 'Large (64x89mm)' },
           ]}
         />
       </Group>
-      
+
       {isMonster ? (
         <MonsterForm insert={insert} onUpdate={onUpdate} />
       ) : isAdvancedPlayer ? (
-        <AdvancedPlayerForm insert={insert} onUpdate={onUpdate} onUpdateBoolean={onUpdateBoolean} preferences={preferences} />
+        <AdvancedPlayerForm
+          insert={insert}
+          onUpdate={onUpdate}
+          onUpdateBoolean={onUpdateBoolean}
+          preferences={preferences}
+        />
       ) : (
         <PlayerForm insert={insert} onUpdate={onUpdate} preferences={preferences} />
       )}
-      
-      <ImageInput 
-        value={insert.image} 
-        onChange={(val) => onUpdate('image', val)} 
-      />
+
+      <ImageInput value={insert.image} onChange={(val) => onUpdate('image', val)} />
     </Stack>
   );
 }

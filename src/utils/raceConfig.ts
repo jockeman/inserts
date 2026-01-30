@@ -1,5 +1,18 @@
+export type RaceName =
+  | 'Dragonborn'
+  | 'Dwarf'
+  | 'Elf'
+  | 'Gnome'
+  | 'Goliath'
+  | 'Half-Elf'
+  | 'Half-Orc'
+  | 'Halfling'
+  | 'Human'
+  | 'Tabaxi'
+  | 'Tiefling';
+
 interface RaceInfo {
-  name: string;
+  name: RaceName;
   darkvision: number;
 }
 
@@ -17,16 +30,13 @@ const RACES_DATA: RaceInfo[] = [
   { name: 'Tiefling', darkvision: 60 },
 ];
 
-export const RACES = RACES_DATA.map(r => r.name);
+export const RACES = RACES_DATA.map((r) => r.name);
 
 export function getRaceOptions() {
-  return [
-    { value: '', label: '-- Select --' },
-    ...RACES_DATA.map(r => ({ value: r.name, label: r.name }))
-  ];
+  return [{ value: '', label: '-- Select --' }, ...RACES_DATA.map((r) => ({ value: r.name, label: r.name }))];
 }
 
 export function getDarkvisionForRace(race: string): number {
-  const raceInfo = RACES_DATA.find(r => r.name === race);
+  const raceInfo = RACES_DATA.find((r) => r.name === race);
   return raceInfo?.darkvision ?? 0;
 }

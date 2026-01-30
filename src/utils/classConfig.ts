@@ -1,5 +1,19 @@
+export type ClassName =
+  | 'Barbarian'
+  | 'Bard'
+  | 'Cleric'
+  | 'Druid'
+  | 'Fighter'
+  | 'Monk'
+  | 'Paladin'
+  | 'Ranger'
+  | 'Rogue'
+  | 'Sorcerer'
+  | 'Warlock'
+  | 'Wizard';
+
 interface ClassInfo {
-  name: string;
+  name: ClassName;
   hitDie: number;
 }
 
@@ -18,16 +32,13 @@ const CLASSES_DATA: ClassInfo[] = [
   { name: 'Wizard', hitDie: 6 },
 ];
 
-export const CLASSES = CLASSES_DATA.map(c => c.name);
+export const CLASSES = CLASSES_DATA.map((c) => c.name);
 
 export function getClassOptions() {
-  return [
-    { value: '', label: '-- Select --' },
-    ...CLASSES_DATA.map(c => ({ value: c.name, label: c.name }))
-  ];
+  return [{ value: '', label: '-- Select --' }, ...CLASSES_DATA.map((c) => ({ value: c.name, label: c.name }))];
 }
 
-export function getHitDieForClass(className: string): number {
-  const classInfo = CLASSES_DATA.find(c => c.name === className);
+export function getHitDieForClass(className: ClassName): number {
+  const classInfo = CLASSES_DATA.find((c) => c.name === className);
   return classInfo?.hitDie ?? 8;
 }

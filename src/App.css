@@ -1,4 +1,3 @@
-
 #root {
   max-width: 100%;
   width: 100%;
@@ -42,7 +41,10 @@ button:hover {
 }
 
 @media print {
-  body, html, #root, #print-area {
+  body,
+  html,
+  #root,
+  #print-area {
     width: 210mm !important;
     min-height: 297mm !important;
     background: #fff !important;
@@ -57,7 +59,11 @@ button:hover {
   #print-area > div {
     page-break-inside: avoid !important;
   }
-  form, .remove-btn, .card-preview, h1, button:not(.print) {
+  form,
+  .remove-btn,
+  .card-preview,
+  h1,
+  button:not(.print) {
     display: none !important;
   }
 }
