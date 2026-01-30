@@ -6,6 +6,7 @@ import PrintArea from './components/PrintArea';
 import { Insert } from './types/Insert';
 import { useUserPreferences } from './hooks/useUserPreferences';
 import SkillVisibilitySettings from './components/SkillVisibilitySettings';
+import { calculateAdvancedPlayerValues } from './utils/advancedPlayerCalculations';
 import './App.css';
 
 const emptyInsert: Insert = {
@@ -118,10 +119,17 @@ function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        return parsed.map((insert: Insert) => ({
-          ...insert,
-          selected: insert.selected !== undefined ? insert.selected : true
-        }));
+        return parsed.map((insert: Insert) => {
+          const withDefaults = {
+            ...insert,
+            selected: insert.selected !== undefined ? insert.selected : true
+          };
+          // Apply calculations for advanced player cards
+          if (withDefaults.cardType === 'player-advanced') {
+            return calculateAdvancedPlayerValues(withDefaults);
+          }
+          return withDefaults;
+        });
       } catch (e) {
         return [];
       }
@@ -138,15 +146,27 @@ function App() {
   }
 
   function updateInsert(idx: number, field: keyof Insert, value: string) {
-    setInserts(arr => arr.map((insert, i) => 
-      i === idx ? { ...insert, [field]: value } : insert
-    ));
+    setInserts(arr => arr.map((insert, i) => {
+      if (i !== idx) return insert;
+      const updated = { ...insert, [field]: value };
+      // Apply calculations for advanced player cards
+      if (updated.cardType === 'player-advanced') {
+        return calculateAdvancedPlayerValues(updated);
+      }
+      return updated;
+    }));
   }
 
   function updateInsertBoolean(idx: number, field: keyof Insert, value: boolean) {
-    setInserts(arr => arr.map((insert, i) => 
-      i === idx ? { ...insert, [field]: value } : insert
-    ));
+    setInserts(arr => arr.map((insert, i) => {
+      if (i !== idx) return insert;
+      const updated = { ...insert, [field]: value };
+      // Apply calculations for advanced player cards
+      if (updated.cardType === 'player-advanced') {
+        return calculateAdvancedPlayerValues(updated);
+      }
+      return updated;
+    }));
   }
 
   function removeInsert(idx: number) {

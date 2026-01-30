@@ -1,3 +1,5 @@
+import { ProficiencyLevel } from './skillConfig';
+
 export function calculateModifier(score: string): number {
   const numScore = parseInt(score, 10);
   if (isNaN(numScore)) return 0;
@@ -6,7 +8,7 @@ export function calculateModifier(score: string): number {
 
 export function calculatePassive(
   abilityScore: string,
-  profLevel: string,
+  profLevel: ProficiencyLevel,
   profBonus: string,
   manualMod: string
 ): string {

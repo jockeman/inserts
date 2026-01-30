@@ -1,11 +1,8 @@
-import { useEffect } from 'react';
 import { Stack, Group, TextInput, Select, SegmentedControl, Badge, Text, Checkbox } from '@mantine/core';
 import { Insert } from '../types/Insert';
 import { UserPreferences } from '../types/UserPreferences';
 import { getVisibleSkills } from '../utils/skillConfig';
-import { calculatePassive } from '../utils/passiveCalculator';
-import { calculateProficiencyBonus, calculateMaxHP } from '../utils/levelCalculations';
-import { getDarkvisionForRace, getRaceOptions } from '../utils/raceConfig';
+import { getRaceOptions } from '../utils/raceConfig';
 import { getClassOptions } from '../utils/classConfig';
 
 interface AdvancedPlayerFormProps {
@@ -17,81 +14,6 @@ interface AdvancedPlayerFormProps {
 
 export default function AdvancedPlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: AdvancedPlayerFormProps) {
   const visibleSkills = getVisibleSkills(preferences);
-
-  // Auto-calculate proficiency bonus from level
-  useEffect(() => {
-    if (!insert.proficiencyBonusOverride && insert.level) {
-      const calculatedBonus = calculateProficiencyBonus(insert.level);
-      const bonusString = `+${calculatedBonus}`;
-      if (insert.playerProficiencyBonus !== bonusString) {
-        onUpdate('playerProficiencyBonus', bonusString);
-      }
-    }
-  }, [insert.level, insert.proficiencyBonusOverride]);
-
-  // Auto-calculate max HP from level, class, and CON
-  useEffect(() => {
-    if (!insert.maxHPOverride && insert.level && insert.class && insert.playerCon) {
-      const calculatedHP = calculateMaxHP(insert.level, insert.class, insert.playerCon);
-      const hpString = calculatedHP.toString();
-      if (insert.hp !== hpString) {
-        onUpdate('hp', hpString);
-      }
-    }
-  }, [insert.level, insert.class, insert.playerCon, insert.maxHPOverride]);
-
-  // Auto-calculate darkvision from race
-  useEffect(() => {
-    if (!insert.darkvisionOverride && insert.race) {
-      const calculatedDarkvision = getDarkvisionForRace(insert.race);
-      const darkvisionString = calculatedDarkvision.toString();
-      if (insert.darkvision !== darkvisionString) {
-        onUpdate('darkvision', darkvisionString);
-      }
-    }
-  }, [insert.race, insert.darkvisionOverride]);
-
-  // Auto-calculate passives whenever ability scores, prof bonus, prof levels, or modifiers change
-  useEffect(() => {
-    visibleSkills.forEach(([skillKey, skillInfo]) => {
-      const abilityFieldMap = {
-        str: 'playerStr',
-        dex: 'playerDex',
-        con: 'playerCon',
-        int: 'playerInt',
-        wis: 'playerWis',
-        cha: 'playerCha',
-      };
-      
-      const abilityScore = insert[abilityFieldMap[skillInfo.ability] as keyof Insert] as string;
-      const profLevel = insert[skillInfo.profField] as string;
-      const manualMod = insert[skillInfo.modField] as string;
-      
-      const calculatedValue = calculatePassive(
-        abilityScore,
-        profLevel,
-        insert.playerProficiencyBonus,
-        manualMod
-      );
-      
-      // Only update if the value changed
-      if (insert[skillInfo.passiveField] !== calculatedValue) {
-        onUpdate(skillInfo.passiveField, calculatedValue);
-      }
-    });
-  }, [
-    insert.playerStr,
-    insert.playerDex,
-    insert.playerCon,
-    insert.playerInt,
-    insert.playerWis,
-    insert.playerCha,
-    insert.playerProficiencyBonus,
-    ...visibleSkills.flatMap(([_, info]) => [
-      insert[info.profField],
-      insert[info.modField],
-    ]),
-  ]);
 
   return (
     <Stack gap="md">
