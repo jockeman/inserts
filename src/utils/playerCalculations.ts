@@ -24,12 +24,12 @@ const ABILITY_FIELD_MAP = {
  * - profAcrobatics, profAnimalHandling, etc. (proficiency levels)
  * - modAcrobatics, modAnimalHandling, etc. (manual modifiers)
  * - proficiencyBonusOverride, maxHPOverride, darkvisionOverride (override flags)
- * - playerProficiencyBonus (if override is true)
+ * - proficiencyBonus (if override is true)
  * - hp (if maxHPOverride is true)
  * - darkvision (if darkvisionOverride is true)
  *
  * Calculated (added to output):
- * - playerProficiencyBonus (if override is false)
+ * - proficiencyBonus (if override is false)
  * - hp (if maxHPOverride is false)
  * - darkvision (if darkvisionOverride is false)
  * - All passive skill values (acrobatics, animalHandling, arcana, etc.)
@@ -39,7 +39,7 @@ export function calculateAdvancedPlayerValues(inputs: InsertInputs): Insert {
 
   // Calculate proficiency bonus if not overridden
   if (!result.proficiencyBonusOverride && result.level) {
-    result.playerProficiencyBonus = calculateProficiencyBonus(result.level);
+    result.proficiencyBonus = calculateProficiencyBonus(result.level);
   }
 
   // Calculate max HP if not overridden
@@ -59,13 +59,8 @@ export function calculateAdvancedPlayerValues(inputs: InsertInputs): Insert {
     const profLevel = result[skillInfo.profField] as ProficiencyLevel;
     const manualMod = result[skillInfo.modField] as number;
 
-    if (abilityScore && result.playerProficiencyBonus !== undefined) {
-      const passiveValue = calculatePassive(
-        abilityScore,
-        profLevel || 'none',
-        result.playerProficiencyBonus,
-        manualMod || 0
-      );
+    if (abilityScore && result.proficiencyBonus !== undefined) {
+      const passiveValue = calculatePassive(abilityScore, profLevel || 'none', result.proficiencyBonus, manualMod || 0);
       (result as any)[skillInfo.passiveField] = passiveValue;
     }
   }

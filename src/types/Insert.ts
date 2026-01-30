@@ -37,7 +37,7 @@ export interface InsertInputs {
   darkvisionOverride: boolean;
 
   // Player - manual override values (inputs when override is true)
-  playerProficiencyBonus: number;
+  proficiencyBonus: number; // Shared with monsters
   hp: number;
   darkvision: number;
 
@@ -97,14 +97,12 @@ export interface InsertInputs {
   acType: string; // Armor type (e.g., "natural armor", "leather armor")
   hpFormula: string; // Dice formula for HP (e.g., "33d20 + 330")
   savingThrows: string;
-  skills: string;
   damageImmunities: string;
   damageResistances: string;
   damageVulnerabilities: string;
   conditionImmunities: string;
   senses: string;
   languages: string;
-  proficiencyBonus: number;
   traits: string;
   actions: string;
   bonusActions: string;

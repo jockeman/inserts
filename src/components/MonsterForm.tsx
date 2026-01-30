@@ -1,4 +1,4 @@
-import { Button, Group, Paper, Stack, Textarea, TextInput } from '@mantine/core';
+import { Button, Collapse, Group, Paper, Stack, Textarea, TextInput } from '@mantine/core';
 import { useState } from 'react';
 import type { Insert } from '../types/Insert';
 import { parseMonsterStatBlock } from '../utils/monsterParser';
@@ -12,6 +12,7 @@ export default function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
   const isLarge = insert.size === 'large';
   const [statBlockText, setStatBlockText] = useState('');
   const [showParser, setShowParser] = useState(false);
+  const [showSkills, setShowSkills] = useState(false);
 
   const handleParse = () => {
     const parsed = parseMonsterStatBlock(statBlockText);
@@ -168,12 +169,153 @@ export default function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         placeholder="e.g., Str +2, Dex +4"
       />
 
-      <TextInput
-        label="Skills"
-        value={insert.skills}
-        onChange={(e) => onUpdate('skills', e.target.value)}
-        placeholder="e.g., Perception +4, Stealth +4"
-      />
+      <Paper p="md" withBorder>
+        <Button onClick={() => setShowSkills(!showSkills)} fullWidth variant="light" mb={showSkills ? 'md' : 0}>
+          {showSkills ? '▼' : '▶'} Skills
+        </Button>
+        <Collapse in={showSkills}>
+          <Stack gap="sm">
+            <Group grow>
+              <TextInput
+                label="Acrobatics"
+                value={insert.acrobatics || ''}
+                onChange={(e) => onUpdate('acrobatics', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Animal Handling"
+                value={insert.animalHandling || ''}
+                onChange={(e) => onUpdate('animalHandling', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Arcana"
+                value={insert.arcana || ''}
+                onChange={(e) => onUpdate('arcana', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+            </Group>
+            <Group grow>
+              <TextInput
+                label="Athletics"
+                value={insert.athletics || ''}
+                onChange={(e) => onUpdate('athletics', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Deception"
+                value={insert.deception || ''}
+                onChange={(e) => onUpdate('deception', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="History"
+                value={insert.history || ''}
+                onChange={(e) => onUpdate('history', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+            </Group>
+            <Group grow>
+              <TextInput
+                label="Insight"
+                value={insert.insight || ''}
+                onChange={(e) => onUpdate('insight', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Intimidation"
+                value={insert.intimidation || ''}
+                onChange={(e) => onUpdate('intimidation', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Investigation"
+                value={insert.investigation || ''}
+                onChange={(e) => onUpdate('investigation', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+            </Group>
+            <Group grow>
+              <TextInput
+                label="Medicine"
+                value={insert.medicine || ''}
+                onChange={(e) => onUpdate('medicine', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Nature"
+                value={insert.nature || ''}
+                onChange={(e) => onUpdate('nature', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Perception"
+                value={insert.perception || ''}
+                onChange={(e) => onUpdate('perception', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+            </Group>
+            <Group grow>
+              <TextInput
+                label="Performance"
+                value={insert.performance || ''}
+                onChange={(e) => onUpdate('performance', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Persuasion"
+                value={insert.persuasion || ''}
+                onChange={(e) => onUpdate('persuasion', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Religion"
+                value={insert.religion || ''}
+                onChange={(e) => onUpdate('religion', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+            </Group>
+            <Group grow>
+              <TextInput
+                label="Sleight of Hand"
+                value={insert.sleightOfHand || ''}
+                onChange={(e) => onUpdate('sleightOfHand', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Stealth"
+                value={insert.stealth || ''}
+                onChange={(e) => onUpdate('stealth', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="Survival"
+                value={insert.survival || ''}
+                onChange={(e) => onUpdate('survival', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+            </Group>
+          </Stack>
+        </Collapse>
+      </Paper>
 
       <TextInput
         label="Damage Immunities"

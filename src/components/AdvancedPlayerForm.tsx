@@ -1,9 +1,48 @@
 import { Badge, Checkbox, Group, SegmentedControl, Select, Stack, Text, TextInput } from '@mantine/core';
+import {
+  FaBook,
+  FaBrain,
+  FaBriefcaseMedical,
+  FaComments,
+  FaDumbbell,
+  FaEye,
+  FaHandPaper,
+  FaHandRock,
+  FaMusic,
+  FaPaw,
+  FaPray,
+  FaScroll,
+  FaSearch,
+  FaTheaterMasks,
+  FaUserSecret,
+} from 'react-icons/fa';
+import { GiCampingTent } from 'react-icons/gi';
 import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { getClassOptions } from '../utils/classConfig';
 import { getRaceOptions } from '../utils/raceConfig';
 import { getVisibleSkills } from '../utils/skillConfig';
+
+const skillIcons: Record<string, React.ElementType> = {
+  acrobatics: FaDumbbell,
+  animalHandling: FaPaw,
+  arcana: FaBook,
+  athletics: FaDumbbell,
+  deception: FaTheaterMasks,
+  history: FaScroll,
+  insight: FaBrain,
+  intimidation: FaHandRock,
+  investigation: FaSearch,
+  medicine: FaBriefcaseMedical,
+  nature: FaBook,
+  perception: FaEye,
+  performance: FaMusic,
+  persuasion: FaComments,
+  religion: FaPray,
+  sleightOfHand: FaHandPaper,
+  stealth: FaUserSecret,
+  survival: GiCampingTent,
+};
 
 interface AdvancedPlayerFormProps {
   insert: Insert;
@@ -75,8 +114,8 @@ export default function AdvancedPlayerForm({
         <Group align="flex-end" gap="xs">
           <TextInput
             label="Proficiency Bonus"
-            value={insert.playerProficiencyBonus}
-            onChange={(e) => onUpdate('playerProficiencyBonus', e.target.value)}
+            value={insert.proficiencyBonus}
+            onChange={(e) => onUpdate('proficiencyBonus', e.target.value)}
             placeholder="+2"
             disabled={!insert.proficiencyBonusOverride}
             style={{ flex: 1 }}
@@ -112,13 +151,17 @@ export default function AdvancedPlayerForm({
       </Text>
       {visibleSkills.map(([skillKey, skillInfo]) => {
         const passiveValue = insert[skillInfo.passiveField] as string;
+        const Icon = skillIcons[skillKey] || FaPaw;
         return (
           <div key={skillKey}>
             <Group gap="xs" align="flex-end">
               <div style={{ flex: 1 }}>
-                <Text size="sm" fw={500}>
-                  {skillInfo.label}
-                </Text>
+                <Group gap="xs">
+                  <Icon size={16} style={{ marginTop: 2 }} />
+                  <Text size="sm" fw={500}>
+                    {skillInfo.label}
+                  </Text>
+                </Group>
                 <SegmentedControl
                   value={insert[skillInfo.profField] as string}
                   onChange={(value) => onUpdate(skillInfo.profField, value)}

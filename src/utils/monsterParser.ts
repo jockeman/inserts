@@ -153,7 +153,47 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
 
     // Skills
     if (line.startsWith('Skills ')) {
-      result.skills = line.replace('Skills ', '');
+      const skillsText = line.replace('Skills ', '');
+
+      // Parse individual skills like "Perception +13, Stealth +9"
+      const skillMap: Record<string, keyof Insert> = {
+        Acrobatics: 'acrobatics',
+        'Animal Handling': 'animalHandling',
+        Arcana: 'arcana',
+        Athletics: 'athletics',
+        Deception: 'deception',
+        History: 'history',
+        Insight: 'insight',
+        Intimidation: 'intimidation',
+        Investigation: 'investigation',
+        Medicine: 'medicine',
+        Nature: 'nature',
+        Perception: 'perception',
+        Performance: 'performance',
+        Persuasion: 'persuasion',
+        Religion: 'religion',
+        'Sleight of Hand': 'sleightOfHand',
+        Stealth: 'stealth',
+        Survival: 'survival',
+      };
+
+      // Split by comma and parse each skill
+      const skills = skillsText.split(',').map((s) => s.trim());
+      for (const skill of skills) {
+        for (const [skillName, fieldName] of Object.entries(skillMap)) {
+          if (skill.startsWith(skillName)) {
+            // Extract the bonus value (e.g., "+13" or "-2")
+            const match = skill.match(/([+−-]\d+)/);
+            if (match) {
+              const bonus = Number.parseInt(match[1].replace('−', '-'));
+              if (!Number.isNaN(bonus)) {
+                (result as any)[fieldName] = bonus;
+              }
+            }
+            break;
+          }
+        }
+      }
       continue;
     }
 
