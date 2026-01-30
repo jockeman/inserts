@@ -1,17 +1,32 @@
-const darkvisionByRace: Record<string, number> = {
-  'Dragonborn': 0,
-  'Dwarf': 60,
-  'Elf': 60,
-  'Gnome': 60,
-  'Goliath': 0,
-  'Half-Elf': 60,
-  'Half-Orc': 60,
-  'Halfling': 0,
-  'Human': 0,
-  'Tabaxi': 60,
-  'Tiefling': 60,
-};
+interface RaceInfo {
+  name: string;
+  darkvision: number;
+}
+
+const RACES_DATA: RaceInfo[] = [
+  { name: 'Dragonborn', darkvision: 0 },
+  { name: 'Dwarf', darkvision: 60 },
+  { name: 'Elf', darkvision: 60 },
+  { name: 'Gnome', darkvision: 60 },
+  { name: 'Goliath', darkvision: 0 },
+  { name: 'Half-Elf', darkvision: 60 },
+  { name: 'Half-Orc', darkvision: 60 },
+  { name: 'Halfling', darkvision: 0 },
+  { name: 'Human', darkvision: 0 },
+  { name: 'Tabaxi', darkvision: 60 },
+  { name: 'Tiefling', darkvision: 60 },
+];
+
+export const RACES = RACES_DATA.map(r => r.name);
+
+export function getRaceOptions() {
+  return [
+    { value: '', label: '-- Select --' },
+    ...RACES_DATA.map(r => ({ value: r.name, label: r.name }))
+  ];
+}
 
 export function getDarkvisionForRace(race: string): number {
-  return darkvisionByRace[race] ?? 0;
+  const raceInfo = RACES_DATA.find(r => r.name === race);
+  return raceInfo?.darkvision ?? 0;
 }

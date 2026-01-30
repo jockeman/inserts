@@ -5,7 +5,8 @@ import { UserPreferences } from '../types/UserPreferences';
 import { getVisibleSkills } from '../utils/skillConfig';
 import { calculatePassive } from '../utils/passiveCalculator';
 import { calculateProficiencyBonus, calculateMaxHP } from '../utils/levelCalculations';
-import { getDarkvisionForRace } from '../utils/raceConfig';
+import { getDarkvisionForRace, getRaceOptions } from '../utils/raceConfig';
+import { getClassOptions } from '../utils/classConfig';
 
 interface AdvancedPlayerFormProps {
   insert: Insert;
@@ -98,20 +99,7 @@ export default function AdvancedPlayerForm({ insert, onUpdate, onUpdateBoolean, 
         label="Race"
         value={insert.race} 
         onChange={(value) => onUpdate('race', value || '')}
-        data={[
-          { value: '', label: '-- Select --' },
-          { value: 'Dragonborn', label: 'Dragonborn' },
-          { value: 'Dwarf', label: 'Dwarf' },
-          { value: 'Elf', label: 'Elf' },
-          { value: 'Gnome', label: 'Gnome' },
-          { value: 'Goliath', label: 'Goliath' },
-          { value: 'Half-Elf', label: 'Half-Elf' },
-          { value: 'Half-Orc', label: 'Half-Orc' },
-          { value: 'Halfling', label: 'Halfling' },
-          { value: 'Human', label: 'Human' },
-          { value: 'Tabaxi', label: 'Tabaxi' },
-          { value: 'Tiefling', label: 'Tiefling' }
-        ]}
+        data={getRaceOptions()}
       />
 
       <Group grow>
@@ -157,21 +145,7 @@ export default function AdvancedPlayerForm({ insert, onUpdate, onUpdateBoolean, 
         label="Class"
         value={insert.class} 
         onChange={(value) => onUpdate('class', value || '')}
-        data={[
-          { value: '', label: '-- Select --' },
-          { value: 'Barbarian', label: 'Barbarian' },
-          { value: 'Bard', label: 'Bard' },
-          { value: 'Cleric', label: 'Cleric' },
-          { value: 'Druid', label: 'Druid' },
-          { value: 'Fighter', label: 'Fighter' },
-          { value: 'Monk', label: 'Monk' },
-          { value: 'Paladin', label: 'Paladin' },
-          { value: 'Ranger', label: 'Ranger' },
-          { value: 'Rogue', label: 'Rogue' },
-          { value: 'Sorcerer', label: 'Sorcerer' },
-          { value: 'Warlock', label: 'Warlock' },
-          { value: 'Wizard', label: 'Wizard' }
-        ]}
+        data={getClassOptions()}
       />
 
       <div>
