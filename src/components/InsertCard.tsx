@@ -1,16 +1,20 @@
 import { Insert } from '../types/Insert';
+import { UserPreferences } from '../types/UserPreferences';
 import { getCardDimensions } from '../utils/cardHelpers';
 import PlayerInsertCard from './PlayerInsertCard';
 import MonsterInsertCard from './MonsterInsertCard';
+import AdvancedPlayerInsertCard from './AdvancedPlayerInsertCard';
 
 interface InsertCardProps {
   insert: Insert;
   index: number;
+  preferences: UserPreferences;
 }
 
-export default function InsertCard({ insert }: InsertCardProps) {
+export default function InsertCard({ insert, preferences }: InsertCardProps) {
   const isLarge = insert.size === 'large';
   const isMonster = insert.cardType === 'monster';
+  const isAdvancedPlayer = insert.cardType === 'player-advanced';
   
   const {
     containerWidth,
@@ -67,6 +71,13 @@ export default function InsertCard({ insert }: InsertCardProps) {
             isLarge={isLarge}
             dmContentWidth={dmContentWidth}
             dmContentHeight={dmContentHeight}
+          />
+        ) : isAdvancedPlayer ? (
+          <AdvancedPlayerInsertCard 
+            insert={insert}
+            dmContentWidth={dmContentWidth}
+            dmContentHeight={dmContentHeight}
+            preferences={preferences}
           />
         ) : (
           <PlayerInsertCard 

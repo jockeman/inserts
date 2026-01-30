@@ -1,5 +1,6 @@
 import { Paper, Button, Group, Title, Checkbox } from '@mantine/core';
 import { Insert } from '../types/Insert';
+import { UserPreferences } from '../types/UserPreferences';
 import InsertCard from './InsertCard';
 import InsertForm from './InsertForm';
 
@@ -9,9 +10,10 @@ interface CardEditorProps {
   onUpdate: (field: keyof Insert, value: string) => void;
   onUpdateBoolean: (field: keyof Insert, value: boolean) => void;
   onRemove: () => void;
+  preferences: UserPreferences;
 }
 
-export default function CardEditor({ insert, index, onUpdate, onUpdateBoolean, onRemove }: CardEditorProps) {
+export default function CardEditor({ insert, index, onUpdate, onUpdateBoolean, onRemove, preferences }: CardEditorProps) {
   return (
     <Paper 
       className="card-editor" 
@@ -47,13 +49,13 @@ export default function CardEditor({ insert, index, onUpdate, onUpdateBoolean, o
       <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
         {/* Input Form */}
         <div style={{ flex: '1 1 300px' }}>
-          <InsertForm insert={insert} onUpdate={onUpdate} />
+          <InsertForm insert={insert} onUpdate={onUpdate} onUpdateBoolean={onUpdateBoolean} preferences={preferences} />
         </div>
         
         {/* Live Preview */}
         <div style={{ flex: '0 0 auto' }}>
           <Title order={4} mb="xs">Preview</Title>
-          <InsertCard insert={insert} index={index} />
+          <InsertCard insert={insert} index={index} preferences={preferences} />
         </div>
       </div>
     </Paper>

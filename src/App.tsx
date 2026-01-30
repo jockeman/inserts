@@ -4,6 +4,8 @@ import { Title, Group, Button } from '@mantine/core';
 import CardEditor from './components/CardEditor';
 import PrintArea from './components/PrintArea';
 import { Insert } from './types/Insert';
+import { useUserPreferences } from './hooks/useUserPreferences';
+import SkillVisibilitySettings from './components/SkillVisibilitySettings';
 import './App.css';
 
 const emptyInsert: Insert = {
@@ -23,6 +25,64 @@ const emptyInsert: Insert = {
   survival: '',
   stealth: '',
   darkvision: '',
+  level: '',
+  playerStr: '',
+  playerDex: '',
+  playerCon: '',
+  playerInt: '',
+  playerWis: '',
+  playerCha: '',
+  playerProficiencyBonus: '',
+  proficiencyBonusOverride: false,
+  maxHPOverride: false,
+  darkvisionOverride: false,
+  acrobatics: '',
+  animalHandling: '',
+  athletics: '',
+  deception: '',
+  history: '',
+  intimidation: '',
+  medicine: '',
+  performance: '',
+  persuasion: '',
+  religion: '',
+  sleightOfHand: '',
+  profAcrobatics: 'none',
+  profAnimalHandling: 'none',
+  profArcana: 'none',
+  profAthletics: 'none',
+  profDeception: 'none',
+  profHistory: 'none',
+  profInsight: 'none',
+  profIntimidation: 'none',
+  profInvestigation: 'none',
+  profMedicine: 'none',
+  profNature: 'none',
+  profPerception: 'none',
+  profPerformance: 'none',
+  profPersuasion: 'none',
+  profReligion: 'none',
+  profSleightOfHand: 'none',
+  profStealth: 'none',
+  profSurvival: 'none',
+  modAcrobatics: '',
+  modAnimalHandling: '',
+  modArcana: '',
+  modAthletics: '',
+  modDeception: '',
+  modHistory: '',
+  modInsight: '',
+  modIntimidation: '',
+  modInvestigation: '',
+  modMedicine: '',
+  modNature: '',
+  modPerception: '',
+  modPerformance: '',
+  modPersuasion: '',
+  modReligion: '',
+  modSleightOfHand: '',
+  modStealth: '',
+  modSurvival: '',
   monsterSize: '',
   monsterType: '',
   cr: '',
@@ -51,6 +111,8 @@ const emptyInsert: Insert = {
 const STORAGE_KEY = 'rpg-inserts';
 
 function App() {
+  const [preferences, updatePreferences] = useUserPreferences();
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [inserts, setInserts] = useState<Insert[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -122,7 +184,17 @@ function App() {
             </Button>
           </>
         )}
+        <Button onClick={() => setSettingsOpen(true)} size="md" variant="light">
+          ⚙️ Skill Settings
+        </Button>
       </Group>
+
+      <SkillVisibilitySettings 
+        opened={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        preferences={preferences}
+        onUpdate={updatePreferences}
+      />
 
       <div className="cards-editor screen-only" style={{ display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'flex-start', alignContent: 'flex-start' }}>
         {inserts.map((insert, i) => (
@@ -133,11 +205,12 @@ function App() {
             onUpdate={(field, value) => updateInsert(i, field, value)}
             onUpdateBoolean={(field, value) => updateInsertBoolean(i, field, value)}
             onRemove={() => removeInsert(i)}
+            preferences={preferences}
           />
         ))}
       </div>
 
-      <PrintArea inserts={inserts} />
+      <PrintArea inserts={inserts} preferences={preferences} />
     </div>
   );
 }

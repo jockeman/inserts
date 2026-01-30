@@ -1,7 +1,7 @@
 export interface Insert {
   name: string;
   image: string;
-  cardType: 'player' | 'monster';
+  cardType: 'player' | 'player-advanced' | 'monster';
   size: 'small' | 'large';
   // Player/Monster common fields
   race: string;
@@ -17,6 +17,68 @@ export interface Insert {
   survival: string;
   stealth: string;
   darkvision: string;
+  // Advanced player fields
+  level: string;
+  playerStr: string;
+  playerDex: string;
+  playerCon: string;
+  playerInt: string;
+  playerWis: string;
+  playerCha: string;
+  playerProficiencyBonus: string;
+  proficiencyBonusOverride: boolean;
+  maxHPOverride: boolean;
+  darkvisionOverride: boolean;
+  // All 18 D&D skills (passive values)
+  acrobatics: string;
+  animalHandling: string;
+  athletics: string;
+  deception: string;
+  history: string;
+  intimidation: string;
+  medicine: string;
+  performance: string;
+  persuasion: string;
+  religion: string;
+  sleightOfHand: string;
+  // Proficiency levels
+  profAcrobatics: string;
+  profAnimalHandling: string;
+  profArcana: string;
+  profAthletics: string;
+  profDeception: string;
+  profHistory: string;
+  profInsight: string;
+  profIntimidation: string;
+  profInvestigation: string;
+  profMedicine: string;
+  profNature: string;
+  profPerception: string;
+  profPerformance: string;
+  profPersuasion: string;
+  profReligion: string;
+  profSleightOfHand: string;
+  profStealth: string;
+  profSurvival: string;
+  // Manual modifiers
+  modAcrobatics: string;
+  modAnimalHandling: string;
+  modArcana: string;
+  modAthletics: string;
+  modDeception: string;
+  modHistory: string;
+  modInsight: string;
+  modIntimidation: string;
+  modInvestigation: string;
+  modMedicine: string;
+  modNature: string;
+  modPerception: string;
+  modPerformance: string;
+  modPersuasion: string;
+  modReligion: string;
+  modSleightOfHand: string;
+  modStealth: string;
+  modSurvival: string;
   // Monster-specific fields
   monsterSize: string; // e.g., "Small"
   monsterType: string; // e.g., "Humanoid (Angulotl)"
