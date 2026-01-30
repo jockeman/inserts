@@ -29,6 +29,13 @@ export default function AdvancedPlayerForm({
         data={getRaceOptions()}
       />
 
+      <Select
+        label="Class"
+        value={insert.class}
+        onChange={(value) => onUpdate('class', value || '')}
+        data={getClassOptions()}
+      />
+
       <Group grow>
         <TextInput
           label="Level"
@@ -63,13 +70,6 @@ export default function AdvancedPlayerForm({
           </Text>
         )}
       </div>
-
-      <Select
-        label="Class"
-        value={insert.class}
-        onChange={(value) => onUpdate('class', value || '')}
-        data={getClassOptions()}
-      />
 
       <div>
         <Group align="flex-end" gap="xs">
@@ -124,6 +124,7 @@ export default function AdvancedPlayerForm({
                   onChange={(value) => onUpdate(skillInfo.profField, value)}
                   data={[
                     { label: 'None', value: 'none' },
+                    { label: 'Half', value: 'half' },
                     { label: 'Prof', value: 'proficient' },
                     { label: 'Expert', value: 'expert' },
                   ]}

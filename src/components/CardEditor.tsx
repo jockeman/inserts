@@ -1,4 +1,5 @@
-import { Button, Checkbox, Group, Paper, Title } from '@mantine/core';
+import { Avatar, Button, Checkbox, Collapse, Group, Paper, Title } from '@mantine/core';
+import { useState } from 'react';
 import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import InsertCard from './InsertCard';
@@ -21,6 +22,8 @@ export default function CardEditor({
   onRemove,
   preferences,
 }: CardEditorProps) {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   return (
     <Paper
       className="card-editor"
@@ -34,35 +37,45 @@ export default function CardEditor({
         minWidth: 0,
       }}
     >
-      <Button onClick={onRemove} color="red" size="xs" pos="absolute" style={{ top: 8, right: 8 }}>
-        Remove
-      </Button>
-
-      <Group mb="md" mt={0}>
-        <Title order={3} style={{ margin: 0 }}>
-          {insert.name || 'Unnamed Card'}
-        </Title>
+      <Group mb="md" mt={0} style={{ paddingRight: 80 }}>
         <Checkbox
-          label="Print this card"
+          label="Print"
           checked={insert.selected}
           onChange={(e) => onUpdateBoolean('selected', e.currentTarget.checked)}
         />
+        <Avatar src={insert.image} alt={insert.name} size="md" radius="sm" />
+        <Title order={3} style={{ margin: 0 }}>
+          {insert.name || 'Unnamed Card'}
+        </Title>
+        <Button onClick={() => setIsExpanded(!isExpanded)} variant="subtle" size="xs" style={{ marginLeft: 'auto' }}>
+          {isExpanded ? 'Collapse' : 'Expand'}
+        </Button>
+        <Button onClick={onRemove} color="red" size="xs" pos="absolute" style={{ marginLeft: 'auto', right: 10 }}>
+          Remove
+        </Button>
       </Group>
 
-      <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
-        {/* Input Form */}
-        <div style={{ flex: '1 1 300px' }}>
-          <InsertForm insert={insert} onUpdate={onUpdate} onUpdateBoolean={onUpdateBoolean} preferences={preferences} />
-        </div>
+      <Collapse in={isExpanded}>
+        <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
+          {/* Input Form */}
+          <div style={{ flex: '1 1 300px' }}>
+            <InsertForm
+              insert={insert}
+              onUpdate={onUpdate}
+              onUpdateBoolean={onUpdateBoolean}
+              preferences={preferences}
+            />
+          </div>
 
-        {/* Live Preview */}
-        <div style={{ flex: '0 0 auto' }}>
-          <Title order={4} mb="xs">
-            Preview
-          </Title>
-          <InsertCard insert={insert} index={index} preferences={preferences} />
+          {/* Live Preview */}
+          <div style={{ flex: '0 0 auto' }}>
+            <Title order={4} mb="xs">
+              Preview
+            </Title>
+            <InsertCard insert={insert} index={index} preferences={preferences} />
+          </div>
         </div>
-      </div>
+      </Collapse>
     </Paper>
   );
 }

@@ -14,7 +14,7 @@ const ABILITY_FIELD_MAP = {
 } as const;
 
 /**
- * Calculates all derived values for an advanced player card.
+ * Calculates all derived values for a player card.
  * Takes InsertInputs (stored data) and returns complete Insert with calculated values.
  *
  * Inputs (from InsertInputs):

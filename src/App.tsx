@@ -35,9 +35,9 @@ const emptyInsert: Insert = {
   wis: 10,
   cha: 10,
   playerProficiencyBonus: 2,
-  proficiencyBonusOverride: false,
-  maxHPOverride: false,
-  darkvisionOverride: false,
+  proficiencyBonusOverride: true,
+  maxHPOverride: true,
+  darkvisionOverride: true,
   acrobatics: 0,
   animalHandling: 0,
   athletics: 0,
@@ -121,9 +121,11 @@ function App() {
             ...insert,
             id: insert.id || generateId(), // Generate ID for old inserts without one
             selected: insert.selected !== undefined ? insert.selected : true,
+            // Migrate old 'player-advanced' cards to 'player'
+            cardType: (insert.cardType as string) === 'player-advanced' ? 'player' : insert.cardType,
           };
-          // Apply calculations for advanced player cards
-          if (withDefaults.cardType === 'player-advanced') {
+          // Apply calculations for player cards
+          if (withDefaults.cardType === 'player') {
             return calculateAdvancedPlayerValues(withDefaults);
           }
           return withDefaults;
@@ -148,8 +150,8 @@ function App() {
       arr.map((insert) => {
         if (insert.id !== id) return insert;
         const updated = { ...insert, [field]: value };
-        // Apply calculations for advanced player cards
-        if (updated.cardType === 'player-advanced') {
+        // Apply calculations for player cards
+        if (updated.cardType === 'player') {
           return calculateAdvancedPlayerValues(updated);
         }
         return updated;
@@ -162,8 +164,8 @@ function App() {
       arr.map((insert) => {
         if (insert.id !== id) return insert;
         const updated = { ...insert, [field]: value };
-        // Apply calculations for advanced player cards
-        if (updated.cardType === 'player-advanced') {
+        // Apply calculations for player cards
+        if (updated.cardType === 'player') {
           return calculateAdvancedPlayerValues(updated);
         }
         return updated;

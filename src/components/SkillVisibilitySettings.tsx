@@ -15,8 +15,6 @@ export default function SkillVisibilitySettings({
   preferences,
   onUpdate,
 }: SkillVisibilitySettingsProps) {
-  console.log('SkillVisibilitySettings render:', { opened, preferences });
-
   const handleToggle = (skillKey: string, checked: boolean) => {
     onUpdate({
       skillVisibility: {

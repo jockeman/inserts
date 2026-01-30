@@ -10,7 +10,7 @@ export interface InsertInputs {
   id: string; // Unique identifier for the insert
   name: string;
   image: string;
-  cardType: 'player' | 'player-advanced' | 'monster';
+  cardType: 'player' | 'monster';
   size: 'small' | 'large';
   selected: boolean;
 
@@ -19,7 +19,7 @@ export interface InsertInputs {
   class: ClassName;
   ac: number;
 
-  // Simple player card fields (all inputs)
+  // Player passive skills (can be calculated or manually entered)
   perception: number;
   insight: number;
   investigation: number;
@@ -28,20 +28,20 @@ export interface InsertInputs {
   survival: number;
   stealth: number;
 
-  // Advanced player fields
+  // Player fields
   level: number;
 
-  // Advanced player - override flags (inputs)
+  // Player - override flags (inputs)
   proficiencyBonusOverride: boolean;
   maxHPOverride: boolean;
   darkvisionOverride: boolean;
 
-  // Advanced player - manual override values (inputs when override is true)
+  // Player - manual override values (inputs when override is true)
   playerProficiencyBonus: number;
   hp: number;
   darkvision: number;
 
-  // Advanced player - proficiency levels (inputs)
+  // Player - proficiency levels (inputs)
   profAcrobatics: ProficiencyLevel;
   profAnimalHandling: ProficiencyLevel;
   profArcana: ProficiencyLevel;
@@ -112,11 +112,12 @@ export interface InsertInputs {
 
 /**
  * Insert represents the complete insert data including both inputs and calculated values.
- * For advanced player cards, calculated values are derived from inputs by calculateAdvancedPlayerValues.
+ * For player cards, calculated values are derived from inputs by calculateAdvancedPlayerValues.
  */
 export interface Insert extends InsertInputs {
-  // Advanced player - calculated passive skill values
+  // Player - calculated passive skill values
   // These are calculated from ability scores, proficiency levels, proficiency bonus, and modifiers
+  // (unless overridden by manual input)
   acrobatics: number;
   animalHandling: number;
   athletics: number;

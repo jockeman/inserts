@@ -16,10 +16,11 @@ export function calculatePassive(
   const manualModNum = manualMod || 0;
 
   let profMultiplier = 0;
+  if (profLevel === 'half') profMultiplier = 0.5;
   if (profLevel === 'proficient') profMultiplier = 1;
   if (profLevel === 'expert') profMultiplier = 2;
 
-  const total = 10 + abilityMod + profBonusNum * profMultiplier + manualModNum;
+  const total = 10 + abilityMod + Math.floor(profBonusNum * profMultiplier) + manualModNum;
 
   return total;
 }

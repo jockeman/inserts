@@ -2,7 +2,7 @@ import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 
 export type AbilityType = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
-export type ProficiencyLevel = 'none' | 'proficient' | 'expert';
+export type ProficiencyLevel = 'none' | 'half' | 'proficient' | 'expert';
 
 export interface SkillInfo {
   label: string;

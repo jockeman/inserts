@@ -4,7 +4,6 @@ import type { UserPreferences } from '../types/UserPreferences';
 import AdvancedPlayerForm from './AdvancedPlayerForm';
 import ImageInput from './ImageInput';
 import MonsterForm from './MonsterForm';
-import PlayerForm from './PlayerForm';
 
 interface InsertFormProps {
   insert: Insert;
@@ -15,7 +14,6 @@ interface InsertFormProps {
 
 export default function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: InsertFormProps) {
   const isMonster = insert.cardType === 'monster';
-  const isAdvancedPlayer = insert.cardType === 'player-advanced';
 
   return (
     <Stack gap="md">
@@ -28,7 +26,6 @@ export default function InsertForm({ insert, onUpdate, onUpdateBoolean, preferen
           onChange={(value) => onUpdate('cardType', value || 'player')}
           data={[
             { value: 'player', label: 'Player' },
-            { value: 'player-advanced', label: 'Player (Advanced)' },
             { value: 'monster', label: 'Monster' },
           ]}
         />
@@ -45,15 +42,13 @@ export default function InsertForm({ insert, onUpdate, onUpdateBoolean, preferen
 
       {isMonster ? (
         <MonsterForm insert={insert} onUpdate={onUpdate} />
-      ) : isAdvancedPlayer ? (
+      ) : (
         <AdvancedPlayerForm
           insert={insert}
           onUpdate={onUpdate}
           onUpdateBoolean={onUpdateBoolean}
           preferences={preferences}
         />
-      ) : (
-        <PlayerForm insert={insert} onUpdate={onUpdate} preferences={preferences} />
       )}
 
       <ImageInput value={insert.image} onChange={(val) => onUpdate('image', val)} />
