@@ -1,14 +1,44 @@
 import { GiShield, GiCampingTent } from 'react-icons/gi';
-import { FaHeart, FaEye, FaBrain, FaSearch, FaLeaf, FaUserSecret, FaBook, FaMoon } from 'react-icons/fa';
+import { 
+  FaHeart, FaEye, FaBrain, FaSearch, FaLeaf, FaUserSecret, FaBook, FaMoon,
+  FaDumbbell, FaHandPaper, FaTheaterMasks, FaComments, FaScroll, FaHandRock,
+  FaBriefcaseMedical, FaMusic, FaPray, FaPaw
+} from 'react-icons/fa';
 import { Insert } from '../types/Insert';
+import { UserPreferences } from '../types/UserPreferences';
+import { getVisibleSkills } from '../utils/skillConfig';
 
 interface PlayerInsertCardProps {
   insert: Insert;
   dmContentWidth: string;
   dmContentHeight: string;
+  preferences: UserPreferences;
 }
 
-export default function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight }: PlayerInsertCardProps) {
+const skillIcons: Record<string, React.ElementType> = {
+  acrobatics: FaDumbbell,
+  animalHandling: FaPaw,
+  arcana: FaBook,
+  athletics: FaDumbbell,
+  deception: FaTheaterMasks,
+  history: FaScroll,
+  insight: FaBrain,
+  intimidation: FaHandRock,
+  investigation: FaSearch,
+  medicine: FaBriefcaseMedical,
+  nature: FaLeaf,
+  perception: FaEye,
+  performance: FaMusic,
+  persuasion: FaComments,
+  religion: FaPray,
+  sleightOfHand: FaHandPaper,
+  stealth: FaUserSecret,
+  survival: GiCampingTent,
+};
+
+export default function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, preferences }: PlayerInsertCardProps) {
+  const visibleSkills = getVisibleSkills(preferences);
+  
   return (
     <div style={{
       position: 'absolute', left: '2mm', top: 0,
@@ -33,34 +63,17 @@ export default function PlayerInsertCard({ insert, dmContentWidth, dmContentHeig
           <FaHeart size="4.5mm" />
           <b>{insert.hp || '-'}</b>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
-          <FaEye size="4.5mm" />
-          <b>{insert.perception || '-'}</b>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
-          <FaBrain size="4.5mm" />
-          <b>{insert.insight || '-'}</b>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
-          <FaSearch size="4.5mm" />
-          <b>{insert.investigation || '-'}</b>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
-          <FaBook size="4.5mm" />
-          <b>{insert.arcana || '-'}</b>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
-          <FaLeaf size="4.5mm" />
-          <b>{insert.nature || '-'}</b>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
-          <GiCampingTent size="4.5mm" />
-          <b>{insert.survival || '-'}</b>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
-          <FaUserSecret size="4.5mm" />
-          <b>{insert.stealth || '-'}</b>
-        </div>
+        
+        {visibleSkills.map(([skillKey, skillInfo]) => {
+          const Icon = skillIcons[skillKey] || FaPaw;
+          const value = insert[skillInfo.passiveField] as string;
+          return (
+            <div key={skillKey} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
+              <Icon size="4.5mm" />
+              <b>{value || '-'}</b>
+            </div>
+          );
+        })}
         {insert.darkvision && parseInt(insert.darkvision) > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
             <FaMoon size="4.5mm" />

@@ -3,7 +3,6 @@ import { UserPreferences } from '../types/UserPreferences';
 import { getCardDimensions } from '../utils/cardHelpers';
 import PlayerInsertCard from './PlayerInsertCard';
 import MonsterInsertCard from './MonsterInsertCard';
-import AdvancedPlayerInsertCard from './AdvancedPlayerInsertCard';
 
 interface InsertCardProps {
   insert: Insert;
@@ -72,18 +71,12 @@ export default function InsertCard({ insert, preferences }: InsertCardProps) {
             dmContentWidth={dmContentWidth}
             dmContentHeight={dmContentHeight}
           />
-        ) : isAdvancedPlayer ? (
-          <AdvancedPlayerInsertCard 
-            insert={insert}
-            dmContentWidth={dmContentWidth}
-            dmContentHeight={dmContentHeight}
-            preferences={preferences}
-          />
         ) : (
           <PlayerInsertCard 
             insert={insert}
             dmContentWidth={dmContentWidth}
             dmContentHeight={dmContentHeight}
+            preferences={preferences}
           />
         )}
       </div>

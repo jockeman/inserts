@@ -1,4 +1,4 @@
-import { Modal, Checkbox, Stack, Group, Button, Title, Text } from '@mantine/core';
+import { Modal, Checkbox, Stack, Group, Button, Text } from '@mantine/core';
 import { UserPreferences, DEFAULT_SKILL_VISIBILITY } from '../types/UserPreferences';
 import { ALL_SKILLS } from '../utils/skillConfig';
 
@@ -15,6 +15,8 @@ export default function SkillVisibilitySettings({
   preferences, 
   onUpdate 
 }: SkillVisibilitySettingsProps) {
+  console.log('SkillVisibilitySettings render:', { opened, preferences });
+  
   const handleToggle = (skillKey: string, checked: boolean) => {
     onUpdate({
       skillVisibility: {
@@ -71,8 +73,14 @@ export default function SkillVisibilitySettings({
     <Modal
       opened={opened}
       onClose={onClose}
-      title={<Title order={3}>Skill Visibility Settings</Title>}
+      title="Skill Visibility Settings"
       size="lg"
+      centered
+      styles={{
+        inner: {
+          transform: 'translateX(-100%)',
+        },
+      }}
     >
       <Stack gap="md">
         <Text size="sm" c="dimmed">
@@ -93,7 +101,7 @@ export default function SkillVisibilitySettings({
 
         {Object.entries(abilityLabels).map(([ability, label]) => (
           <div key={ability}>
-            <Title order={5} mb="xs">{label}</Title>
+            <Text size="sm" fw={600} mb="xs">{label}</Text>
             <Stack gap="xs">
               {skillsByAbility[ability as keyof typeof skillsByAbility].map(skillKey => (
                 <Checkbox

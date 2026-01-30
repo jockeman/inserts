@@ -52,7 +52,7 @@ export default function InsertForm({ insert, onUpdate, onUpdateBoolean, preferen
       ) : isAdvancedPlayer ? (
         <AdvancedPlayerForm insert={insert} onUpdate={onUpdate} onUpdateBoolean={onUpdateBoolean} preferences={preferences} />
       ) : (
-        <PlayerForm insert={insert} onUpdate={onUpdate} />
+        <PlayerForm insert={insert} onUpdate={onUpdate} preferences={preferences} />
       )}
       
       <ImageInput 
