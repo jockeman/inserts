@@ -70,18 +70,7 @@ export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate
   };
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title="Skill Visibility Settings"
-      size="lg"
-      centered
-      styles={{
-        inner: {
-          transform: 'translateX(-100%)',
-        },
-      }}
-    >
+    <Modal opened={opened} onClose={onClose} title="Skill Visibility Settings" size="lg">
       <Stack gap="md">
         <Text size="sm" c="dimmed">
           Select which skills to display on Advanced Player cards. These settings apply to all cards.
