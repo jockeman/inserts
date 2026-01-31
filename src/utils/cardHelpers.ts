@@ -1,7 +1,9 @@
+import { calculateModifier } from './passiveCalculator';
+
 // Helper function to calculate ability modifier
 export const formatModifier = (stat: number): string => {
   if (Number.isNaN(stat)) return '';
-  const modifier = Math.floor((stat - 10) / 2);
+  const modifier = calculateModifier(stat);
   const sign = modifier >= 0 ? '+' : '';
   return `${stat} (${sign}${modifier})`;
 };
@@ -9,7 +11,7 @@ export const formatModifier = (stat: number): string => {
 // Helper function to calculate only the modifier (for small cards)
 export const formatModifierOnly = (stat: number): string => {
   if (Number.isNaN(stat)) return '';
-  const modifier = Math.floor((stat - 10) / 2);
+  const modifier = calculateModifier(stat);
   const sign = modifier >= 0 ? '+' : '';
   return `${sign}${modifier}`;
 };
@@ -17,7 +19,7 @@ export const formatModifierOnly = (stat: number): string => {
 // Helper function to format bonus with + sign
 export const formatBonus = (bonus: number | string): string => {
   if (bonus === 0 || !bonus) return '';
-  const value = typeof bonus === 'number' ? bonus : Number.parseInt(bonus.trim());
+  const value = typeof bonus === 'number' ? bonus : Number.parseInt(bonus.trim(), 10);
   if (Number.isNaN(value)) return '';
   return value >= 0 ? `+${value}` : `${value}`;
 };

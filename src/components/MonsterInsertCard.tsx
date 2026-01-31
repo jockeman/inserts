@@ -8,12 +8,7 @@ interface MonsterInsertCardProps {
   dmContentHeight: string;
 }
 
-export default function MonsterInsertCard({
-  insert,
-  isLarge,
-  dmContentWidth,
-  dmContentHeight,
-}: MonsterInsertCardProps) {
+export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHeight }: MonsterInsertCardProps) {
   // Helper to format HP with dice formula
   const formatHP = (hp: number, hpFormula?: string) => {
     if (!hp) return '';

@@ -1,13 +1,13 @@
 import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
-import InsertCard from './InsertCard';
+import { InsertCard } from './InsertCard';
 
 interface PrintAreaProps {
   inserts: Insert[];
   preferences: UserPreferences;
 }
 
-export default function PrintArea({ inserts, preferences }: PrintAreaProps) {
+export function PrintArea({ inserts, preferences }: PrintAreaProps) {
   return (
     <>
       {/* Print layout: A4, multiple cards per page */}

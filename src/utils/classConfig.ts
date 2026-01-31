@@ -32,8 +32,6 @@ const CLASSES_DATA: ClassInfo[] = [
   { name: 'Wizard', hitDie: 6 },
 ];
 
-export const CLASSES = CLASSES_DATA.map((c) => c.name);
-
 export function getClassOptions() {
   return [{ value: '', label: '-- Select --' }, ...CLASSES_DATA.map((c) => ({ value: c.name, label: c.name }))];
 }

@@ -1,24 +1,5 @@
-import {
-  FaBook,
-  FaBrain,
-  FaBriefcaseMedical,
-  FaComments,
-  FaDumbbell,
-  FaEye,
-  FaHandPaper,
-  FaHandRock,
-  FaHeart,
-  FaLeaf,
-  FaMoon,
-  FaMusic,
-  FaPaw,
-  FaPray,
-  FaScroll,
-  FaSearch,
-  FaTheaterMasks,
-  FaUserSecret,
-} from 'react-icons/fa';
-import { GiCampingTent, GiShield } from 'react-icons/gi';
+import { FaHeart, FaMoon } from 'react-icons/fa';
+import { GiShield } from 'react-icons/gi';
 import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { getVisibleSkills } from '../utils/skillConfig';
@@ -30,33 +11,7 @@ interface PlayerInsertCardProps {
   preferences: UserPreferences;
 }
 
-const skillIcons: Record<string, React.ElementType> = {
-  acrobatics: FaDumbbell,
-  animalHandling: FaPaw,
-  arcana: FaBook,
-  athletics: FaDumbbell,
-  deception: FaTheaterMasks,
-  history: FaScroll,
-  insight: FaBrain,
-  intimidation: FaHandRock,
-  investigation: FaSearch,
-  medicine: FaBriefcaseMedical,
-  nature: FaLeaf,
-  perception: FaEye,
-  performance: FaMusic,
-  persuasion: FaComments,
-  religion: FaPray,
-  sleightOfHand: FaHandPaper,
-  stealth: FaUserSecret,
-  survival: GiCampingTent,
-};
-
-export default function PlayerInsertCard({
-  insert,
-  dmContentWidth,
-  dmContentHeight,
-  preferences,
-}: PlayerInsertCardProps) {
+export function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, preferences }: PlayerInsertCardProps) {
   const visibleSkills = getVisibleSkills(preferences);
 
   return (
@@ -103,7 +58,7 @@ export default function PlayerInsertCard({
         </div>
 
         {visibleSkills.map(([skillKey, skillInfo]) => {
-          const Icon = skillIcons[skillKey] || FaPaw;
+          const Icon = skillInfo.icon;
           const value = insert[skillInfo.passiveField] as string;
           return (
             <div key={skillKey} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>

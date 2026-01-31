@@ -1,9 +1,9 @@
 import { Group, Select, Stack, TextInput } from '@mantine/core';
 import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
-import AdvancedPlayerForm from './AdvancedPlayerForm';
-import ImageInput from './ImageInput';
-import MonsterForm from './MonsterForm';
+import { ImageInput } from './ImageInput';
+import { MonsterForm } from './MonsterForm';
+import { PlayerForm } from './PlayerForm';
 
 interface InsertFormProps {
   insert: Insert;
@@ -12,7 +12,7 @@ interface InsertFormProps {
   preferences: UserPreferences;
 }
 
-export default function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: InsertFormProps) {
+export function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: InsertFormProps) {
   const isMonster = insert.cardType === 'monster';
 
   return (
@@ -43,12 +43,7 @@ export default function InsertForm({ insert, onUpdate, onUpdateBoolean, preferen
       {isMonster ? (
         <MonsterForm insert={insert} onUpdate={onUpdate} />
       ) : (
-        <AdvancedPlayerForm
-          insert={insert}
-          onUpdate={onUpdate}
-          onUpdateBoolean={onUpdateBoolean}
-          preferences={preferences}
-        />
+        <PlayerForm insert={insert} onUpdate={onUpdate} onUpdateBoolean={onUpdateBoolean} preferences={preferences} />
       )}
 
       <ImageInput value={insert.image} onChange={(val) => onUpdate('image', val)} />

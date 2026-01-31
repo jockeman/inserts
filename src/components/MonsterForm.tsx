@@ -8,7 +8,7 @@ interface MonsterFormProps {
   onUpdate: (field: keyof Insert, value: string) => void;
 }
 
-export default function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
+export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
   const isLarge = insert.size === 'large';
   const [statBlockText, setStatBlockText] = useState('');
   const [showParser, setShowParser] = useState(false);

@@ -2,8 +2,8 @@ import { Avatar, Button, Checkbox, Collapse, Group, Paper, Title } from '@mantin
 import { useState } from 'react';
 import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
-import InsertCard from './InsertCard';
-import InsertForm from './InsertForm';
+import { InsertCard } from './InsertCard';
+import { InsertForm } from './InsertForm';
 
 interface CardEditorProps {
   insert: Insert;
@@ -14,14 +14,7 @@ interface CardEditorProps {
   preferences: UserPreferences;
 }
 
-export default function CardEditor({
-  insert,
-  index,
-  onUpdate,
-  onUpdateBoolean,
-  onRemove,
-  preferences,
-}: CardEditorProps) {
+export function CardEditor({ insert, index, onUpdate, onUpdateBoolean, onRemove, preferences }: CardEditorProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (

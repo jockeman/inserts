@@ -1,4 +1,4 @@
-export type RaceName =
+type RaceName =
   | 'Dragonborn'
   | 'Dwarf'
   | 'Elf'
@@ -29,8 +29,6 @@ const RACES_DATA: RaceInfo[] = [
   { name: 'Tabaxi', darkvision: 60 },
   { name: 'Tiefling', darkvision: 60 },
 ];
-
-export const RACES = RACES_DATA.map((r) => r.name);
 
 export function getRaceOptions() {
   return [{ value: '', label: '-- Select --' }, ...RACES_DATA.map((r) => ({ value: r.name, label: r.name }))];

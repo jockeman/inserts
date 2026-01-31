@@ -1,8 +1,8 @@
 import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { getCardDimensions } from '../utils/cardHelpers';
-import MonsterInsertCard from './MonsterInsertCard';
-import PlayerInsertCard from './PlayerInsertCard';
+import { MonsterInsertCard } from './MonsterInsertCard';
+import { PlayerInsertCard } from './PlayerInsertCard';
 
 interface InsertCardProps {
   insert: Insert;
@@ -10,7 +10,7 @@ interface InsertCardProps {
   preferences: UserPreferences;
 }
 
-export default function InsertCard({ insert, preferences }: InsertCardProps) {
+export function InsertCard({ insert, preferences }: InsertCardProps) {
   const isLarge = insert.size === 'large';
   const isMonster = insert.cardType === 'monster';
 

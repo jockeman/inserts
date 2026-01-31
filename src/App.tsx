@@ -1,8 +1,8 @@
 import { Button, Group, Title } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import CardEditor from './components/CardEditor';
-import PrintArea from './components/PrintArea';
-import SkillVisibilitySettings from './components/SkillVisibilitySettings';
+import { CardEditor } from './components/CardEditor';
+import { PrintArea } from './components/PrintArea';
+import { SkillVisibilitySettings } from './components/SkillVisibilitySettings';
 import { useUserPreferences } from './hooks/useUserPreferences';
 import type { Insert } from './types/Insert';
 import { generateId } from './utils/idGenerator';

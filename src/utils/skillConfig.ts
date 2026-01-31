@@ -1,7 +1,25 @@
+import {
+  FaBook,
+  FaBrain,
+  FaBriefcaseMedical,
+  FaComments,
+  FaDumbbell,
+  FaEye,
+  FaHandPaper,
+  FaHandRock,
+  FaMusic,
+  FaPaw,
+  FaPray,
+  FaScroll,
+  FaSearch,
+  FaTheaterMasks,
+  FaUserSecret,
+} from 'react-icons/fa';
+import { GiCampingTent, GiJumpingRope } from 'react-icons/gi';
 import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 
-export type AbilityType = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
+type AbilityType = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
 export type ProficiencyLevel = 'none' | 'half' | 'proficient' | 'expert';
 
 export interface SkillInfo {
@@ -10,6 +28,7 @@ export interface SkillInfo {
   passiveField: keyof Insert;
   profField: keyof Insert;
   modField: keyof Insert;
+  icon: React.ElementType;
 }
 
 export const ALL_SKILLS: Record<string, SkillInfo> = {
@@ -19,6 +38,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'acrobatics',
     profField: 'profAcrobatics',
     modField: 'modAcrobatics',
+    icon: GiJumpingRope,
   },
   animalHandling: {
     label: 'Animal Handling',
@@ -26,6 +46,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'animalHandling',
     profField: 'profAnimalHandling',
     modField: 'modAnimalHandling',
+    icon: FaPaw,
   },
   arcana: {
     label: 'Arcana',
@@ -33,6 +54,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'arcana',
     profField: 'profArcana',
     modField: 'modArcana',
+    icon: FaBook,
   },
   athletics: {
     label: 'Athletics',
@@ -40,6 +62,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'athletics',
     profField: 'profAthletics',
     modField: 'modAthletics',
+    icon: FaDumbbell,
   },
   deception: {
     label: 'Deception',
@@ -47,6 +70,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'deception',
     profField: 'profDeception',
     modField: 'modDeception',
+    icon: FaTheaterMasks,
   },
   history: {
     label: 'History',
@@ -54,6 +78,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'history',
     profField: 'profHistory',
     modField: 'modHistory',
+    icon: FaScroll,
   },
   insight: {
     label: 'Insight',
@@ -61,6 +86,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'insight',
     profField: 'profInsight',
     modField: 'modInsight',
+    icon: FaBrain,
   },
   intimidation: {
     label: 'Intimidation',
@@ -68,6 +94,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'intimidation',
     profField: 'profIntimidation',
     modField: 'modIntimidation',
+    icon: FaHandRock,
   },
   investigation: {
     label: 'Investigation',
@@ -75,6 +102,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'investigation',
     profField: 'profInvestigation',
     modField: 'modInvestigation',
+    icon: FaSearch,
   },
   medicine: {
     label: 'Medicine',
@@ -82,6 +110,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'medicine',
     profField: 'profMedicine',
     modField: 'modMedicine',
+    icon: FaBriefcaseMedical,
   },
   nature: {
     label: 'Nature',
@@ -89,6 +118,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'nature',
     profField: 'profNature',
     modField: 'modNature',
+    icon: FaBook,
   },
   perception: {
     label: 'Perception',
@@ -96,6 +126,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'perception',
     profField: 'profPerception',
     modField: 'modPerception',
+    icon: FaEye,
   },
   performance: {
     label: 'Performance',
@@ -103,6 +134,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'performance',
     profField: 'profPerformance',
     modField: 'modPerformance',
+    icon: FaMusic,
   },
   persuasion: {
     label: 'Persuasion',
@@ -110,6 +142,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'persuasion',
     profField: 'profPersuasion',
     modField: 'modPersuasion',
+    icon: FaComments,
   },
   religion: {
     label: 'Religion',
@@ -117,6 +150,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'religion',
     profField: 'profReligion',
     modField: 'modReligion',
+    icon: FaPray,
   },
   sleightOfHand: {
     label: 'Sleight of Hand',
@@ -124,6 +158,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'sleightOfHand',
     profField: 'profSleightOfHand',
     modField: 'modSleightOfHand',
+    icon: FaHandPaper,
   },
   stealth: {
     label: 'Stealth',
@@ -131,6 +166,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'stealth',
     profField: 'profStealth',
     modField: 'modStealth',
+    icon: FaUserSecret,
   },
   survival: {
     label: 'Survival',
@@ -138,6 +174,7 @@ export const ALL_SKILLS: Record<string, SkillInfo> = {
     passiveField: 'survival',
     profField: 'profSurvival',
     modField: 'modSurvival',
+    icon: GiCampingTent,
   },
 };
 

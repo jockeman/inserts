@@ -5,7 +5,7 @@ interface ImageInputProps {
   onChange: (value: string) => void;
 }
 
-export default function ImageInput({ value, onChange }: ImageInputProps) {
+export function ImageInput({ value, onChange }: ImageInputProps) {
   function handleFile(file: File | null) {
     if (!file) return;
     const reader = new FileReader();

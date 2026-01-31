@@ -9,12 +9,7 @@ interface SkillVisibilitySettingsProps {
   onUpdate: (partial: Partial<UserPreferences>) => void;
 }
 
-export default function SkillVisibilitySettings({
-  opened,
-  onClose,
-  preferences,
-  onUpdate,
-}: SkillVisibilitySettingsProps) {
+export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate }: SkillVisibilitySettingsProps) {
   const handleToggle = (skillKey: string, checked: boolean) => {
     onUpdate({
       skillVisibility: {
