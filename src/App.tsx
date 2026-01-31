@@ -4,12 +4,12 @@ import { CardEditor } from './components/CardEditor';
 import { PrintArea } from './components/PrintArea';
 import { SkillVisibilitySettings } from './components/SkillVisibilitySettings';
 import { useUserPreferences } from './hooks/useUserPreferences';
-import type { Insert } from './types/Insert';
+import type { Insert, InsertInputs } from './types/Insert';
 import { generateId } from './utils/idGenerator';
 import { calculateAdvancedPlayerValues } from './utils/playerCalculations';
 import './App.css';
 
-const emptyInsert: Insert = {
+const emptyInsert: InsertInputs = {
   id: '', // Will be generated when added
   name: '',
   image: '',
@@ -19,13 +19,6 @@ const emptyInsert: Insert = {
   class: 'Fighter',
   ac: 0,
   hp: 0,
-  perception: 0,
-  insight: 0,
-  investigation: 0,
-  arcana: 0,
-  nature: 0,
-  survival: 0,
-  stealth: 0,
   darkvision: 0,
   level: 1,
   str: 10,
@@ -38,17 +31,6 @@ const emptyInsert: Insert = {
   proficiencyBonusOverride: true,
   maxHPOverride: true,
   darkvisionOverride: true,
-  acrobatics: 0,
-  animalHandling: 0,
-  athletics: 0,
-  deception: 0,
-  history: 0,
-  intimidation: 0,
-  medicine: 0,
-  performance: 0,
-  persuasion: 0,
-  religion: 0,
-  sleightOfHand: 0,
   profAcrobatics: 'none',
   profAnimalHandling: 'none',
   profArcana: 'none',
@@ -85,8 +67,9 @@ const emptyInsert: Insert = {
   modSleightOfHand: 0,
   modStealth: 0,
   modSurvival: 0,
-  monsterSize: '',
-  monsterType: '',
+  monsterSize: 'Medium',
+  monsterType: 'Humanoid',
+  monsterTypeTag: '',
   cr: '',
   speed: '',
   acType: '',
@@ -114,25 +97,18 @@ const STORAGE_KEY = 'rpg-inserts';
 function App() {
   const [preferences, updatePreferences] = useUserPreferences();
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [inserts, setInserts] = useState<Insert[]>(() => {
+  const [insertInputs, setInsertInputs] = useState<InsertInputs[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        return parsed.map((insert: Insert) => {
-          const withDefaults = {
-            ...insert,
-            id: insert.id || generateId(), // Generate ID for old inserts without one
-            selected: insert.selected !== undefined ? insert.selected : true,
-            // Migrate old 'player-advanced' cards to 'player'
-            cardType: (insert.cardType as string) === 'player-advanced' ? 'player' : insert.cardType,
-          };
-          // Apply calculations for player cards
-          if (withDefaults.cardType === 'player') {
-            return calculateAdvancedPlayerValues(withDefaults);
-          }
-          return withDefaults;
-        });
+        return parsed.map((insert: InsertInputs) => ({
+          ...insert,
+          id: insert.id || generateId(), // Generate ID for old inserts without one
+          selected: insert.selected !== undefined ? insert.selected : true,
+          // Migrate old 'player-advanced' cards to 'player'
+          cardType: (insert.cardType as string) === 'player-advanced' ? 'player' : insert.cardType,
+        }));
       } catch (_e) {
         return [];
       }
@@ -140,18 +116,47 @@ function App() {
     return [];
   });
 
+  // Calculate complete Insert values on-demand (not stored)
+  const inserts = insertInputs.map((input) => {
+    if (input.cardType === 'player') {
+      return calculateAdvancedPlayerValues(input);
+    }
+    // For monsters, copy modifier values to skill fields for display
+    return {
+      ...input,
+      acrobatics: input.modAcrobatics,
+      animalHandling: input.modAnimalHandling,
+      arcana: input.modArcana,
+      athletics: input.modAthletics,
+      deception: input.modDeception,
+      history: input.modHistory,
+      insight: input.modInsight,
+      intimidation: input.modIntimidation,
+      investigation: input.modInvestigation,
+      medicine: input.modMedicine,
+      nature: input.modNature,
+      perception: input.modPerception,
+      performance: input.modPerformance,
+      persuasion: input.modPersuasion,
+      religion: input.modReligion,
+      sleightOfHand: input.modSleightOfHand,
+      stealth: input.modStealth,
+      survival: input.modSurvival,
+    } as Insert;
+  });
+
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(inserts));
-  }, [inserts]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(insertInputs));
+  }, [insertInputs]);
 
   function addEmptyCard() {
-    setInserts((arr) => [...arr, { ...emptyInsert, id: generateId() }]);
+    setInsertInputs((arr) => [...arr, { ...emptyInsert, id: generateId() }]);
   }
 
-  function updateInsert(id: string, field: keyof Insert, value: string | string[] | number | null | any) {
-    setInserts((arr) =>
-      arr.map((insert) => {
-        if (insert.id !== id) return insert;
+  function updateInsert(id: string, field: keyof InsertInputs, value: string | string[] | number | null | any) {
+    setInsertInputs((arr) =>
+      arr.map((input) => {
+        if (input.id !== id) return input;
 
         // Handle array fields - convert comma-separated strings to arrays, or keep as-is if already array
         let processedValue: string | string[] | number | null = value;
@@ -181,42 +186,32 @@ function App() {
           }
         }
 
-        const updated = { ...insert, [field]: processedValue };
-        // Apply calculations for player cards
-        if (updated.cardType === 'player') {
-          return calculateAdvancedPlayerValues(updated);
-        }
-        return updated;
+        return { ...input, [field]: processedValue };
       })
     );
   }
 
-  function updateInsertBoolean(id: string, field: keyof Insert, value: boolean) {
-    setInserts((arr) =>
-      arr.map((insert) => {
-        if (insert.id !== id) return insert;
-        const updated = { ...insert, [field]: value };
-        // Apply calculations for player cards
-        if (updated.cardType === 'player') {
-          return calculateAdvancedPlayerValues(updated);
-        }
-        return updated;
+  function updateInsertBoolean(id: string, field: keyof InsertInputs, value: boolean) {
+    setInsertInputs((arr) =>
+      arr.map((input) => {
+        if (input.id !== id) return input;
+        return { ...input, [field]: value };
       })
     );
   }
 
   function removeInsert(id: string) {
-    setInserts((arr) => arr.filter((insert) => insert.id !== id));
+    setInsertInputs((arr) => arr.filter((input) => input.id !== id));
   }
 
   function clearAll() {
     if (confirm('Are you sure you want to clear all cards?')) {
-      setInserts([]);
+      setInsertInputs([]);
     }
   }
 
   function deselectAll() {
-    setInserts((arr) => arr.map((insert) => ({ ...insert, selected: false })));
+    setInsertInputs((arr) => arr.map((input) => ({ ...input, selected: false })));
   }
 
   return (

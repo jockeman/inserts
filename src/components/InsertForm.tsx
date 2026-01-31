@@ -1,5 +1,5 @@
 import { Group, Select, Stack, TextInput } from '@mantine/core';
-import type { Insert } from '../types/Insert';
+import type { Insert, InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { ImageInput } from './ImageInput';
 import { MonsterForm } from './MonsterForm';
@@ -7,8 +7,8 @@ import { PlayerForm } from './PlayerForm';
 
 interface InsertFormProps {
   insert: Insert;
-  onUpdate: (field: keyof Insert, value: string) => void;
-  onUpdateBoolean: (field: keyof Insert, value: boolean) => void;
+  onUpdate: (field: keyof InsertInputs, value: string) => void;
+  onUpdateBoolean: (field: keyof InsertInputs, value: boolean) => void;
   preferences: UserPreferences;
 }
 

@@ -1,11 +1,11 @@
-import { Button, Collapse, Group, Paper, Stack, Textarea, TextInput } from '@mantine/core';
+import { Button, Collapse, Group, Paper, Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { useState } from 'react';
-import type { Insert } from '../types/Insert';
+import type { Insert, InsertInputs } from '../types/Insert';
 import { parseMonsterStatBlock } from '../utils/monsterParser';
 
 interface MonsterFormProps {
   insert: Insert;
-  onUpdate: (field: keyof Insert, value: string) => void;
+  onUpdate: (field: keyof InsertInputs, value: string) => void;
 }
 
 export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
@@ -19,7 +19,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
     const parsed = parseMonsterStatBlock(statBlockText);
     for (const [key, value] of Object.entries(parsed)) {
       if (value !== undefined) {
-        onUpdate(key as keyof Insert, value as string);
+        onUpdate(key as keyof InsertInputs, value as string);
       }
     }
     setStatBlockText('');
@@ -60,20 +60,49 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
       </Paper>
 
       <Group grow>
-        <TextInput
+        <Select
           label="Size"
           value={insert.monsterSize}
-          onChange={(e) => onUpdate('monsterSize', e.target.value)}
-          placeholder="e.g., Small"
+          onChange={(value) => onUpdate('monsterSize', value || 'Medium')}
+          data={[
+            { value: 'Tiny', label: 'Tiny' },
+            { value: 'Small', label: 'Small' },
+            { value: 'Medium', label: 'Medium' },
+            { value: 'Large', label: 'Large' },
+            { value: 'Huge', label: 'Huge' },
+            { value: 'Gargantuan', label: 'Gargantuan' },
+          ]}
         />
-        <TextInput
+        <Select
           label="Type"
           value={insert.monsterType}
-          onChange={(e) => onUpdate('monsterType', e.target.value)}
-          placeholder="e.g., Humanoid (Angulotl)"
+          onChange={(value) => onUpdate('monsterType', value || 'Humanoid')}
+          data={[
+            { value: 'Aberration', label: 'Aberration' },
+            { value: 'Beast', label: 'Beast' },
+            { value: 'Celestial', label: 'Celestial' },
+            { value: 'Construct', label: 'Construct' },
+            { value: 'Dragon', label: 'Dragon' },
+            { value: 'Elemental', label: 'Elemental' },
+            { value: 'Fey', label: 'Fey' },
+            { value: 'Fiend', label: 'Fiend' },
+            { value: 'Giant', label: 'Giant' },
+            { value: 'Humanoid', label: 'Humanoid' },
+            { value: 'Monstrosity', label: 'Monstrosity' },
+            { value: 'Ooze', label: 'Ooze' },
+            { value: 'Plant', label: 'Plant' },
+            { value: 'Undead', label: 'Undead' },
+          ]}
           style={{ flex: 2 }}
         />
       </Group>
+
+      <TextInput
+        label="Type Tag (optional)"
+        value={insert.monsterTypeTag}
+        onChange={(e) => onUpdate('monsterTypeTag', e.target.value)}
+        placeholder="e.g., goblinoid, shapechanger"
+      />
 
       <Group grow>
         <TextInput
@@ -228,22 +257,22 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
             <Group grow>
               <TextInput
                 label="Acrobatics"
-                value={insert.acrobatics || ''}
-                onChange={(e) => onUpdate('acrobatics', e.target.value)}
+                value={insert.modAcrobatics || ''}
+                onChange={(e) => onUpdate('modAcrobatics', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Animal Handling"
-                value={insert.animalHandling || ''}
-                onChange={(e) => onUpdate('animalHandling', e.target.value)}
+                value={insert.modAnimalHandling || ''}
+                onChange={(e) => onUpdate('modAnimalHandling', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Arcana"
-                value={insert.arcana || ''}
-                onChange={(e) => onUpdate('arcana', e.target.value)}
+                value={insert.modArcana || ''}
+                onChange={(e) => onUpdate('modArcana', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
@@ -251,22 +280,22 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
             <Group grow>
               <TextInput
                 label="Athletics"
-                value={insert.athletics || ''}
-                onChange={(e) => onUpdate('athletics', e.target.value)}
+                value={insert.modAthletics || ''}
+                onChange={(e) => onUpdate('modAthletics', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Deception"
-                value={insert.deception || ''}
-                onChange={(e) => onUpdate('deception', e.target.value)}
+                value={insert.modDeception || ''}
+                onChange={(e) => onUpdate('modDeception', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="History"
-                value={insert.history || ''}
-                onChange={(e) => onUpdate('history', e.target.value)}
+                value={insert.modHistory || ''}
+                onChange={(e) => onUpdate('modHistory', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
@@ -274,22 +303,22 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
             <Group grow>
               <TextInput
                 label="Insight"
-                value={insert.insight || ''}
-                onChange={(e) => onUpdate('insight', e.target.value)}
+                value={insert.modInsight || ''}
+                onChange={(e) => onUpdate('modInsight', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Intimidation"
-                value={insert.intimidation || ''}
-                onChange={(e) => onUpdate('intimidation', e.target.value)}
+                value={insert.modIntimidation || ''}
+                onChange={(e) => onUpdate('modIntimidation', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Investigation"
-                value={insert.investigation || ''}
-                onChange={(e) => onUpdate('investigation', e.target.value)}
+                value={insert.modInvestigation || ''}
+                onChange={(e) => onUpdate('modInvestigation', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
@@ -297,22 +326,22 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
             <Group grow>
               <TextInput
                 label="Medicine"
-                value={insert.medicine || ''}
-                onChange={(e) => onUpdate('medicine', e.target.value)}
+                value={insert.modMedicine || ''}
+                onChange={(e) => onUpdate('modMedicine', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Nature"
-                value={insert.nature || ''}
-                onChange={(e) => onUpdate('nature', e.target.value)}
+                value={insert.modNature || ''}
+                onChange={(e) => onUpdate('modNature', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Perception"
-                value={insert.perception || ''}
-                onChange={(e) => onUpdate('perception', e.target.value)}
+                value={insert.modPerception || ''}
+                onChange={(e) => onUpdate('modPerception', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
@@ -320,22 +349,22 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
             <Group grow>
               <TextInput
                 label="Performance"
-                value={insert.performance || ''}
-                onChange={(e) => onUpdate('performance', e.target.value)}
+                value={insert.modPerformance || ''}
+                onChange={(e) => onUpdate('modPerformance', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Persuasion"
-                value={insert.persuasion || ''}
-                onChange={(e) => onUpdate('persuasion', e.target.value)}
+                value={insert.modPersuasion || ''}
+                onChange={(e) => onUpdate('modPersuasion', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Religion"
-                value={insert.religion || ''}
-                onChange={(e) => onUpdate('religion', e.target.value)}
+                value={insert.modReligion || ''}
+                onChange={(e) => onUpdate('modReligion', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
@@ -343,22 +372,22 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
             <Group grow>
               <TextInput
                 label="Sleight of Hand"
-                value={insert.sleightOfHand || ''}
-                onChange={(e) => onUpdate('sleightOfHand', e.target.value)}
+                value={insert.modSleightOfHand || ''}
+                onChange={(e) => onUpdate('modSleightOfHand', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Stealth"
-                value={insert.stealth || ''}
-                onChange={(e) => onUpdate('stealth', e.target.value)}
+                value={insert.modStealth || ''}
+                onChange={(e) => onUpdate('modStealth', e.target.value)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="Survival"
-                value={insert.survival || ''}
-                onChange={(e) => onUpdate('survival', e.target.value)}
+                value={insert.modSurvival || ''}
+                onChange={(e) => onUpdate('modSurvival', e.target.value)}
                 placeholder="+0"
                 type="number"
               />

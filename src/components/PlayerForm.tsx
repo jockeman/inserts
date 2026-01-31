@@ -1,5 +1,5 @@
 import { Badge, Checkbox, Group, SegmentedControl, Select, Stack, Text, TextInput } from '@mantine/core';
-import type { Insert } from '../types/Insert';
+import type { Insert, InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { getClassOptions } from '../utils/classConfig';
 import { getRaceOptions } from '../utils/raceConfig';
@@ -7,8 +7,8 @@ import { getVisibleSkills, type ProficiencyLevel } from '../utils/skillConfig';
 
 interface PlayerFormProps {
   insert: Insert;
-  onUpdate: (field: keyof Insert, value: string) => void;
-  onUpdateBoolean: (field: keyof Insert, value: boolean) => void;
+  onUpdate: (field: keyof InsertInputs, value: string) => void;
+  onUpdateBoolean: (field: keyof InsertInputs, value: boolean) => void;
   preferences: UserPreferences;
 }
 
@@ -121,7 +121,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
                 </Group>
                 <SegmentedControl
                   value={insert[skillInfo.profField] as ProficiencyLevel}
-                  onChange={(value) => onUpdate(skillInfo.profField, value)}
+                  onChange={(value) => onUpdate(skillInfo.profField as keyof InsertInputs, value)}
                   data={[
                     { label: 'None', value: 'none' },
                     { label: 'Half', value: 'half' },
@@ -135,7 +135,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
               <TextInput
                 placeholder="+0"
                 value={insert[skillInfo.modField] as string}
-                onChange={(e) => onUpdate(skillInfo.modField, e.target.value)}
+                onChange={(e) => onUpdate(skillInfo.modField as keyof InsertInputs, e.target.value)}
                 style={{ width: 80 }}
                 size="xs"
                 label="Mod"

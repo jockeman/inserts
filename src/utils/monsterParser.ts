@@ -1,4 +1,25 @@
-import type { Insert } from '../types/Insert';
+import type { Insert, MonsterSize, MonsterType } from '../types/Insert';
+
+// Valid D&D 5e monster sizes
+const VALID_SIZES: MonsterSize[] = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
+
+// Valid D&D 5e monster types
+const VALID_TYPES: MonsterType[] = [
+  'Aberration',
+  'Beast',
+  'Celestial',
+  'Construct',
+  'Dragon',
+  'Elemental',
+  'Fey',
+  'Fiend',
+  'Giant',
+  'Humanoid',
+  'Monstrosity',
+  'Ooze',
+  'Plant',
+  'Undead',
+];
 
 export function parseMonsterStatBlock(text: string): Partial<Insert> {
   const lines = text
@@ -62,10 +83,23 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
       // Try to extract size (Tiny, Small, Medium, Large, Huge, Gargantuan)
       const sizeMatch = fullType.match(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\s+/i);
       if (sizeMatch) {
-        result.monsterSize = sizeMatch[1];
-        result.monsterType = fullType.substring(sizeMatch[0].length);
-      } else {
-        result.monsterType = fullType;
+        const size = sizeMatch[1].charAt(0).toUpperCase() + sizeMatch[1].slice(1).toLowerCase();
+        if (VALID_SIZES.includes(size as MonsterSize)) {
+          result.monsterSize = size as MonsterSize;
+        }
+        const typeText = fullType.substring(sizeMatch[0].length).trim();
+        // Extract base type (before any subtype in parentheses)
+        const baseType = typeText.split('(')[0].trim();
+        // Validate against known types
+        const matchedType = VALID_TYPES.find((t) => t.toLowerCase() === baseType.toLowerCase());
+        if (matchedType) {
+          result.monsterType = matchedType;
+        }
+        // Extract tag/subtype from parentheses (e.g., "goblinoid" from "Humanoid (goblinoid)")
+        const tagMatch = typeText.match(/\(([^)]+)\)/);
+        if (tagMatch) {
+          result.monsterTypeTag = tagMatch[1].trim();
+        }
       }
       continue;
     }
@@ -185,24 +219,24 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
 
       // Parse individual skills like "Perception +13, Stealth +9"
       const skillMap: Record<string, keyof Insert> = {
-        Acrobatics: 'acrobatics',
-        'Animal Handling': 'animalHandling',
-        Arcana: 'arcana',
-        Athletics: 'athletics',
-        Deception: 'deception',
-        History: 'history',
-        Insight: 'insight',
-        Intimidation: 'intimidation',
-        Investigation: 'investigation',
-        Medicine: 'medicine',
-        Nature: 'nature',
-        Perception: 'perception',
-        Performance: 'performance',
-        Persuasion: 'persuasion',
-        Religion: 'religion',
-        'Sleight of Hand': 'sleightOfHand',
-        Stealth: 'stealth',
-        Survival: 'survival',
+        Acrobatics: 'modAcrobatics',
+        'Animal Handling': 'modAnimalHandling',
+        Arcana: 'modArcana',
+        Athletics: 'modAthletics',
+        Deception: 'modDeception',
+        History: 'modHistory',
+        Insight: 'modInsight',
+        Intimidation: 'modIntimidation',
+        Investigation: 'modInvestigation',
+        Medicine: 'modMedicine',
+        Nature: 'modNature',
+        Perception: 'modPerception',
+        Performance: 'modPerformance',
+        Persuasion: 'modPersuasion',
+        Religion: 'modReligion',
+        'Sleight of Hand': 'modSleightOfHand',
+        Stealth: 'modStealth',
+        Survival: 'modSurvival',
       };
 
       // Split by comma and parse each skill

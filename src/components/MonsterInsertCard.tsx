@@ -81,7 +81,14 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
                 fontStyle: 'italic',
               }}
             >
-              {[insert.monsterSize, insert.monsterType].filter(Boolean).join(' ')}
+              {[
+                insert.monsterSize,
+                insert.monsterType && insert.monsterTypeTag
+                  ? `${insert.monsterType} (${insert.monsterTypeTag})`
+                  : insert.monsterType,
+              ]
+                .filter(Boolean)
+                .join(' ')}
             </div>
           )}
         </>
@@ -223,7 +230,7 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
               {skills.map((skill, i) => (
                 <span key={skill.name}>
                   {i > 0 && ', '}
-                  {skill.name} {skill.value > 0 ? '+' : ''}
+                  {skill.name} {skill.value && skill.value > 0 ? '+' : ''}
                   {skill.value}
                 </span>
               ))}

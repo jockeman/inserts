@@ -2,6 +2,26 @@ import type { ClassName } from '../utils/classConfig';
 import type { RaceName } from '../utils/raceConfig';
 import type { ProficiencyLevel } from '../utils/skillConfig';
 
+// D&D 5e Monster Sizes
+export type MonsterSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Gargantuan';
+
+// D&D 5e Monster Types
+export type MonsterType =
+  | 'Aberration'
+  | 'Beast'
+  | 'Celestial'
+  | 'Construct'
+  | 'Dragon'
+  | 'Elemental'
+  | 'Fey'
+  | 'Fiend'
+  | 'Giant'
+  | 'Humanoid'
+  | 'Monstrosity'
+  | 'Ooze'
+  | 'Plant'
+  | 'Undead';
+
 /**
  * InsertInputs represents the data that is stored in localStorage.
  * This includes user inputs and override flags, but excludes calculated values.
@@ -82,8 +102,9 @@ export interface InsertInputs {
   cha: number;
 
   // Monster-specific fields (all inputs)
-  monsterSize: string;
-  monsterType: string;
+  monsterSize: MonsterSize;
+  monsterType: MonsterType;
+  monsterTypeTag: string; // Subtype/tag (e.g., "goblinoid", "shapechanger")
   cr: string; // Challenge Rating (e.g., "1/4", "2", "10")
   speed: string;
   acType: string; // Armor type (e.g., "natural armor", "leather armor")
@@ -107,28 +128,29 @@ export interface InsertInputs {
 
 /**
  * Insert represents the complete insert data including both inputs and calculated values.
- * For player cards, calculated values are derived from inputs by calculateAdvancedPlayerValues.
+ * For player cards, skill values are calculated from proficiency and modifiers.
+ * For monster cards, skill values come directly from the modifier fields.
  */
 export interface Insert extends InsertInputs {
-  // Player - calculated passive skill values
-  // These are calculated from ability scores, proficiency levels, proficiency bonus, and modifiers
-  // (unless overridden by manual input)
-  acrobatics: number;
-  animalHandling: number;
-  athletics: number;
-  deception: number;
-  history: number;
-  intimidation: number;
-  medicine: number;
-  performance: number;
-  persuasion: number;
-  religion: number;
-  sleightOfHand: number;
-  perception: number;
-  insight: number;
-  investigation: number;
-  arcana: number;
-  nature: number;
-  survival: number;
-  stealth: number;
+  // Calculated/runtime skill values
+  // For players: calculated from ability scores, proficiency, and modifiers
+  // For monsters: copied from modifier fields for display
+  acrobatics?: number;
+  animalHandling?: number;
+  athletics?: number;
+  deception?: number;
+  history?: number;
+  intimidation?: number;
+  medicine?: number;
+  performance?: number;
+  persuasion?: number;
+  religion?: number;
+  sleightOfHand?: number;
+  perception?: number;
+  insight?: number;
+  investigation?: number;
+  arcana?: number;
+  nature?: number;
+  survival?: number;
+  stealth?: number;
 }

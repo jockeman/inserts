@@ -1,6 +1,6 @@
 import { Avatar, Button, Checkbox, Collapse, Group, Paper, Title } from '@mantine/core';
 import { useState } from 'react';
-import type { Insert } from '../types/Insert';
+import type { Insert, InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { InsertCard } from './InsertCard';
 import { InsertForm } from './InsertForm';
@@ -8,8 +8,8 @@ import { InsertForm } from './InsertForm';
 interface CardEditorProps {
   insert: Insert;
   index: number;
-  onUpdate: (field: keyof Insert, value: string) => void;
-  onUpdateBoolean: (field: keyof Insert, value: boolean) => void;
+  onUpdate: (field: keyof InsertInputs, value: string) => void;
+  onUpdateBoolean: (field: keyof InsertInputs, value: boolean) => void;
   onRemove: () => void;
   preferences: UserPreferences;
 }
