@@ -166,11 +166,32 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
           </div>
         )}
 
-        {insert.savingThrows && (
-          <div>
-            <b>{isLarge ? 'Saving Throws' : 'Saves'}</b> {insert.savingThrows}
-          </div>
-        )}
+        {/* Display individual saving throws */}
+        {(() => {
+          const saves = [
+            { name: 'Str', value: insert.savingThrowStr },
+            { name: 'Dex', value: insert.savingThrowDex },
+            { name: 'Con', value: insert.savingThrowCon },
+            { name: 'Int', value: insert.savingThrowInt },
+            { name: 'Wis', value: insert.savingThrowWis },
+            { name: 'Cha', value: insert.savingThrowCha },
+          ].filter((save) => save.value != null);
+
+          if (saves.length === 0) return null;
+
+          return (
+            <div>
+              <b>{isLarge ? 'Saving Throws' : 'Saves'}</b>{' '}
+              {saves.map((save, i) => (
+                <span key={save.name}>
+                  {i > 0 && ', '}
+                  {save.name} {save.value && save.value > 0 ? '+' : ''}
+                  {save.value}
+                </span>
+              ))}
+            </div>
+          );
+        })()}
         {/* Display individual skills with non-zero values */}
         {(() => {
           const skills = [
@@ -209,14 +230,24 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
             </div>
           );
         })()}
-        {insert.damageImmunities && (
+        {Array.isArray(insert.damageImmunities) && insert.damageImmunities.length > 0 && (
           <div>
-            <b>Immunities</b> {insert.damageImmunities}
+            <b>Immunities</b> {insert.damageImmunities.join(', ')}
           </div>
         )}
-        {insert.damageResistances && (
+        {Array.isArray(insert.damageResistances) && insert.damageResistances.length > 0 && (
           <div>
-            <b>Resistances</b> {insert.damageResistances}
+            <b>Resistances</b> {insert.damageResistances.join(', ')}
+          </div>
+        )}
+        {Array.isArray(insert.damageVulnerabilities) && insert.damageVulnerabilities.length > 0 && (
+          <div>
+            <b>Vulnerabilities</b> {insert.damageVulnerabilities.join(', ')}
+          </div>
+        )}
+        {Array.isArray(insert.conditionImmunities) && insert.conditionImmunities.length > 0 && (
+          <div>
+            <b>Condition Immunities</b> {insert.conditionImmunities.join(', ')}
           </div>
         )}
         {insert.senses && (

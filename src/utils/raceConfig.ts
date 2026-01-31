@@ -1,4 +1,4 @@
-type RaceName =
+export type RaceName =
   | 'Dragonborn'
   | 'Dwarf'
   | 'Elf'

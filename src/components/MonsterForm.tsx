@@ -13,6 +13,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
   const [statBlockText, setStatBlockText] = useState('');
   const [showParser, setShowParser] = useState(false);
   const [showSkills, setShowSkills] = useState(false);
+  const [showSaves, setShowSaves] = useState(false);
 
   const handleParse = () => {
     const parsed = parseMonsterStatBlock(statBlockText);
@@ -162,12 +163,61 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         />
       </Group>
 
-      <TextInput
-        label="Saving Throws"
-        value={insert.savingThrows}
-        onChange={(e) => onUpdate('savingThrows', e.target.value)}
-        placeholder="e.g., Str +2, Dex +4"
-      />
+      <Paper p="md" withBorder>
+        <Button onClick={() => setShowSaves(!showSaves)} fullWidth variant="light" mb={showSaves ? 'md' : 0}>
+          {showSaves ? '▼' : '▶'} Saving Throws
+        </Button>
+        <Collapse in={showSaves}>
+          <Stack gap="sm">
+            <Group grow>
+              <TextInput
+                label="STR Save"
+                value={insert.savingThrowStr ?? ''}
+                onChange={(e) => onUpdate('savingThrowStr', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="DEX Save"
+                value={insert.savingThrowDex ?? ''}
+                onChange={(e) => onUpdate('savingThrowDex', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="CON Save"
+                value={insert.savingThrowCon ?? ''}
+                onChange={(e) => onUpdate('savingThrowCon', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+            </Group>
+            <Group grow>
+              <TextInput
+                label="INT Save"
+                value={insert.savingThrowInt ?? ''}
+                onChange={(e) => onUpdate('savingThrowInt', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="WIS Save"
+                value={insert.savingThrowWis ?? ''}
+                onChange={(e) => onUpdate('savingThrowWis', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+              <TextInput
+                label="CHA Save"
+                value={insert.savingThrowCha ?? ''}
+                onChange={(e) => onUpdate('savingThrowCha', e.target.value)}
+                placeholder="+0"
+                type="number"
+              />
+            </Group>
+          </Stack>
+        </Collapse>
+      </Paper>
 
       <Paper p="md" withBorder>
         <Button onClick={() => setShowSkills(!showSkills)} fullWidth variant="light" mb={showSkills ? 'md' : 0}>
@@ -318,15 +368,43 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
       </Paper>
 
       <TextInput
-        label="Damage Immunities"
-        value={insert.damageImmunities}
+        label="Damage Immunities (comma-separated)"
+        value={
+          Array.isArray(insert.damageImmunities) ? insert.damageImmunities.join(', ') : insert.damageImmunities || ''
+        }
         onChange={(e) => onUpdate('damageImmunities', e.target.value)}
+        placeholder="e.g., fire, poison"
       />
 
       <TextInput
-        label="Damage Resistances"
-        value={insert.damageResistances}
+        label="Damage Resistances (comma-separated)"
+        value={
+          Array.isArray(insert.damageResistances) ? insert.damageResistances.join(', ') : insert.damageResistances || ''
+        }
         onChange={(e) => onUpdate('damageResistances', e.target.value)}
+        placeholder="e.g., cold, slashing"
+      />
+
+      <TextInput
+        label="Damage Vulnerabilities (comma-separated)"
+        value={
+          Array.isArray(insert.damageVulnerabilities)
+            ? insert.damageVulnerabilities.join(', ')
+            : insert.damageVulnerabilities || ''
+        }
+        onChange={(e) => onUpdate('damageVulnerabilities', e.target.value)}
+        placeholder="e.g., fire, radiant"
+      />
+
+      <TextInput
+        label="Condition Immunities (comma-separated)"
+        value={
+          Array.isArray(insert.conditionImmunities)
+            ? insert.conditionImmunities.join(', ')
+            : insert.conditionImmunities || ''
+        }
+        onChange={(e) => onUpdate('conditionImmunities', e.target.value)}
+        placeholder="e.g., charmed, frightened"
       />
 
       <TextInput

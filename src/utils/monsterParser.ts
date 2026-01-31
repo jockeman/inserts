@@ -82,7 +82,7 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
       const acLine = line.replace('Armor Class ', '');
       // Extract the number (e.g., "15" from "15 (natural armor)")
       const acMatch = acLine.match(/^(\d+)/);
-      if (acMatch) result.ac = Number.parseInt(acMatch[1]);
+      if (acMatch) result.ac = Number.parseInt(acMatch[1], 10);
       // Extract the armor type from parentheses (e.g., "natural armor" from "15 (natural armor)")
       const typeMatch = acLine.match(/\(([^)]+)\)/);
       if (typeMatch) result.acType = typeMatch[1];
@@ -94,7 +94,7 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
       const hpLine = line.replace('Hit Points ', '');
       // Extract the number (e.g., "365" from "365 (33d20 + 330)")
       const hpMatch = hpLine.match(/^(\d+)/);
-      if (hpMatch) result.hp = Number.parseInt(hpMatch[1]);
+      if (hpMatch) result.hp = Number.parseInt(hpMatch[1], 10);
       // Extract the dice formula from parentheses (e.g., "33d20 + 330" from "365 (33d20 + 330)")
       const formulaMatch = hpLine.match(/\(([^)]+)\)/);
       if (formulaMatch) result.hpFormula = formulaMatch[1];
@@ -111,43 +111,71 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
     if (line === 'STR' && i + 1 < lines.length) {
       const nextLine = lines[i + 1];
       const match = nextLine.match(/^(\d+)/);
-      if (match) result.str = Number.parseInt(match[1]);
+      if (match) result.str = Number.parseInt(match[1], 10);
       continue;
     }
     if (line === 'DEX' && i + 1 < lines.length) {
       const nextLine = lines[i + 1];
       const match = nextLine.match(/^(\d+)/);
-      if (match) result.dex = Number.parseInt(match[1]);
+      if (match) result.dex = Number.parseInt(match[1], 10);
       continue;
     }
     if (line === 'CON' && i + 1 < lines.length) {
       const nextLine = lines[i + 1];
       const match = nextLine.match(/^(\d+)/);
-      if (match) result.con = Number.parseInt(match[1]);
+      if (match) result.con = Number.parseInt(match[1], 10);
       continue;
     }
     if (line === 'INT' && i + 1 < lines.length) {
       const nextLine = lines[i + 1];
       const match = nextLine.match(/^(\d+)/);
-      if (match) result.int = Number.parseInt(match[1]);
+      if (match) result.int = Number.parseInt(match[1], 10);
       continue;
     }
     if (line === 'WIS' && i + 1 < lines.length) {
       const nextLine = lines[i + 1];
       const match = nextLine.match(/^(\d+)/);
-      if (match) result.wis = Number.parseInt(match[1]);
+      if (match) result.wis = Number.parseInt(match[1], 10);
       continue;
     }
     if (line === 'CHA' && i + 1 < lines.length) {
       const nextLine = lines[i + 1];
       const match = nextLine.match(/^(\d+)/);
-      if (match) result.cha = Number.parseInt(match[1]);
+      if (match) result.cha = Number.parseInt(match[1], 10);
       continue;
     }
 
     // Saving Throws
     if (line.startsWith('Saving Throws ')) {
-      result.savingThrows = line.replace('Saving Throws ', '');
+      const savesText = line.replace('Saving Throws ', '');
+
+      // Parse individual saves like "Str +2, Dex +4, Wis +6"
+      const saveMap: Record<string, keyof Insert> = {
+        Str: 'savingThrowStr',
+        Dex: 'savingThrowDex',
+        Con: 'savingThrowCon',
+        Int: 'savingThrowInt',
+        Wis: 'savingThrowWis',
+        Cha: 'savingThrowCha',
+      };
+
+      // Split by comma and parse each save
+      const saves = savesText.split(',').map((s) => s.trim());
+      for (const save of saves) {
+        for (const [saveName, fieldName] of Object.entries(saveMap)) {
+          if (save.startsWith(saveName)) {
+            // Extract the bonus value (e.g., "+2" or "-1")
+            const match = save.match(/([+−-]\d+)/);
+            if (match) {
+              const bonus = Number.parseInt(match[1].replace('−', '-'), 10);
+              if (!Number.isNaN(bonus)) {
+                (result as any)[fieldName] = bonus;
+              }
+            }
+            break;
+          }
+        }
+      }
       continue;
     }
 
@@ -185,7 +213,7 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
             // Extract the bonus value (e.g., "+13" or "-2")
             const match = skill.match(/([+−-]\d+)/);
             if (match) {
-              const bonus = Number.parseInt(match[1].replace('−', '-'));
+              const bonus = Number.parseInt(match[1].replace('−', '-'), 10);
               if (!Number.isNaN(bonus)) {
                 (result as any)[fieldName] = bonus;
               }
@@ -199,25 +227,45 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
 
     // Damage Immunities
     if (line.startsWith('Damage Immunities ')) {
-      result.damageImmunities = line.replace('Damage Immunities ', '');
+      const immunitiesText = line.replace('Damage Immunities ', '');
+      // Split by comma or semicolon and trim each item
+      result.damageImmunities = immunitiesText
+        .split(/[,;]/)
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
       continue;
     }
 
     // Damage Resistances
     if (line.startsWith('Damage Resistances ')) {
-      result.damageResistances = line.replace('Damage Resistances ', '');
+      const resistancesText = line.replace('Damage Resistances ', '');
+      // Split by comma or semicolon and trim each item
+      result.damageResistances = resistancesText
+        .split(/[,;]/)
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
       continue;
     }
 
     // Damage Vulnerabilities
     if (line.startsWith('Damage Vulnerabilities ')) {
-      result.damageVulnerabilities = line.replace('Damage Vulnerabilities ', '');
+      const vulnerabilitiesText = line.replace('Damage Vulnerabilities ', '');
+      // Split by comma or semicolon and trim each item
+      result.damageVulnerabilities = vulnerabilitiesText
+        .split(/[,;]/)
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
       continue;
     }
 
     // Condition Immunities
     if (line.startsWith('Condition Immunities ')) {
-      result.conditionImmunities = line.replace('Condition Immunities ', '');
+      const conditionsText = line.replace('Condition Immunities ', '');
+      // Split by comma or semicolon and trim each item
+      result.conditionImmunities = conditionsText
+        .split(/[,;]/)
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
       continue;
     }
 
@@ -236,7 +284,7 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
     // Proficiency Bonus
     if (line.startsWith('Proficiency Bonus ')) {
       const bonusStr = line.replace('Proficiency Bonus ', '').replace('+', '');
-      const bonus = Number.parseInt(bonusStr);
+      const bonus = Number.parseInt(bonusStr, 10);
       if (!Number.isNaN(bonus)) result.proficiencyBonus = bonus;
       continue;
     }

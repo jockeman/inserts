@@ -1,4 +1,5 @@
 import type { ClassName } from '../utils/classConfig';
+import type { RaceName } from '../utils/raceConfig';
 import type { ProficiencyLevel } from '../utils/skillConfig';
 
 /**
@@ -15,18 +16,9 @@ export interface InsertInputs {
   selected: boolean;
 
   // Player/Monster common fields (inputs)
-  race: string;
+  race: RaceName;
   class: ClassName;
   ac: number;
-
-  // Player passive skills (can be calculated or manually entered)
-  perception: number;
-  insight: number;
-  investigation: number;
-  arcana: number;
-  nature: number;
-  survival: number;
-  stealth: number;
 
   // Player fields
   level: number;
@@ -37,7 +29,7 @@ export interface InsertInputs {
   darkvisionOverride: boolean;
 
   // Player - manual override values (inputs when override is true)
-  proficiencyBonus: number; // Shared with monsters
+  proficiencyBonus: number;
   hp: number;
   darkvision: number;
 
@@ -96,11 +88,16 @@ export interface InsertInputs {
   speed: string;
   acType: string; // Armor type (e.g., "natural armor", "leather armor")
   hpFormula: string; // Dice formula for HP (e.g., "33d20 + 330")
-  savingThrows: string;
-  damageImmunities: string;
-  damageResistances: string;
-  damageVulnerabilities: string;
-  conditionImmunities: string;
+  savingThrowStr: number | null;
+  savingThrowDex: number | null;
+  savingThrowCon: number | null;
+  savingThrowInt: number | null;
+  savingThrowWis: number | null;
+  savingThrowCha: number | null;
+  damageImmunities: string[]; // Array of damage immunities (e.g., ["fire", "poison"])
+  damageResistances: string[]; // Array of damage resistances
+  damageVulnerabilities: string[]; // Array of damage vulnerabilities
+  conditionImmunities: string[]; // Array of condition immunities
   senses: string;
   languages: string;
   traits: string;
@@ -127,4 +124,11 @@ export interface Insert extends InsertInputs {
   persuasion: number;
   religion: number;
   sleightOfHand: number;
+  perception: number;
+  insight: number;
+  investigation: number;
+  arcana: number;
+  nature: number;
+  survival: number;
+  stealth: number;
 }

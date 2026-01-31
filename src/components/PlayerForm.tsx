@@ -3,7 +3,7 @@ import type { Insert } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { getClassOptions } from '../utils/classConfig';
 import { getRaceOptions } from '../utils/raceConfig';
-import { getVisibleSkills } from '../utils/skillConfig';
+import { getVisibleSkills, type ProficiencyLevel } from '../utils/skillConfig';
 
 interface PlayerFormProps {
   insert: Insert;
@@ -107,7 +107,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
         Skills (Passive Values)
       </Text>
       {visibleSkills.map(([skillKey, skillInfo]) => {
-        const passiveValue = insert[skillInfo.passiveField] as string;
+        const passiveValue = insert[skillInfo.passiveField] as number;
         const Icon = skillInfo.icon;
         return (
           <div key={skillKey}>
@@ -120,7 +120,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
                   </Text>
                 </Group>
                 <SegmentedControl
-                  value={insert[skillInfo.profField] as string}
+                  value={insert[skillInfo.profField] as ProficiencyLevel}
                   onChange={(value) => onUpdate(skillInfo.profField, value)}
                   data={[
                     { label: 'None', value: 'none' },

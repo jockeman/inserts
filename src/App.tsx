@@ -91,11 +91,16 @@ const emptyInsert: Insert = {
   speed: '',
   acType: '',
   hpFormula: '',
-  savingThrows: '',
-  damageImmunities: '',
-  damageResistances: '',
-  damageVulnerabilities: '',
-  conditionImmunities: '',
+  savingThrowStr: null,
+  savingThrowDex: null,
+  savingThrowCon: null,
+  savingThrowInt: null,
+  savingThrowWis: null,
+  savingThrowCha: null,
+  damageImmunities: [],
+  damageResistances: [],
+  damageVulnerabilities: [],
+  conditionImmunities: [],
   senses: '',
   languages: '',
   traits: '',
@@ -143,11 +148,40 @@ function App() {
     setInserts((arr) => [...arr, { ...emptyInsert, id: generateId() }]);
   }
 
-  function updateInsert(id: string, field: keyof Insert, value: string) {
+  function updateInsert(id: string, field: keyof Insert, value: string | string[] | number | null | any) {
     setInserts((arr) =>
       arr.map((insert) => {
         if (insert.id !== id) return insert;
-        const updated = { ...insert, [field]: value };
+
+        // Handle array fields - convert comma-separated strings to arrays, or keep as-is if already array
+        let processedValue: string | string[] | number | null = value;
+        if (
+          field === 'damageImmunities' ||
+          field === 'damageResistances' ||
+          field === 'damageVulnerabilities' ||
+          field === 'conditionImmunities'
+        ) {
+          // If already an array (from parser), keep it
+          if (Array.isArray(value)) {
+            processedValue = value;
+          } else if (typeof value === 'string') {
+            // If string (from form), split it
+            processedValue = value
+              .split(',')
+              .map((item) => item.trim())
+              .filter((item) => item.length > 0);
+          }
+        }
+        // Handle saving throw fields - convert to number or null
+        else if (field.startsWith('savingThrow')) {
+          if (typeof value === 'number' || value === null) {
+            processedValue = value;
+          } else {
+            processedValue = value === '' ? null : Number.parseInt(value, 10);
+          }
+        }
+
+        const updated = { ...insert, [field]: processedValue };
         // Apply calculations for player cards
         if (updated.cardType === 'player') {
           return calculateAdvancedPlayerValues(updated);
