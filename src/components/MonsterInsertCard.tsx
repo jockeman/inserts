@@ -199,28 +199,13 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
             </div>
           );
         })()}
-        {/* Display individual skills with non-zero values */}
         {(() => {
-          const skills = [
-            { name: 'Acrobatics', value: insert.acrobatics },
-            { name: 'Animal Handling', value: insert.animalHandling },
-            { name: 'Arcana', value: insert.arcana },
-            { name: 'Athletics', value: insert.athletics },
-            { name: 'Deception', value: insert.deception },
-            { name: 'History', value: insert.history },
-            { name: 'Insight', value: insert.insight },
-            { name: 'Intimidation', value: insert.intimidation },
-            { name: 'Investigation', value: insert.investigation },
-            { name: 'Medicine', value: insert.medicine },
-            { name: 'Nature', value: insert.nature },
-            { name: 'Perception', value: insert.perception },
-            { name: 'Performance', value: insert.performance },
-            { name: 'Persuasion', value: insert.persuasion },
-            { name: 'Religion', value: insert.religion },
-            { name: 'Sleight of Hand', value: insert.sleightOfHand },
-            { name: 'Stealth', value: insert.stealth },
-            { name: 'Survival', value: insert.survival },
-          ].filter((skill) => skill.value && skill.value !== 0);
+          const skills = Object.entries(insert.skills)
+            .filter(([_, skill]) => skill.value && skill.value !== 0)
+            .map(([skillName, skill]) => ({
+              name: skillName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()),
+              value: skill.value,
+            }));
 
           if (skills.length === 0) return null;
 

@@ -1,4 +1,5 @@
-import type { Insert, MonsterSize, MonsterType } from '../types/Insert';
+import type { Insert, MonsterSize, MonsterType, SkillName } from '../types/Insert';
+import { createEmptySkills } from './skillHelpers';
 
 // Valid D&D 5e monster sizes
 const VALID_SIZES: MonsterSize[] = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
@@ -30,6 +31,7 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
   const result: Partial<Insert> = {
     cardType: 'monster',
     size: 'small',
+    skills: createEmptySkills(),
   };
 
   let currentSection = '';
@@ -218,38 +220,46 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
       const skillsText = line.replace('Skills ', '');
 
       // Parse individual skills like "Perception +13, Stealth +9"
-      const skillMap: Record<string, keyof Insert> = {
-        Acrobatics: 'modAcrobatics',
-        'Animal Handling': 'modAnimalHandling',
-        Arcana: 'modArcana',
-        Athletics: 'modAthletics',
-        Deception: 'modDeception',
-        History: 'modHistory',
-        Insight: 'modInsight',
-        Intimidation: 'modIntimidation',
-        Investigation: 'modInvestigation',
-        Medicine: 'modMedicine',
-        Nature: 'modNature',
-        Perception: 'modPerception',
-        Performance: 'modPerformance',
-        Persuasion: 'modPersuasion',
-        Religion: 'modReligion',
-        'Sleight of Hand': 'modSleightOfHand',
-        Stealth: 'modStealth',
-        Survival: 'modSurvival',
+      const skillMap: Record<string, SkillName> = {
+        Acrobatics: 'acrobatics',
+        'Animal Handling': 'animalHandling',
+        Arcana: 'arcana',
+        Athletics: 'athletics',
+        Deception: 'deception',
+        History: 'history',
+        Insight: 'insight',
+        Intimidation: 'intimidation',
+        Investigation: 'investigation',
+        Medicine: 'medicine',
+        Nature: 'nature',
+        Perception: 'perception',
+        Performance: 'performance',
+        Persuasion: 'persuasion',
+        Religion: 'religion',
+        'Sleight of Hand': 'sleightOfHand',
+        Stealth: 'stealth',
+        Survival: 'survival',
       };
+
+      // Initialize skills object if not already present
+      if (!result.skills) {
+        result.skills = createEmptySkills();
+      }
 
       // Split by comma and parse each skill
       const skills = skillsText.split(',').map((s) => s.trim());
       for (const skill of skills) {
-        for (const [skillName, fieldName] of Object.entries(skillMap)) {
+        for (const [skillName, skillKey] of Object.entries(skillMap)) {
           if (skill.startsWith(skillName)) {
             // Extract the bonus value (e.g., "+13" or "-2")
             const match = skill.match(/([+−-]\d+)/);
             if (match) {
               const bonus = Number.parseInt(match[1].replace('−', '-'), 10);
               if (!Number.isNaN(bonus)) {
-                (result as any)[fieldName] = bonus;
+                result.skills[skillKey] = {
+                  proficiency: 'none',
+                  modifier: bonus,
+                };
               }
             }
             break;

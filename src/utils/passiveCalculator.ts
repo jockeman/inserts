@@ -1,26 +1,27 @@
+import { calculateAbilityModifier, calculateSkillBonus } from './abilityHelpers';
 import type { ProficiencyLevel } from './skillConfig';
 
+/**
+ * Legacy export for backward compatibility
+ */
 export function calculateModifier(score: number): number {
-  if (Number.isNaN(score)) return 0;
-  return Math.floor((score - 10) / 2);
+  return calculateAbilityModifier(score);
 }
 
+/**
+ * Calculate passive skill value (base 10 + ability mod + proficiency + manual mod)
+ */
 export function calculatePassive(
   abilityScore: number,
   profLevel: ProficiencyLevel,
   profBonus: number,
   manualMod: number
 ): number {
-  const abilityMod = calculateModifier(abilityScore);
   const profBonusNum = profBonus || 0;
   const manualModNum = manualMod || 0;
 
-  let profMultiplier = 0;
-  if (profLevel === 'half') profMultiplier = 0.5;
-  if (profLevel === 'proficient') profMultiplier = 1;
-  if (profLevel === 'expert') profMultiplier = 2;
-
-  const total = 10 + abilityMod + Math.floor(profBonusNum * profMultiplier) + manualModNum;
+  const skillBonus = calculateSkillBonus(abilityScore, profLevel, profBonusNum, manualModNum);
+  const total = 10 + skillBonus;
 
   return total;
 }

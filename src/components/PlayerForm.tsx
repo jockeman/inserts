@@ -1,9 +1,11 @@
-import { Badge, Checkbox, Group, SegmentedControl, Select, Stack, Text, TextInput } from '@mantine/core';
+import { Checkbox, Group, Select, Stack, Text, TextInput } from '@mantine/core';
 import type { Insert, InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { getClassOptions } from '../utils/classConfig';
 import { getRaceOptions } from '../utils/raceConfig';
-import { getVisibleSkills, type ProficiencyLevel } from '../utils/skillConfig';
+import { getVisibleSkills } from '../utils/skillConfig';
+import { AbilityInput } from './AbilityInput';
+import { SkillInput } from './SkillInput';
 
 interface PlayerFormProps {
   insert: Insert;
@@ -43,135 +45,86 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
         <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', e.target.value)} type="number" />
       </Group>
 
-      <div>
-        <Group align="flex-end" gap="xs">
-          <TextInput
-            label="Max HP"
-            value={insert.hp}
-            onChange={(e) => onUpdate('hp', e.target.value)}
-            type="number"
-            disabled={!insert.maxHPOverride}
-            style={{ flex: 1 }}
-          />
-          <Checkbox
-            label="Manual Override"
-            checked={insert.maxHPOverride}
-            onChange={(e) => onUpdateBoolean('maxHPOverride', e.currentTarget.checked)}
-            mb={4}
-          />
-        </Group>
-        {!insert.maxHPOverride && insert.level && insert.class && insert.con && (
-          <Text size="xs" c="dimmed" mt={4}>
-            Auto-calculated from level, class, and CON
-          </Text>
-        )}
-      </div>
+      <Group align="flex-end" gap="xs">
+        <TextInput
+          label="Max HP"
+          value={insert.hp}
+          onChange={(e) => onUpdate('hp', e.target.value)}
+          type="number"
+          disabled={!insert.maxHPOverride}
+          style={{ flex: 1 }}
+        />
+        <Checkbox
+          label="Override"
+          checked={insert.maxHPOverride}
+          onChange={(e) => onUpdateBoolean('maxHPOverride', e.currentTarget.checked)}
+          mb={4}
+        />
+      </Group>
 
-      <div>
-        <Group align="flex-end" gap="xs">
-          <TextInput
-            label="Proficiency Bonus"
-            value={insert.proficiencyBonus}
-            onChange={(e) => onUpdate('proficiencyBonus', e.target.value)}
-            placeholder="+2"
-            disabled={!insert.proficiencyBonusOverride}
-            style={{ flex: 1 }}
-          />
-          <Checkbox
-            label="Manual Override"
-            checked={insert.proficiencyBonusOverride}
-            onChange={(e) => onUpdateBoolean('proficiencyBonusOverride', e.currentTarget.checked)}
-            mb={4}
-          />
-        </Group>
-        {!insert.proficiencyBonusOverride && insert.level && (
-          <Text size="xs" c="dimmed" mt={4}>
-            Auto-calculated from level
-          </Text>
-        )}
-      </div>
-
-      <Group grow>
-        <TextInput label="STR" value={insert.str} onChange={(e) => onUpdate('str', e.target.value)} type="number" />
-        <TextInput label="DEX" value={insert.dex} onChange={(e) => onUpdate('dex', e.target.value)} type="number" />
-        <TextInput label="CON" value={insert.con} onChange={(e) => onUpdate('con', e.target.value)} type="number" />
+      <Group align="flex-end" gap="xs">
+        <TextInput
+          label="Proficiency Bonus"
+          value={insert.proficiencyBonus}
+          onChange={(e) => onUpdate('proficiencyBonus', e.target.value)}
+          placeholder="+2"
+          disabled={!insert.proficiencyBonusOverride}
+          style={{ flex: 1 }}
+        />
+        <Checkbox
+          label="Override"
+          checked={insert.proficiencyBonusOverride}
+          onChange={(e) => onUpdateBoolean('proficiencyBonusOverride', e.currentTarget.checked)}
+          mb={4}
+        />
       </Group>
 
       <Group grow>
-        <TextInput label="INT" value={insert.int} onChange={(e) => onUpdate('int', e.target.value)} type="number" />
-        <TextInput label="WIS" value={insert.wis} onChange={(e) => onUpdate('wis', e.target.value)} type="number" />
-        <TextInput label="CHA" value={insert.cha} onChange={(e) => onUpdate('cha', e.target.value)} type="number" />
+        <AbilityInput ability="str" value={insert.str} onUpdate={onUpdate} />
+        <AbilityInput ability="dex" value={insert.dex} onUpdate={onUpdate} />
+        <AbilityInput ability="con" value={insert.con} onUpdate={onUpdate} />
+      </Group>
+
+      <Group grow>
+        <AbilityInput ability="int" value={insert.int} onUpdate={onUpdate} />
+        <AbilityInput ability="wis" value={insert.wis} onUpdate={onUpdate} />
+        <AbilityInput ability="cha" value={insert.cha} onUpdate={onUpdate} />
       </Group>
 
       <Text size="sm" fw={600} mt="md">
-        Skills (Passive Values)
+        Skills
       </Text>
       {visibleSkills.map(([skillKey, skillInfo]) => {
-        const passiveValue = insert[skillInfo.passiveField] as number;
-        const Icon = skillInfo.icon;
+        const skill = insert.skills[skillInfo.key];
         return (
-          <div key={skillKey}>
-            <Group gap="xs" align="flex-end">
-              <div style={{ flex: 1 }}>
-                <Group gap="xs">
-                  <Icon size={16} style={{ marginTop: 2 }} />
-                  <Text size="sm" fw={500}>
-                    {skillInfo.label}
-                  </Text>
-                </Group>
-                <SegmentedControl
-                  value={insert[skillInfo.profField] as ProficiencyLevel}
-                  onChange={(value) => onUpdate(skillInfo.profField as keyof InsertInputs, value)}
-                  data={[
-                    { label: 'None', value: 'none' },
-                    { label: 'Half', value: 'half' },
-                    { label: 'Prof', value: 'proficient' },
-                    { label: 'Expert', value: 'expert' },
-                  ]}
-                  size="xs"
-                  fullWidth
-                />
-              </div>
-              <TextInput
-                placeholder="+0"
-                value={insert[skillInfo.modField] as string}
-                onChange={(e) => onUpdate(skillInfo.modField as keyof InsertInputs, e.target.value)}
-                style={{ width: 80 }}
-                size="xs"
-                label="Mod"
-              />
-              <Badge size="lg" color="blue" variant="filled" style={{ minWidth: 60, textAlign: 'center' }}>
-                {passiveValue || '10'}
-              </Badge>
-            </Group>
-          </div>
+          <SkillInput
+            key={skillKey}
+            skillName={skillInfo.key}
+            skillInfo={skillInfo}
+            skill={skill}
+            skills={insert.skills}
+            onUpdate={onUpdate}
+          />
         );
       })}
 
-      <div>
-        <Group align="flex-end" gap="xs">
-          <TextInput
-            label="Darkvision (ft)"
-            value={insert.darkvision}
-            onChange={(e) => onUpdate('darkvision', e.target.value)}
-            type="number"
-            min={0}
-            disabled={!insert.darkvisionOverride}
-            style={{ flex: 1 }}
-          />
-          <Checkbox
-            label="Manual Override"
-            checked={insert.darkvisionOverride}
-            onChange={(e) => onUpdateBoolean('darkvisionOverride', e.currentTarget.checked)}
-            mb={4}
-          />
-        </Group>
-        {!insert.darkvisionOverride && insert.race && (
-          <Text size="xs" c="dimmed" mt={4}>
-            Auto-calculated from race
-          </Text>
-        )}
-      </div>
+      <Group align="flex-end" gap="xs">
+        <TextInput
+          label="Darkvision (ft)"
+          value={insert.darkvision}
+          onChange={(e) => onUpdate('darkvision', e.target.value)}
+          type="number"
+          min={0}
+          disabled={!insert.darkvisionOverride}
+          style={{ flex: 1 }}
+        />
+        <Checkbox
+          label="Override"
+          checked={insert.darkvisionOverride}
+          onChange={(e) => onUpdateBoolean('darkvisionOverride', e.currentTarget.checked)}
+          mb={4}
+        />
+      </Group>
     </Stack>
   );
 }

@@ -23,6 +23,35 @@ export type MonsterType =
   | 'Undead';
 
 /**
+ * Skill data structure containing proficiency level, modifier, and optional calculated value
+ */
+export interface Skill {
+  proficiency: ProficiencyLevel;
+  modifier: number;
+  value?: number; // Calculated at runtime, not stored
+}
+
+export type SkillName =
+  | 'acrobatics'
+  | 'animalHandling'
+  | 'arcana'
+  | 'athletics'
+  | 'deception'
+  | 'history'
+  | 'insight'
+  | 'intimidation'
+  | 'investigation'
+  | 'medicine'
+  | 'nature'
+  | 'perception'
+  | 'performance'
+  | 'persuasion'
+  | 'religion'
+  | 'sleightOfHand'
+  | 'stealth'
+  | 'survival';
+
+/**
  * InsertInputs represents the data that is stored in localStorage.
  * This includes user inputs and override flags, but excludes calculated values.
  */
@@ -53,45 +82,8 @@ export interface InsertInputs {
   hp: number;
   darkvision: number;
 
-  // Player - proficiency levels (inputs)
-  profAcrobatics: ProficiencyLevel;
-  profAnimalHandling: ProficiencyLevel;
-  profArcana: ProficiencyLevel;
-  profAthletics: ProficiencyLevel;
-  profDeception: ProficiencyLevel;
-  profHistory: ProficiencyLevel;
-  profInsight: ProficiencyLevel;
-  profIntimidation: ProficiencyLevel;
-  profInvestigation: ProficiencyLevel;
-  profMedicine: ProficiencyLevel;
-  profNature: ProficiencyLevel;
-  profPerception: ProficiencyLevel;
-  profPerformance: ProficiencyLevel;
-  profPersuasion: ProficiencyLevel;
-  profReligion: ProficiencyLevel;
-  profSleightOfHand: ProficiencyLevel;
-  profStealth: ProficiencyLevel;
-  profSurvival: ProficiencyLevel;
-
-  // Advanced player - manual modifiers (inputs)
-  modAcrobatics: number;
-  modAnimalHandling: number;
-  modArcana: number;
-  modAthletics: number;
-  modDeception: number;
-  modHistory: number;
-  modInsight: number;
-  modIntimidation: number;
-  modInvestigation: number;
-  modMedicine: number;
-  modNature: number;
-  modPerception: number;
-  modPerformance: number;
-  modPersuasion: number;
-  modReligion: number;
-  modSleightOfHand: number;
-  modStealth: number;
-  modSurvival: number;
+  // Skills - stored as a keyed entity
+  skills: Record<SkillName, Skill>;
 
   // Ability scores (shared between player and monster)
   str: number;
@@ -128,29 +120,6 @@ export interface InsertInputs {
 
 /**
  * Insert represents the complete insert data including both inputs and calculated values.
- * For player cards, skill values are calculated from proficiency and modifiers.
- * For monster cards, skill values come directly from the modifier fields.
+ * Extends InsertInputs - the skills.value fields are populated at runtime.
  */
-export interface Insert extends InsertInputs {
-  // Calculated/runtime skill values
-  // For players: calculated from ability scores, proficiency, and modifiers
-  // For monsters: copied from modifier fields for display
-  acrobatics?: number;
-  animalHandling?: number;
-  athletics?: number;
-  deception?: number;
-  history?: number;
-  intimidation?: number;
-  medicine?: number;
-  performance?: number;
-  persuasion?: number;
-  religion?: number;
-  sleightOfHand?: number;
-  perception?: number;
-  insight?: number;
-  investigation?: number;
-  arcana?: number;
-  nature?: number;
-  survival?: number;
-  stealth?: number;
-}
+export interface Insert extends InsertInputs {}

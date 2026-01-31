@@ -4,9 +4,11 @@ import { CardEditor } from './components/CardEditor';
 import { PrintArea } from './components/PrintArea';
 import { SkillVisibilitySettings } from './components/SkillVisibilitySettings';
 import { useUserPreferences } from './hooks/useUserPreferences';
-import type { Insert, InsertInputs } from './types/Insert';
+import type { InsertInputs } from './types/Insert';
 import { generateId } from './utils/idGenerator';
+import { calculateMonsterValues } from './utils/monsterCalculations';
 import { calculateAdvancedPlayerValues } from './utils/playerCalculations';
+import { createEmptySkills } from './utils/skillHelpers';
 import './App.css';
 
 const emptyInsert: InsertInputs = {
@@ -31,42 +33,7 @@ const emptyInsert: InsertInputs = {
   proficiencyBonusOverride: true,
   maxHPOverride: true,
   darkvisionOverride: true,
-  profAcrobatics: 'none',
-  profAnimalHandling: 'none',
-  profArcana: 'none',
-  profAthletics: 'none',
-  profDeception: 'none',
-  profHistory: 'none',
-  profInsight: 'none',
-  profIntimidation: 'none',
-  profInvestigation: 'none',
-  profMedicine: 'none',
-  profNature: 'none',
-  profPerception: 'none',
-  profPerformance: 'none',
-  profPersuasion: 'none',
-  profReligion: 'none',
-  profSleightOfHand: 'none',
-  profStealth: 'none',
-  profSurvival: 'none',
-  modAcrobatics: 0,
-  modAnimalHandling: 0,
-  modArcana: 0,
-  modAthletics: 0,
-  modDeception: 0,
-  modHistory: 0,
-  modInsight: 0,
-  modIntimidation: 0,
-  modInvestigation: 0,
-  modMedicine: 0,
-  modNature: 0,
-  modPerception: 0,
-  modPerformance: 0,
-  modPersuasion: 0,
-  modReligion: 0,
-  modSleightOfHand: 0,
-  modStealth: 0,
-  modSurvival: 0,
+  skills: createEmptySkills(),
   monsterSize: 'Medium',
   monsterType: 'Humanoid',
   monsterTypeTag: '',
@@ -102,13 +69,51 @@ function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        return parsed.map((insert: InsertInputs) => ({
-          ...insert,
-          id: insert.id || generateId(), // Generate ID for old inserts without one
-          selected: insert.selected !== undefined ? insert.selected : true,
-          // Migrate old 'player-advanced' cards to 'player'
-          cardType: (insert.cardType as string) === 'player-advanced' ? 'player' : insert.cardType,
-        }));
+        return parsed.map((insert: any) => {
+          // Migrate skills if needed
+          let skills = insert.skills;
+          if (!skills || typeof skills !== 'object') {
+            // Old format - convert flat fields to skills object
+            skills = {};
+            const skillNames = [
+              'acrobatics',
+              'animalHandling',
+              'arcana',
+              'athletics',
+              'deception',
+              'history',
+              'insight',
+              'intimidation',
+              'investigation',
+              'medicine',
+              'nature',
+              'perception',
+              'performance',
+              'persuasion',
+              'religion',
+              'sleightOfHand',
+              'stealth',
+              'survival',
+            ];
+
+            for (const skillName of skillNames) {
+              const profField = `prof${skillName.charAt(0).toUpperCase() + skillName.slice(1)}`;
+              const modField = `mod${skillName.charAt(0).toUpperCase() + skillName.slice(1)}`;
+              skills[skillName] = {
+                proficiency: insert[profField] || 'none',
+                modifier: insert[modField] || 0,
+              };
+            }
+          }
+
+          return {
+            ...insert,
+            skills,
+            id: insert.id || generateId(),
+            selected: insert.selected !== undefined ? insert.selected : true,
+            cardType: (insert.cardType as string) === 'player-advanced' ? 'player' : insert.cardType,
+          };
+        });
       } catch (_e) {
         return [];
       }
@@ -121,28 +126,8 @@ function App() {
     if (input.cardType === 'player') {
       return calculateAdvancedPlayerValues(input);
     }
-    // For monsters, copy modifier values to skill fields for display
-    return {
-      ...input,
-      acrobatics: input.modAcrobatics,
-      animalHandling: input.modAnimalHandling,
-      arcana: input.modArcana,
-      athletics: input.modAthletics,
-      deception: input.modDeception,
-      history: input.modHistory,
-      insight: input.modInsight,
-      intimidation: input.modIntimidation,
-      investigation: input.modInvestigation,
-      medicine: input.modMedicine,
-      nature: input.modNature,
-      perception: input.modPerception,
-      performance: input.modPerformance,
-      persuasion: input.modPersuasion,
-      religion: input.modReligion,
-      sleightOfHand: input.modSleightOfHand,
-      stealth: input.modStealth,
-      survival: input.modSurvival,
-    } as Insert;
+    // For monsters, use calculator to handle both pre-calculated and auto-calc modes
+    return calculateMonsterValues(input);
   });
 
   useEffect(() => {

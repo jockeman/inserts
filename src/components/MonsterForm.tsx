@@ -2,6 +2,9 @@ import { Button, Collapse, Group, Paper, Select, Stack, Textarea, TextInput } fr
 import { useState } from 'react';
 import type { Insert, InsertInputs } from '../types/Insert';
 import { parseMonsterStatBlock } from '../utils/monsterParser';
+import { ALL_SKILLS } from '../utils/skillConfig';
+import { AbilityInput } from './AbilityInput';
+import { SkillInput } from './SkillInput';
 
 interface MonsterFormProps {
   insert: Insert;
@@ -145,51 +148,15 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
       </Group>
 
       <Group grow>
-        <TextInput
-          label="STR"
-          value={insert.str}
-          onChange={(e) => onUpdate('str', e.target.value)}
-          type="number"
-          placeholder="e.g., 7"
-        />
-        <TextInput
-          label="DEX"
-          value={insert.dex}
-          onChange={(e) => onUpdate('dex', e.target.value)}
-          type="number"
-          placeholder="e.g., 15"
-        />
-        <TextInput
-          label="CON"
-          value={insert.con}
-          onChange={(e) => onUpdate('con', e.target.value)}
-          type="number"
-          placeholder="e.g., 11"
-        />
+        <AbilityInput ability="str" value={insert.str} onUpdate={onUpdate} placeholder="e.g., 7" />
+        <AbilityInput ability="dex" value={insert.dex} onUpdate={onUpdate} placeholder="e.g., 15" />
+        <AbilityInput ability="con" value={insert.con} onUpdate={onUpdate} placeholder="e.g., 11" />
       </Group>
 
       <Group grow>
-        <TextInput
-          label="INT"
-          value={insert.int}
-          onChange={(e) => onUpdate('int', e.target.value)}
-          type="number"
-          placeholder="e.g., 10"
-        />
-        <TextInput
-          label="WIS"
-          value={insert.wis}
-          onChange={(e) => onUpdate('wis', e.target.value)}
-          type="number"
-          placeholder="e.g., 14"
-        />
-        <TextInput
-          label="CHA"
-          value={insert.cha}
-          onChange={(e) => onUpdate('cha', e.target.value)}
-          type="number"
-          placeholder="e.g., 8"
-        />
+        <AbilityInput ability="int" value={insert.int} onUpdate={onUpdate} placeholder="e.g., 10" />
+        <AbilityInput ability="wis" value={insert.wis} onUpdate={onUpdate} placeholder="e.g., 14" />
+        <AbilityInput ability="cha" value={insert.cha} onUpdate={onUpdate} placeholder="e.g., 8" />
       </Group>
 
       <Paper p="md" withBorder>
@@ -253,145 +220,20 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
           {showSkills ? '▼' : '▶'} Skills
         </Button>
         <Collapse in={showSkills}>
-          <Stack gap="sm">
-            <Group grow>
-              <TextInput
-                label="Acrobatics"
-                value={insert.modAcrobatics || ''}
-                onChange={(e) => onUpdate('modAcrobatics', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Animal Handling"
-                value={insert.modAnimalHandling || ''}
-                onChange={(e) => onUpdate('modAnimalHandling', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Arcana"
-                value={insert.modArcana || ''}
-                onChange={(e) => onUpdate('modArcana', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-            </Group>
-            <Group grow>
-              <TextInput
-                label="Athletics"
-                value={insert.modAthletics || ''}
-                onChange={(e) => onUpdate('modAthletics', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Deception"
-                value={insert.modDeception || ''}
-                onChange={(e) => onUpdate('modDeception', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="History"
-                value={insert.modHistory || ''}
-                onChange={(e) => onUpdate('modHistory', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-            </Group>
-            <Group grow>
-              <TextInput
-                label="Insight"
-                value={insert.modInsight || ''}
-                onChange={(e) => onUpdate('modInsight', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Intimidation"
-                value={insert.modIntimidation || ''}
-                onChange={(e) => onUpdate('modIntimidation', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Investigation"
-                value={insert.modInvestigation || ''}
-                onChange={(e) => onUpdate('modInvestigation', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-            </Group>
-            <Group grow>
-              <TextInput
-                label="Medicine"
-                value={insert.modMedicine || ''}
-                onChange={(e) => onUpdate('modMedicine', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Nature"
-                value={insert.modNature || ''}
-                onChange={(e) => onUpdate('modNature', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Perception"
-                value={insert.modPerception || ''}
-                onChange={(e) => onUpdate('modPerception', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-            </Group>
-            <Group grow>
-              <TextInput
-                label="Performance"
-                value={insert.modPerformance || ''}
-                onChange={(e) => onUpdate('modPerformance', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Persuasion"
-                value={insert.modPersuasion || ''}
-                onChange={(e) => onUpdate('modPersuasion', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Religion"
-                value={insert.modReligion || ''}
-                onChange={(e) => onUpdate('modReligion', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-            </Group>
-            <Group grow>
-              <TextInput
-                label="Sleight of Hand"
-                value={insert.modSleightOfHand || ''}
-                onChange={(e) => onUpdate('modSleightOfHand', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Stealth"
-                value={insert.modStealth || ''}
-                onChange={(e) => onUpdate('modStealth', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-              <TextInput
-                label="Survival"
-                value={insert.modSurvival || ''}
-                onChange={(e) => onUpdate('modSurvival', e.target.value)}
-                placeholder="+0"
-                type="number"
-              />
-            </Group>
+          <Stack gap="md">
+            {Object.entries(ALL_SKILLS).map(([skillKey, skillInfo]) => {
+              const skill = insert.skills[skillInfo.key];
+              return (
+                <SkillInput
+                  key={skillKey}
+                  skillName={skillInfo.key}
+                  skillInfo={skillInfo}
+                  skill={skill}
+                  skills={insert.skills}
+                  onUpdate={onUpdate}
+                />
+              );
+            })}
           </Stack>
         </Collapse>
       </Paper>
@@ -402,7 +244,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
           Array.isArray(insert.damageImmunities) ? insert.damageImmunities.join(', ') : insert.damageImmunities || ''
         }
         onChange={(e) => onUpdate('damageImmunities', e.target.value)}
-        placeholder="e.g., fire, poison"
+        placeholder="e.g., poison, psychic"
       />
 
       <TextInput
@@ -453,32 +295,28 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         />
       </Group>
 
-      {isLarge && (
-        <>
-          <Textarea
-            label="Traits (one per line)"
-            value={insert.traits}
-            onChange={(e) => onUpdate('traits', e.target.value)}
-            minRows={3}
-            placeholder="e.g., Amphibious. The blade can breathe air and water."
-          />
+      <Textarea
+        label="Traits (one per line)"
+        value={insert.traits}
+        onChange={(e) => onUpdate('traits', e.target.value)}
+        minRows={3}
+        placeholder="e.g., Amphibious. The blade can breathe air and water."
+      />
 
-          <Textarea
-            label="Actions (one per line)"
-            value={insert.actions}
-            onChange={(e) => onUpdate('actions', e.target.value)}
-            minRows={3}
-            placeholder="e.g., Machete. Melee Weapon Attack: +4 to hit..."
-          />
+      <Textarea
+        label="Actions (one per line)"
+        value={insert.actions}
+        onChange={(e) => onUpdate('actions', e.target.value)}
+        minRows={3}
+        placeholder="e.g., Machete. Melee Weapon Attack: +4 to hit..."
+      />
 
-          <Textarea
-            label="Bonus Actions (one per line)"
-            value={insert.bonusActions}
-            onChange={(e) => onUpdate('bonusActions', e.target.value)}
-            minRows={3}
-          />
-        </>
-      )}
+      <Textarea
+        label="Bonus Actions (one per line)"
+        value={insert.bonusActions}
+        onChange={(e) => onUpdate('bonusActions', e.target.value)}
+        minRows={3}
+      />
     </Stack>
   );
 }

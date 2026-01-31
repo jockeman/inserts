@@ -16,7 +16,7 @@ import {
   FaUserSecret,
 } from 'react-icons/fa';
 import { GiCampingTent, GiJumpingRope } from 'react-icons/gi';
-import type { Insert } from '../types/Insert';
+import type { SkillName } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 
 type AbilityType = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
@@ -25,155 +25,117 @@ export type ProficiencyLevel = 'none' | 'half' | 'proficient' | 'expert';
 export interface SkillInfo {
   label: string;
   ability: AbilityType;
-  passiveField: keyof Insert;
-  profField: keyof Insert;
-  modField: keyof Insert;
+  key: SkillName; // The key in the skills object
   icon: React.ElementType;
 }
 
-export const ALL_SKILLS: Record<string, SkillInfo> = {
+export const ALL_SKILLS: Record<SkillName, SkillInfo> = {
   acrobatics: {
     label: 'Acrobatics',
     ability: 'dex',
-    passiveField: 'acrobatics',
-    profField: 'profAcrobatics',
-    modField: 'modAcrobatics',
+    key: 'acrobatics',
     icon: GiJumpingRope,
   },
   animalHandling: {
     label: 'Animal Handling',
     ability: 'wis',
-    passiveField: 'animalHandling',
-    profField: 'profAnimalHandling',
-    modField: 'modAnimalHandling',
+    key: 'animalHandling',
     icon: FaPaw,
   },
   arcana: {
     label: 'Arcana',
     ability: 'int',
-    passiveField: 'arcana',
-    profField: 'profArcana',
-    modField: 'modArcana',
+    key: 'arcana',
     icon: FaBook,
   },
   athletics: {
     label: 'Athletics',
     ability: 'str',
-    passiveField: 'athletics',
-    profField: 'profAthletics',
-    modField: 'modAthletics',
+    key: 'athletics',
     icon: FaDumbbell,
   },
   deception: {
     label: 'Deception',
     ability: 'cha',
-    passiveField: 'deception',
-    profField: 'profDeception',
-    modField: 'modDeception',
+    key: 'deception',
     icon: FaTheaterMasks,
   },
   history: {
     label: 'History',
     ability: 'int',
-    passiveField: 'history',
-    profField: 'profHistory',
-    modField: 'modHistory',
+    key: 'history',
     icon: FaScroll,
   },
   insight: {
     label: 'Insight',
     ability: 'wis',
-    passiveField: 'insight',
-    profField: 'profInsight',
-    modField: 'modInsight',
+    key: 'insight',
     icon: FaBrain,
   },
   intimidation: {
     label: 'Intimidation',
     ability: 'cha',
-    passiveField: 'intimidation',
-    profField: 'profIntimidation',
-    modField: 'modIntimidation',
+    key: 'intimidation',
     icon: FaHandRock,
   },
   investigation: {
     label: 'Investigation',
     ability: 'int',
-    passiveField: 'investigation',
-    profField: 'profInvestigation',
-    modField: 'modInvestigation',
+    key: 'investigation',
     icon: FaSearch,
   },
   medicine: {
     label: 'Medicine',
     ability: 'wis',
-    passiveField: 'medicine',
-    profField: 'profMedicine',
-    modField: 'modMedicine',
+    key: 'medicine',
     icon: FaBriefcaseMedical,
   },
   nature: {
     label: 'Nature',
     ability: 'int',
-    passiveField: 'nature',
-    profField: 'profNature',
-    modField: 'modNature',
+    key: 'nature',
     icon: FaBook,
   },
   perception: {
     label: 'Perception',
     ability: 'wis',
-    passiveField: 'perception',
-    profField: 'profPerception',
-    modField: 'modPerception',
+    key: 'perception',
     icon: FaEye,
   },
   performance: {
     label: 'Performance',
     ability: 'cha',
-    passiveField: 'performance',
-    profField: 'profPerformance',
-    modField: 'modPerformance',
+    key: 'performance',
     icon: FaMusic,
   },
   persuasion: {
     label: 'Persuasion',
     ability: 'cha',
-    passiveField: 'persuasion',
-    profField: 'profPersuasion',
-    modField: 'modPersuasion',
+    key: 'persuasion',
     icon: FaComments,
   },
   religion: {
     label: 'Religion',
     ability: 'int',
-    passiveField: 'religion',
-    profField: 'profReligion',
-    modField: 'modReligion',
+    key: 'religion',
     icon: FaPray,
   },
   sleightOfHand: {
     label: 'Sleight of Hand',
     ability: 'dex',
-    passiveField: 'sleightOfHand',
-    profField: 'profSleightOfHand',
-    modField: 'modSleightOfHand',
+    key: 'sleightOfHand',
     icon: FaHandPaper,
   },
   stealth: {
     label: 'Stealth',
     ability: 'dex',
-    passiveField: 'stealth',
-    profField: 'profStealth',
-    modField: 'modStealth',
+    key: 'stealth',
     icon: FaUserSecret,
   },
   survival: {
     label: 'Survival',
     ability: 'wis',
-    passiveField: 'survival',
-    profField: 'profSurvival',
-    modField: 'modSurvival',
+    key: 'survival',
     icon: GiCampingTent,
   },
 };

@@ -59,7 +59,7 @@ export function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, pref
 
         {visibleSkills.map(([skillKey, skillInfo]) => {
           const Icon = skillInfo.icon;
-          const value = insert[skillInfo.passiveField] as string;
+          const value = insert.skills[skillInfo.key]?.value;
           return (
             <div key={skillKey} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
               <Icon size="4.5mm" />

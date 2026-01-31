@@ -1,4 +1,5 @@
 import { Button, Checkbox, Group, Modal, Stack, Text } from '@mantine/core';
+import type { SkillName } from '../types/Insert';
 import { DEFAULT_SKILL_VISIBILITY, type UserPreferences } from '../types/UserPreferences';
 import { ALL_SKILLS } from '../utils/skillConfig';
 
@@ -107,7 +108,7 @@ export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate
               {skillsByAbility[ability as keyof typeof skillsByAbility].map((skillKey) => (
                 <Checkbox
                   key={skillKey}
-                  label={ALL_SKILLS[skillKey].label}
+                  label={ALL_SKILLS[skillKey as SkillName].label}
                   checked={preferences.skillVisibility[skillKey as keyof typeof preferences.skillVisibility]}
                   onChange={(e) => handleToggle(skillKey, e.currentTarget.checked)}
                 />
