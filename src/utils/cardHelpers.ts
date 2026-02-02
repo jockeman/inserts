@@ -1,9 +1,9 @@
-import { calculateModifier } from './passiveCalculator';
+import { calculateAbilityModifier } from './abilityHelpers';
 
-// Helper function to calculate ability modifier
-export const formatModifier = (stat: number): string => {
+// Helper function to format ability score with its modifier
+export const formatAbilityScore = (stat: number): string => {
   if (Number.isNaN(stat)) return '';
-  const modifier = calculateModifier(stat);
+  const modifier = calculateAbilityModifier(stat);
   const sign = modifier >= 0 ? '+' : '';
   return `${stat} (${sign}${modifier})`;
 };
@@ -11,7 +11,7 @@ export const formatModifier = (stat: number): string => {
 // Helper function to calculate only the modifier (for small cards)
 export const formatModifierOnly = (stat: number): string => {
   if (Number.isNaN(stat)) return '';
-  const modifier = calculateModifier(stat);
+  const modifier = calculateAbilityModifier(stat);
   const sign = modifier >= 0 ? '+' : '';
   return `${sign}${modifier}`;
 };

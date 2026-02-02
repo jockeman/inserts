@@ -1,17 +1,10 @@
 import type { Insert, InsertInputs, SkillName } from '../types/Insert';
+import type { ProficiencyLevel } from '../types/Shared';
+import { getAbilityScore } from './abilityHelpers';
 import { calculateMaxHP, calculateProficiencyBonus } from './levelCalculations';
 import { calculatePassive } from './passiveCalculator';
 import { getDarkvisionForRace } from './raceConfig';
-import { ALL_SKILLS, type ProficiencyLevel } from './skillConfig';
-
-const ABILITY_FIELD_MAP = {
-  str: 'str',
-  dex: 'dex',
-  con: 'con',
-  int: 'int',
-  wis: 'wis',
-  cha: 'cha',
-} as const;
+import { ALL_SKILLS } from './skillConfig';
 
 /**
  * Calculates all derived values for a player card.
@@ -55,8 +48,7 @@ export function calculateAdvancedPlayerValues(inputs: InsertInputs): Insert {
   for (const [skillKey, skillInfo] of Object.entries(ALL_SKILLS)) {
     const skillName = skillKey as SkillName;
     const skill = result.skills[skillName];
-    const abilityField = ABILITY_FIELD_MAP[skillInfo.ability];
-    const abilityScore = result[abilityField] as number;
+    const abilityScore = getAbilityScore(result, skillInfo.ability);
 
     if (abilityScore && result.proficiencyBonus !== undefined) {
       const passiveValue = calculatePassive(

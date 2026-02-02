@@ -1,5 +1,5 @@
 import type { Insert, InsertInputs, SkillName } from '../types/Insert';
-import { calculateAbilityModifier, calculateProficiencyBonus } from './abilityHelpers';
+import { applyProficiencyMultiplier, calculateAbilityModifier, getAbilityScore } from './abilityHelpers';
 import { ALL_SKILLS } from './skillConfig';
 
 /**
@@ -47,16 +47,7 @@ export function calculateMonsterValues(inputs: InsertInputs): Insert {
 
     if (shouldAutoCalc) {
       // Auto-calculate from ability scores + proficiency
-      const abilityScoreMap = {
-        str: inputs.str,
-        dex: inputs.dex,
-        con: inputs.con,
-        int: inputs.int,
-        wis: inputs.wis,
-        cha: inputs.cha,
-      };
-
-      const abilityScore = abilityScoreMap[skillInfo.ability];
+      const abilityScore = getAbilityScore(inputs, skillInfo.ability);
       const profLevel = skill.proficiency;
       const isProficient = profLevel === 'proficient' || profLevel === 'expert';
 
@@ -65,7 +56,7 @@ export function calculateMonsterValues(inputs: InsertInputs): Insert {
         let skillBonus = abilityMod;
 
         if (isProficient && inputs.proficiencyBonus) {
-          const profBonus = calculateProficiencyBonus(profLevel || 'none', inputs.proficiencyBonus);
+          const profBonus = applyProficiencyMultiplier(profLevel || 'none', inputs.proficiencyBonus);
           skillBonus += profBonus;
         }
 

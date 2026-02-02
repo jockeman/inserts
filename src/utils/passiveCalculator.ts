@@ -1,12 +1,5 @@
-import { calculateAbilityModifier, calculateSkillBonus } from './abilityHelpers';
-import type { ProficiencyLevel } from './skillConfig';
-
-/**
- * Legacy export for backward compatibility
- */
-export function calculateModifier(score: number): number {
-  return calculateAbilityModifier(score);
-}
+import type { ProficiencyLevel } from '../types/Shared';
+import { calculateSkillBonus } from './abilityHelpers';
 
 /**
  * Calculate passive skill value (base 10 + ability mod + proficiency + manual mod)

@@ -17,10 +17,8 @@ import {
 } from 'react-icons/fa';
 import { GiCampingTent, GiJumpingRope } from 'react-icons/gi';
 import type { SkillName } from '../types/Insert';
+import type { AbilityType } from '../types/Shared';
 import type { UserPreferences } from '../types/UserPreferences';
-
-type AbilityType = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
-export type ProficiencyLevel = 'none' | 'half' | 'proficient' | 'expert';
 
 export interface SkillInfo {
   label: string;

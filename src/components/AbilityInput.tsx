@@ -1,6 +1,7 @@
 import { Badge, TextInput } from '@mantine/core';
 import type { InsertInputs } from '../types/Insert';
-import { ABILITY_LABELS, type AbilityType, calculateAbilityModifier, formatModifier } from '../utils/abilityHelpers';
+import type { AbilityType } from '../types/Shared';
+import { ABILITY_LABELS, calculateAbilityModifier, formatModifier } from '../utils/abilityHelpers';
 
 interface AbilityInputProps {
   ability: AbilityType;

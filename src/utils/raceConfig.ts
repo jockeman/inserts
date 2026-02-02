@@ -1,15 +1,4 @@
-export type RaceName =
-  | 'Dragonborn'
-  | 'Dwarf'
-  | 'Elf'
-  | 'Gnome'
-  | 'Goliath'
-  | 'Half-Elf'
-  | 'Half-Orc'
-  | 'Halfling'
-  | 'Human'
-  | 'Tabaxi'
-  | 'Tiefling';
+import type { RaceName } from '../types/Shared';
 
 interface RaceInfo {
   name: RaceName;

@@ -2,9 +2,8 @@
  * Shared utility functions for ability score and modifier calculations
  */
 
-import type { ProficiencyLevel } from './skillConfig';
+import type { AbilityType, ProficiencyLevel } from '../types/Shared';
 
-export type AbilityType = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
 export const ABILITY_LABELS: Record<AbilityType, string> = {
   str: 'STR',
   dex: 'DEX',
@@ -13,6 +12,7 @@ export const ABILITY_LABELS: Record<AbilityType, string> = {
   wis: 'WIS',
   cha: 'CHA',
 };
+
 /**
  * Calculate ability modifier from ability score
  * Formula: floor((score - 10) / 2)
@@ -40,32 +40,40 @@ export function calculateSkillBonus(
   manualMod: number = 0
 ): number {
   const abilityMod = calculateAbilityModifier(abilityScore);
-  const profBonus = calculateProficiencyBonus(profLevel, proficiencyBonus);
+  const profBonus = applyProficiencyMultiplier(profLevel, proficiencyBonus);
   return abilityMod + profBonus + manualMod;
 }
 
 /**
- * Calculate proficiency bonus based on proficiency level
+ * Apply proficiency multiplier to base proficiency bonus
  * @param profLevel - 'none', 'half', 'proficient', or 'expert'
- * @param proficiencyBonus - Base proficiency bonus
+ * @param baseProfBonus - Base proficiency bonus
  * @returns The proficiency bonus multiplied by the appropriate factor
  */
-function getProficiencyMultiplier(profLevel: ProficiencyLevel): number {
+export function applyProficiencyMultiplier(profLevel: ProficiencyLevel, baseProfBonus: number): number {
+  let multiplier: number;
   switch (profLevel) {
     case 'half':
-      return 0.5;
+      multiplier = 0.5;
+      break;
     case 'proficient':
-      return 1;
+      multiplier = 1;
+      break;
     case 'expert':
-      return 2;
+      multiplier = 2;
+      break;
     default:
-      return 0;
+      multiplier = 0;
   }
+  return Math.floor(baseProfBonus * multiplier);
 }
 
 /**
- * Calculate the total proficiency bonus for a skill
+ * Get ability score value from an object containing ability scores
+ * @param abilities - Object with ability score properties
+ * @param abilityType - Which ability to retrieve (str, dex, con, int, wis, cha)
+ * @returns The ability score value
  */
-export function calculateProficiencyBonus(profLevel: ProficiencyLevel, baseProfBonus: number): number {
-  return Math.floor(baseProfBonus * getProficiencyMultiplier(profLevel));
+export function getAbilityScore(abilities: { [K in AbilityType]: number }, abilityType: AbilityType): number {
+  return abilities[abilityType];
 }

@@ -1,5 +1,5 @@
 import type { Insert } from '../types/Insert';
-import { formatBonus, formatModifier, formatModifierOnly } from '../utils/cardHelpers';
+import { formatAbilityScore, formatBonus, formatModifierOnly } from '../utils/cardHelpers';
 
 interface MonsterInsertCardProps {
   insert: Insert;
@@ -142,32 +142,32 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
           >
             {insert.str && (
               <div>
-                <b>STR</b> {isLarge ? formatModifier(insert.str) : formatModifierOnly(insert.str)}
+                <b>STR</b> {isLarge ? formatAbilityScore(insert.str) : formatModifierOnly(insert.str)}
               </div>
             )}
             {insert.dex && (
               <div>
-                <b>DEX</b> {isLarge ? formatModifier(insert.dex) : formatModifierOnly(insert.dex)}
+                <b>DEX</b> {isLarge ? formatAbilityScore(insert.dex) : formatModifierOnly(insert.dex)}
               </div>
             )}
             {insert.con && (
               <div>
-                <b>CON</b> {isLarge ? formatModifier(insert.con) : formatModifierOnly(insert.con)}
+                <b>CON</b> {isLarge ? formatAbilityScore(insert.con) : formatModifierOnly(insert.con)}
               </div>
             )}
             {insert.int && (
               <div>
-                <b>INT</b> {isLarge ? formatModifier(insert.int) : formatModifierOnly(insert.int)}
+                <b>INT</b> {isLarge ? formatAbilityScore(insert.int) : formatModifierOnly(insert.int)}
               </div>
             )}
             {insert.wis && (
               <div>
-                <b>WIS</b> {isLarge ? formatModifier(insert.wis) : formatModifierOnly(insert.wis)}
+                <b>WIS</b> {isLarge ? formatAbilityScore(insert.wis) : formatModifierOnly(insert.wis)}
               </div>
             )}
             {insert.cha && (
               <div>
-                <b>CHA</b> {isLarge ? formatModifier(insert.cha) : formatModifierOnly(insert.cha)}
+                <b>CHA</b> {isLarge ? formatAbilityScore(insert.cha) : formatModifierOnly(insert.cha)}
               </div>
             )}
           </div>

@@ -1,6 +1,4 @@
-import type { ClassName } from '../utils/classConfig';
-import type { RaceName } from '../utils/raceConfig';
-import type { ProficiencyLevel } from '../utils/skillConfig';
+import type { ClassName, ProficiencyLevel, RaceName } from './Shared';
 
 // D&D 5e Monster Sizes
 export type MonsterSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Gargantuan';

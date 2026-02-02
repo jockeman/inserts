@@ -1,4 +1,5 @@
-import { type ClassName, getHitDieForClass } from './classConfig';
+import type { ClassName } from '../types/Shared';
+import { getHitDieForClass } from './classConfig';
 
 export function calculateProficiencyBonus(level: number): number {
   if (Number.isNaN(level) || level < 1) return 2;

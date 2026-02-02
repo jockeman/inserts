@@ -1,7 +1,7 @@
 import { Button, Checkbox, Group, Modal, Stack, Text } from '@mantine/core';
 import type { SkillName } from '../types/Insert';
+import type { AbilityType } from '../types/Shared';
 import { DEFAULT_SKILL_VISIBILITY, type UserPreferences } from '../types/UserPreferences';
-import type { AbilityType } from '../utils/abilityHelpers';
 import { ALL_SKILLS } from '../utils/skillConfig';
 
 interface SkillVisibilitySettingsProps {

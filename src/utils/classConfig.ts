@@ -1,16 +1,4 @@
-export type ClassName =
-  | 'Barbarian'
-  | 'Bard'
-  | 'Cleric'
-  | 'Druid'
-  | 'Fighter'
-  | 'Monk'
-  | 'Paladin'
-  | 'Ranger'
-  | 'Rogue'
-  | 'Sorcerer'
-  | 'Warlock'
-  | 'Wizard';
+import type { ClassName } from '../types/Shared';
 
 interface ClassInfo {
   name: ClassName;
