@@ -1,6 +1,7 @@
 import { Button, Checkbox, Group, Modal, Stack, Text } from '@mantine/core';
 import type { SkillName } from '../types/Insert';
 import { DEFAULT_SKILL_VISIBILITY, type UserPreferences } from '../types/UserPreferences';
+import type { AbilityType } from '../utils/abilityHelpers';
 import { ALL_SKILLS } from '../utils/skillConfig';
 
 interface SkillVisibilitySettingsProps {
@@ -21,24 +22,18 @@ export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate
   };
 
   const selectAll = () => {
-    const allTrue = Object.keys(ALL_SKILLS).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: true,
-      }),
-      {} as typeof preferences.skillVisibility
-    );
+    const allTrue = Object.fromEntries((Object.keys(ALL_SKILLS) as SkillName[]).map((key) => [key, true])) as Record<
+      SkillName,
+      boolean
+    >;
     onUpdate({ skillVisibility: allTrue });
   };
 
   const deselectAll = () => {
-    const allFalse = Object.keys(ALL_SKILLS).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: false,
-      }),
-      {} as typeof preferences.skillVisibility
-    );
+    const allFalse = Object.fromEntries((Object.keys(ALL_SKILLS) as SkillName[]).map((key) => [key, false])) as Record<
+      SkillName,
+      boolean
+    >;
     onUpdate({ skillVisibility: allFalse });
   };
 
@@ -47,20 +42,20 @@ export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate
   };
 
   // Group skills by ability
-  const skillsByAbility = {
-    str: [] as string[],
-    dex: [] as string[],
-    con: [] as string[],
-    int: [] as string[],
-    wis: [] as string[],
-    cha: [] as string[],
+  const skillsByAbility: Record<AbilityType, string[]> = {
+    str: [],
+    dex: [],
+    con: [],
+    int: [],
+    wis: [],
+    cha: [],
   };
 
   for (const [key, info] of Object.entries(ALL_SKILLS)) {
     skillsByAbility[info.ability].push(key);
   }
 
-  const abilityLabels = {
+  const abilityLabels: Record<AbilityType, string> = {
     str: 'Strength',
     dex: 'Dexterity',
     con: 'Constitution',
@@ -88,23 +83,30 @@ export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate
           </Button>
         </Group>
 
-        {Object.entries(abilityLabels).map(([ability, label]) => (
-          <div key={ability}>
-            <Text size="sm" fw={600} mb="xs">
-              {label}
-            </Text>
-            <Stack gap="xs">
-              {skillsByAbility[ability as keyof typeof skillsByAbility].map((skillKey) => (
-                <Checkbox
-                  key={skillKey}
-                  label={ALL_SKILLS[skillKey as SkillName].label}
-                  checked={preferences.skillVisibility[skillKey as keyof typeof preferences.skillVisibility]}
-                  onChange={(e) => handleToggle(skillKey, e.currentTarget.checked)}
-                />
-              ))}
-            </Stack>
-          </div>
-        ))}
+        {(Object.entries(abilityLabels) as [AbilityType, string][]).map(([ability, label]) => {
+          const abilitySkills = skillsByAbility[ability];
+          // Hide abilities without skills
+          if (abilitySkills.length === 0) {
+            return null;
+          }
+          return (
+            <div key={ability}>
+              <Text size="sm" fw={600} mb="xs">
+                {label}
+              </Text>
+              <Stack gap="xs">
+                {abilitySkills.map((skillKey) => (
+                  <Checkbox
+                    key={skillKey}
+                    label={ALL_SKILLS[skillKey as SkillName].label}
+                    checked={preferences.skillVisibility[skillKey as SkillName]}
+                    onChange={(e) => handleToggle(skillKey, e.currentTarget.checked)}
+                  />
+                ))}
+              </Stack>
+            </div>
+          );
+        })}
 
         <Group justify="flex-end" mt="md">
           <Button onClick={onClose}>Done</Button>

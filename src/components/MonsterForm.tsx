@@ -1,6 +1,6 @@
 import { Button, Collapse, Group, Paper, Select, Stack, Textarea, TextInput } from '@mantine/core';
-import { useState } from 'react';
-import type { Insert, InsertInputs } from '../types/Insert';
+import { useCallback, useState } from 'react';
+import type { Insert, InsertInputs, SkillName } from '../types/Insert';
 import { parseMonsterStatBlock } from '../utils/monsterParser';
 import { ALL_SKILLS } from '../utils/skillConfig';
 import { AbilityInput } from './AbilityInput';
@@ -12,11 +12,21 @@ interface MonsterFormProps {
 }
 
 export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
-  const isLarge = insert.size === 'large';
   const [statBlockText, setStatBlockText] = useState('');
   const [showParser, setShowParser] = useState(false);
   const [showSkills, setShowSkills] = useState(false);
   const [showSaves, setShowSaves] = useState(false);
+
+  const handleSkillUpdate = useCallback(
+    (skillName: SkillName, proficiency: string, modifier: number) => {
+      const updatedSkills = {
+        ...insert.skills,
+        [skillName]: { ...insert.skills[skillName], proficiency, modifier },
+      };
+      onUpdate('skills', updatedSkills as any);
+    },
+    [insert.skills, onUpdate]
+  );
 
   const handleParse = () => {
     const parsed = parseMonsterStatBlock(statBlockText);
@@ -222,15 +232,15 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         <Collapse in={showSkills}>
           <Stack gap="md">
             {Object.entries(ALL_SKILLS).map(([skillKey, skillInfo]) => {
-              const skill = insert.skills[skillInfo.key];
+              const skillName = skillKey as SkillName;
+              const skill = insert.skills[skillName];
               return (
                 <SkillInput
                   key={skillKey}
-                  skillName={skillInfo.key}
+                  skillName={skillName}
                   skillInfo={skillInfo}
                   skill={skill}
-                  skills={insert.skills}
-                  onUpdate={onUpdate}
+                  onUpdate={handleSkillUpdate}
                 />
               );
             })}

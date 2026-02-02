@@ -1,8 +1,9 @@
 import { Checkbox, Group, Select, Stack, Text, TextInput } from '@mantine/core';
-import type { Insert, InsertInputs } from '../types/Insert';
+import { useCallback } from 'react';
+import type { Insert, InsertInputs, SkillName } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
-import { getClassOptions } from '../utils/classConfig';
-import { getRaceOptions } from '../utils/raceConfig';
+import { CLASS_OPTIONS } from '../utils/classConfig';
+import { RACE_OPTIONS } from '../utils/raceConfig';
 import { getVisibleSkills } from '../utils/skillConfig';
 import { AbilityInput } from './AbilityInput';
 import { SkillInput } from './SkillInput';
@@ -17,20 +18,31 @@ interface PlayerFormProps {
 export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: PlayerFormProps) {
   const visibleSkills = getVisibleSkills(preferences);
 
+  const handleSkillUpdate = useCallback(
+    (skillName: SkillName, proficiency: string, modifier: number) => {
+      const updatedSkills = {
+        ...insert.skills,
+        [skillName]: { ...insert.skills[skillName], proficiency, modifier },
+      };
+      onUpdate('skills', updatedSkills as any);
+    },
+    [insert.skills, onUpdate]
+  );
+
   return (
     <Stack gap="md">
       <Select
         label="Race"
         value={insert.race}
         onChange={(value) => onUpdate('race', value || '')}
-        data={getRaceOptions()}
+        data={RACE_OPTIONS}
       />
 
       <Select
         label="Class"
         value={insert.class}
         onChange={(value) => onUpdate('class', value || '')}
-        data={getClassOptions()}
+        data={CLASS_OPTIONS}
       />
 
       <Group grow>
@@ -102,8 +114,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
             skillName={skillInfo.key}
             skillInfo={skillInfo}
             skill={skill}
-            skills={insert.skills}
-            onUpdate={onUpdate}
+            onUpdate={handleSkillUpdate}
           />
         );
       })}

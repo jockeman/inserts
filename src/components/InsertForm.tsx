@@ -1,4 +1,5 @@
 import { Group, Select, Stack, TextInput } from '@mantine/core';
+import { useCallback } from 'react';
 import type { Insert, InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { ImageInput } from './ImageInput';
@@ -12,32 +13,40 @@ interface InsertFormProps {
   preferences: UserPreferences;
 }
 
+const CARD_TYPE_OPTIONS = [
+  { value: 'player', label: 'Player' },
+  { value: 'monster', label: 'Monster' },
+];
+
+const SIZE_OPTIONS = [
+  { value: 'small', label: 'Small (37x77mm)' },
+  { value: 'large', label: 'Large (64x89mm)' },
+];
+
 export function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: InsertFormProps) {
   const isMonster = insert.cardType === 'monster';
 
+  const handleNameChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => onUpdate('name', e.target.value),
+    [onUpdate]
+  );
+
+  const handleCardTypeChange = useCallback(
+    (value: string | null) => onUpdate('cardType', value || 'player'),
+    [onUpdate]
+  );
+
+  const handleSizeChange = useCallback((value: string | null) => onUpdate('size', value || 'small'), [onUpdate]);
+
+  const handleImageChange = useCallback((val: string) => onUpdate('image', val), [onUpdate]);
+
   return (
     <Stack gap="md">
-      <TextInput label="Name" value={insert.name} onChange={(e) => onUpdate('name', e.target.value)} />
+      <TextInput label="Name" value={insert.name} onChange={handleNameChange} />
 
       <Group grow>
-        <Select
-          label="Card Type"
-          value={insert.cardType}
-          onChange={(value) => onUpdate('cardType', value || 'player')}
-          data={[
-            { value: 'player', label: 'Player' },
-            { value: 'monster', label: 'Monster' },
-          ]}
-        />
-        <Select
-          label="Size"
-          value={insert.size}
-          onChange={(value) => onUpdate('size', value || 'small')}
-          data={[
-            { value: 'small', label: 'Small (37x77mm)' },
-            { value: 'large', label: 'Large (64x89mm)' },
-          ]}
-        />
+        <Select label="Card Type" value={insert.cardType} onChange={handleCardTypeChange} data={CARD_TYPE_OPTIONS} />
+        <Select label="Size" value={insert.size} onChange={handleSizeChange} data={SIZE_OPTIONS} />
       </Group>
 
       {isMonster ? (
@@ -46,7 +55,7 @@ export function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: I
         <PlayerForm insert={insert} onUpdate={onUpdate} onUpdateBoolean={onUpdateBoolean} preferences={preferences} />
       )}
 
-      <ImageInput value={insert.image} onChange={(val) => onUpdate('image', val)} />
+      <ImageInput value={insert.image} onChange={handleImageChange} />
     </Stack>
   );
 }

@@ -1,13 +1,11 @@
 import { Button, Group, Title } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import { CardEditor } from './components/CardEditor';
+import { useCallback, useEffect, useState } from 'react';
+import { CardEditorWrapper } from './components/CardEditorWrapper';
 import { PrintArea } from './components/PrintArea';
 import { SkillVisibilitySettings } from './components/SkillVisibilitySettings';
 import { useUserPreferences } from './hooks/useUserPreferences';
 import type { InsertInputs } from './types/Insert';
 import { generateId } from './utils/idGenerator';
-import { calculateMonsterValues } from './utils/monsterCalculations';
-import { calculateAdvancedPlayerValues } from './utils/playerCalculations';
 import { createEmptySkills } from './utils/skillHelpers';
 import './App.css';
 
@@ -66,138 +64,76 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [insertInputs, setInsertInputs] = useState<InsertInputs[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return parsed.map((insert: any) => {
-          // Migrate skills if needed
-          let skills = insert.skills;
-          if (!skills || typeof skills !== 'object') {
-            // Old format - convert flat fields to skills object
-            skills = {};
-            const skillNames = [
-              'acrobatics',
-              'animalHandling',
-              'arcana',
-              'athletics',
-              'deception',
-              'history',
-              'insight',
-              'intimidation',
-              'investigation',
-              'medicine',
-              'nature',
-              'perception',
-              'performance',
-              'persuasion',
-              'religion',
-              'sleightOfHand',
-              'stealth',
-              'survival',
-            ];
+    if (!saved) return [];
 
-            for (const skillName of skillNames) {
-              const profField = `prof${skillName.charAt(0).toUpperCase() + skillName.slice(1)}`;
-              const modField = `mod${skillName.charAt(0).toUpperCase() + skillName.slice(1)}`;
-              skills[skillName] = {
-                proficiency: insert[profField] || 'none',
-                modifier: insert[modField] || 0,
-              };
-            }
-          }
-
-          return {
-            ...insert,
-            skills,
-            id: insert.id || generateId(),
-            selected: insert.selected !== undefined ? insert.selected : true,
-            cardType: (insert.cardType as string) === 'player-advanced' ? 'player' : insert.cardType,
-          };
-        });
-      } catch (_e) {
-        return [];
-      }
+    try {
+      const parsed = JSON.parse(saved);
+      return parsed.map((insert: any) => ({
+        ...insert,
+        skills: insert.skills || createEmptySkills(),
+        id: insert.id || generateId(),
+        selected: insert.selected ?? true,
+      }));
+    } catch {
+      return [];
     }
-    return [];
-  });
-
-  // Calculate complete Insert values on-demand (not stored)
-  const inserts = insertInputs.map((input) => {
-    if (input.cardType === 'player') {
-      return calculateAdvancedPlayerValues(input);
-    }
-    // For monsters, use calculator to handle both pre-calculated and auto-calc modes
-    return calculateMonsterValues(input);
   });
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(insertInputs));
   }, [insertInputs]);
 
-  function addEmptyCard() {
+  const addEmptyCard = useCallback(() => {
     setInsertInputs((arr) => [...arr, { ...emptyInsert, id: generateId() }]);
-  }
+  }, []);
 
-  function updateInsert(id: string, field: keyof InsertInputs, value: string | string[] | number | null | any) {
-    setInsertInputs((arr) =>
-      arr.map((input) => {
-        if (input.id !== id) return input;
+  const updateInsert = useCallback(
+    (id: string, field: keyof InsertInputs, value: string | string[] | number | null | any) => {
+      setInsertInputs((arr) =>
+        arr.map((input) => {
+          if (input.id !== id) return input;
 
-        // Handle array fields - convert comma-separated strings to arrays, or keep as-is if already array
-        let processedValue: string | string[] | number | null = value;
-        if (
-          field === 'damageImmunities' ||
-          field === 'damageResistances' ||
-          field === 'damageVulnerabilities' ||
-          field === 'conditionImmunities'
-        ) {
-          // If already an array (from parser), keep it
-          if (Array.isArray(value)) {
-            processedValue = value;
-          } else if (typeof value === 'string') {
-            // If string (from form), split it
-            processedValue = value
-              .split(',')
-              .map((item) => item.trim())
-              .filter((item) => item.length > 0);
+          let processedValue: string | string[] | number | null = value;
+
+          // Handle array fields
+          const arrayFields = ['damageImmunities', 'damageResistances', 'damageVulnerabilities', 'conditionImmunities'];
+          if (arrayFields.includes(field)) {
+            processedValue = Array.isArray(value)
+              ? value
+              : value
+                  .split(',')
+                  .map((item: string) => item.trim())
+                  .filter((item: string) => item.length > 0);
           }
-        }
-        // Handle saving throw fields - convert to number or null
-        else if (field.startsWith('savingThrow')) {
-          if (typeof value === 'number' || value === null) {
-            processedValue = value;
-          } else {
-            processedValue = value === '' ? null : Number.parseInt(value, 10);
+          // Handle saving throw fields
+          else if (field.startsWith('savingThrow')) {
+            processedValue = value === '' || value === null ? null : Number(value);
           }
-        }
 
-        return { ...input, [field]: processedValue };
-      })
-    );
-  }
+          return { ...input, [field]: processedValue };
+        })
+      );
+    },
+    []
+  );
 
-  function updateInsertBoolean(id: string, field: keyof InsertInputs, value: boolean) {
-    setInsertInputs((arr) =>
-      arr.map((input) => {
-        if (input.id !== id) return input;
-        return { ...input, [field]: value };
-      })
-    );
-  }
+  const updateInsertBoolean = useCallback((id: string, field: keyof InsertInputs, value: boolean) => {
+    setInsertInputs((arr) => arr.map((input) => (input.id === id ? { ...input, [field]: value } : input)));
+  }, []);
 
-  function removeInsert(id: string) {
+  const removeInsert = useCallback((id: string) => {
     setInsertInputs((arr) => arr.filter((input) => input.id !== id));
-  }
+  }, []);
 
-  function clearAll() {
+  const clearAll = useCallback(() => {
     if (confirm('Are you sure you want to clear all cards?')) {
       setInsertInputs([]);
     }
-  }
+  }, []);
 
-  function deselectAll() {
+  const deselectAll = useCallback(() => {
     setInsertInputs((arr) => arr.map((input) => ({ ...input, selected: false })));
-  }
+  }, []);
 
   return (
     <div>
@@ -209,7 +145,7 @@ function App() {
         <Button onClick={addEmptyCard} size="md">
           + Add New Card
         </Button>
-        {inserts.length > 0 && (
+        {insertInputs.length > 0 && (
           <>
             <Button onClick={() => window.print()} size="md" variant="default">
               Print All Inserts
@@ -223,7 +159,7 @@ function App() {
           </>
         )}
         <Button onClick={() => setSettingsOpen(true)} size="md" variant="light">
-          ⚙️ Skill Settings
+          Skill Settings
         </Button>
       </Group>
 
@@ -238,20 +174,20 @@ function App() {
         className="cards-editor screen-only"
         style={{ display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'flex-start', alignContent: 'flex-start' }}
       >
-        {inserts.map((insert, i) => (
-          <CardEditor
-            key={insert.id}
-            insert={insert}
+        {insertInputs.map((input, i) => (
+          <CardEditorWrapper
+            key={input.id}
+            insertInput={input}
             index={i}
-            onUpdate={(field, value) => updateInsert(insert.id, field, value)}
-            onUpdateBoolean={(field, value) => updateInsertBoolean(insert.id, field, value)}
-            onRemove={() => removeInsert(insert.id)}
+            onUpdate={updateInsert}
+            onUpdateBoolean={updateInsertBoolean}
+            onRemove={removeInsert}
             preferences={preferences}
           />
         ))}
       </div>
 
-      <PrintArea inserts={inserts} preferences={preferences} />
+      <PrintArea insertInputs={insertInputs} preferences={preferences} />
     </div>
   );
 }

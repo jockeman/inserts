@@ -30,9 +30,10 @@ const RACES_DATA: RaceInfo[] = [
   { name: 'Tiefling', darkvision: 60 },
 ];
 
-export function getRaceOptions() {
-  return [{ value: '', label: '-- Select --' }, ...RACES_DATA.map((r) => ({ value: r.name, label: r.name }))];
-}
+export const RACE_OPTIONS = [
+  { value: '', label: '-- Select --' },
+  ...RACES_DATA.map((r) => ({ value: r.name, label: r.name })),
+];
 
 export function getDarkvisionForRace(race: string): number {
   const raceInfo = RACES_DATA.find((r) => r.name === race);

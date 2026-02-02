@@ -1,12 +1,14 @@
 import { Avatar, Button, Checkbox, Collapse, Group, Paper, Title } from '@mantine/core';
-import { useState } from 'react';
-import type { Insert, InsertInputs } from '../types/Insert';
+import { memo, useMemo, useState } from 'react';
+import type { InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
+import { calculateMonsterValues } from '../utils/monsterCalculations';
+import { calculateAdvancedPlayerValues } from '../utils/playerCalculations';
 import { InsertCard } from './InsertCard';
 import { InsertForm } from './InsertForm';
 
 interface CardEditorProps {
-  insert: Insert;
+  insertInput: InsertInputs;
   index: number;
   onUpdate: (field: keyof InsertInputs, value: string) => void;
   onUpdateBoolean: (field: keyof InsertInputs, value: boolean) => void;
@@ -14,8 +16,24 @@ interface CardEditorProps {
   preferences: UserPreferences;
 }
 
-export function CardEditor({ insert, index, onUpdate, onUpdateBoolean, onRemove, preferences }: CardEditorProps) {
+export const CardEditor = memo(function CardEditor({
+  insertInput,
+  index,
+  onUpdate,
+  onUpdateBoolean,
+  onRemove,
+  preferences,
+}: CardEditorProps) {
   const [isExpanded, setIsExpanded] = useState(true);
+
+  // Calculate Insert values from inputs - only recalculates when insertInput changes
+  const insert = useMemo(
+    () =>
+      insertInput.cardType === 'player'
+        ? calculateAdvancedPlayerValues(insertInput)
+        : calculateMonsterValues(insertInput),
+    [insertInput]
+  );
 
   return (
     <Paper
@@ -65,10 +83,10 @@ export function CardEditor({ insert, index, onUpdate, onUpdateBoolean, onRemove,
             <Title order={4} mb="xs">
               Preview
             </Title>
-            <InsertCard insert={insert} index={index} preferences={preferences} />
+            <InsertCard insertInput={insert} index={index} preferences={preferences} />
           </div>
         </div>
       </Collapse>
     </Paper>
   );
-}
+});

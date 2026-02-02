@@ -1,13 +1,13 @@
-import type { Insert } from '../types/Insert';
+import type { InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { InsertCard } from './InsertCard';
 
 interface PrintAreaProps {
-  inserts: Insert[];
+  insertInputs: InsertInputs[];
   preferences: UserPreferences;
 }
 
-export function PrintArea({ inserts, preferences }: PrintAreaProps) {
+export function PrintArea({ insertInputs, preferences }: PrintAreaProps) {
   return (
     <>
       {/* Print layout: A4, multiple cards per page */}
@@ -23,10 +23,10 @@ export function PrintArea({ inserts, preferences }: PrintAreaProps) {
             boxSizing: 'border-box',
           }}
         >
-          {inserts
-            .filter((insert) => insert.selected)
-            .map((insert, i) => (
-              <InsertCard insert={insert} key={insert.id} index={i} preferences={preferences} />
+          {insertInputs
+            .filter((input) => input.selected)
+            .map((input, i) => (
+              <InsertCard insertInput={input} key={input.id} index={i} preferences={preferences} />
             ))}
         </div>
       </div>

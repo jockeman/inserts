@@ -32,9 +32,10 @@ const CLASSES_DATA: ClassInfo[] = [
   { name: 'Wizard', hitDie: 6 },
 ];
 
-export function getClassOptions() {
-  return [{ value: '', label: '-- Select --' }, ...CLASSES_DATA.map((c) => ({ value: c.name, label: c.name }))];
-}
+export const CLASS_OPTIONS = [
+  { value: '', label: '-- Select --' },
+  ...CLASSES_DATA.map((c) => ({ value: c.name, label: c.name })),
+];
 
 export function getHitDieForClass(className: ClassName): number {
   const classInfo = CLASSES_DATA.find((c) => c.name === className);
