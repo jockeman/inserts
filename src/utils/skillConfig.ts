@@ -7,6 +7,7 @@ import {
   FaEye,
   FaHandPaper,
   FaHandRock,
+  FaLeaf,
   FaMusic,
   FaPaw,
   FaPray,
@@ -92,7 +93,7 @@ export const ALL_SKILLS: Record<SkillName, SkillInfo> = {
     label: 'Nature',
     ability: 'int',
     key: 'nature',
-    icon: FaBook,
+    icon: FaLeaf,
   },
   perception: {
     label: 'Perception',

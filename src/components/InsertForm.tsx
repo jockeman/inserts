@@ -8,8 +8,7 @@ import { PlayerForm } from './PlayerForm';
 
 interface InsertFormProps {
   insert: Insert;
-  onUpdate: (field: keyof InsertInputs, value: string) => void;
-  onUpdateBoolean: (field: keyof InsertInputs, value: boolean) => void;
+  onUpdate: <K extends keyof InsertInputs>(field: K, value: InsertInputs[K]) => void;
   preferences: UserPreferences;
 }
 
@@ -23,7 +22,7 @@ const SIZE_OPTIONS = [
   { value: 'large', label: 'Large (64x89mm)' },
 ];
 
-export function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: InsertFormProps) {
+export function InsertForm({ insert, onUpdate, preferences }: InsertFormProps) {
   const isMonster = insert.cardType === 'monster';
 
   const handleNameChange = useCallback(
@@ -32,11 +31,14 @@ export function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: I
   );
 
   const handleCardTypeChange = useCallback(
-    (value: string | null) => onUpdate('cardType', value || 'player'),
+    (value: string | null) => onUpdate('cardType', (value || 'player') as 'player' | 'monster'),
     [onUpdate]
   );
 
-  const handleSizeChange = useCallback((value: string | null) => onUpdate('size', value || 'small'), [onUpdate]);
+  const handleSizeChange = useCallback(
+    (value: string | null) => onUpdate('size', (value || 'small') as 'small' | 'large'),
+    [onUpdate]
+  );
 
   const handleImageChange = useCallback((val: string) => onUpdate('image', val), [onUpdate]);
 
@@ -52,7 +54,7 @@ export function InsertForm({ insert, onUpdate, onUpdateBoolean, preferences }: I
       {isMonster ? (
         <MonsterForm insert={insert} onUpdate={onUpdate} />
       ) : (
-        <PlayerForm insert={insert} onUpdate={onUpdate} onUpdateBoolean={onUpdateBoolean} preferences={preferences} />
+        <PlayerForm insert={insert} onUpdate={onUpdate} preferences={preferences} />
       )}
 
       <ImageInput value={insert.image} onChange={handleImageChange} />

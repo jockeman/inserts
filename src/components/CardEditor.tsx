@@ -2,16 +2,14 @@ import { Avatar, Button, Checkbox, Collapse, Group, Paper, Title } from '@mantin
 import { memo, useMemo, useState } from 'react';
 import type { InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
-import { calculateMonsterValues } from '../utils/monsterCalculations';
-import { calculateAdvancedPlayerValues } from '../utils/playerCalculations';
+import { calculateInsertValues } from '../utils/insertCalculations';
 import { InsertCard } from './InsertCard';
 import { InsertForm } from './InsertForm';
 
 interface CardEditorProps {
   insertInput: InsertInputs;
   index: number;
-  onUpdate: (field: keyof InsertInputs, value: string) => void;
-  onUpdateBoolean: (field: keyof InsertInputs, value: boolean) => void;
+  onUpdate: <K extends keyof InsertInputs>(field: K, value: InsertInputs[K]) => void;
   onRemove: () => void;
   preferences: UserPreferences;
 }
@@ -20,20 +18,13 @@ export const CardEditor = memo(function CardEditor({
   insertInput,
   index,
   onUpdate,
-  onUpdateBoolean,
   onRemove,
   preferences,
 }: CardEditorProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   // Calculate Insert values from inputs - only recalculates when insertInput changes
-  const insert = useMemo(
-    () =>
-      insertInput.cardType === 'player'
-        ? calculateAdvancedPlayerValues(insertInput)
-        : calculateMonsterValues(insertInput),
-    [insertInput]
-  );
+  const insert = useMemo(() => calculateInsertValues(insertInput), [insertInput]);
 
   return (
     <Paper
@@ -52,7 +43,7 @@ export const CardEditor = memo(function CardEditor({
         <Checkbox
           label="Print"
           checked={insert.selected}
-          onChange={(e) => onUpdateBoolean('selected', e.currentTarget.checked)}
+          onChange={(e) => onUpdate('selected', e.currentTarget.checked)}
         />
         <Avatar src={insert.image} alt={insert.name} size="md" radius="sm" />
         <Title order={3} style={{ margin: 0 }}>
@@ -70,12 +61,7 @@ export const CardEditor = memo(function CardEditor({
         <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
           {/* Input Form */}
           <div style={{ flex: '1 1 300px' }}>
-            <InsertForm
-              insert={insert}
-              onUpdate={onUpdate}
-              onUpdateBoolean={onUpdateBoolean}
-              preferences={preferences}
-            />
+            <InsertForm insert={insert} onUpdate={onUpdate} preferences={preferences} />
           </div>
 
           {/* Live Preview */}

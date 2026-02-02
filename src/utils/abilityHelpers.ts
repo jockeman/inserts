@@ -50,7 +50,7 @@ export function calculateSkillBonus(
  * @param baseProfBonus - Base proficiency bonus
  * @returns The proficiency bonus multiplied by the appropriate factor
  */
-export function applyProficiencyMultiplier(profLevel: ProficiencyLevel, baseProfBonus: number): number {
+function applyProficiencyMultiplier(profLevel: ProficiencyLevel, baseProfBonus: number): number {
   let multiplier: number;
   switch (profLevel) {
     case 'half':

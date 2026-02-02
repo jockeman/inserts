@@ -1,6 +1,7 @@
 import { Checkbox, Group, Select, Stack, Text, TextInput } from '@mantine/core';
 import { useCallback } from 'react';
 import type { Insert, InsertInputs, SkillName } from '../types/Insert';
+import type { ClassName, RaceName } from '../types/Shared';
 import type { UserPreferences } from '../types/UserPreferences';
 import { CLASS_OPTIONS } from '../utils/classConfig';
 import { RACE_OPTIONS } from '../utils/raceConfig';
@@ -10,12 +11,11 @@ import { SkillInput } from './SkillInput';
 
 interface PlayerFormProps {
   insert: Insert;
-  onUpdate: (field: keyof InsertInputs, value: string) => void;
-  onUpdateBoolean: (field: keyof InsertInputs, value: boolean) => void;
+  onUpdate: <K extends keyof InsertInputs>(field: K, value: InsertInputs[K]) => void;
   preferences: UserPreferences;
 }
 
-export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: PlayerFormProps) {
+export function PlayerForm({ insert, onUpdate, preferences }: PlayerFormProps) {
   const visibleSkills = getVisibleSkills(preferences);
 
   const handleSkillUpdate = useCallback(
@@ -34,14 +34,14 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
       <Select
         label="Race"
         value={insert.race}
-        onChange={(value) => onUpdate('race', value || '')}
+        onChange={(value) => onUpdate('race', (value || '') as RaceName)}
         data={RACE_OPTIONS}
       />
 
       <Select
         label="Class"
         value={insert.class}
-        onChange={(value) => onUpdate('class', value || '')}
+        onChange={(value) => onUpdate('class', (value || '') as ClassName)}
         data={CLASS_OPTIONS}
       />
 
@@ -49,19 +49,24 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
         <TextInput
           label="Level"
           value={insert.level}
-          onChange={(e) => onUpdate('level', e.target.value)}
+          onChange={(e) => onUpdate('level', Number(e.target.value))}
           type="number"
           min={1}
           max={20}
         />
-        <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', e.target.value)} type="number" />
+        <TextInput
+          label="AC"
+          value={insert.ac}
+          onChange={(e) => onUpdate('ac', Number(e.target.value))}
+          type="number"
+        />
       </Group>
 
       <Group align="flex-end" gap="xs">
         <TextInput
           label="Max HP"
           value={insert.hp}
-          onChange={(e) => onUpdate('hp', e.target.value)}
+          onChange={(e) => onUpdate('hp', Number(e.target.value))}
           type="number"
           disabled={!insert.maxHPOverride}
           style={{ flex: 1 }}
@@ -69,7 +74,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
         <Checkbox
           label="Override"
           checked={insert.maxHPOverride}
-          onChange={(e) => onUpdateBoolean('maxHPOverride', e.currentTarget.checked)}
+          onChange={(e) => onUpdate('maxHPOverride', e.currentTarget.checked)}
           mb={4}
         />
       </Group>
@@ -78,7 +83,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
         <TextInput
           label="Proficiency Bonus"
           value={insert.proficiencyBonus}
-          onChange={(e) => onUpdate('proficiencyBonus', e.target.value)}
+          onChange={(e) => onUpdate('proficiencyBonus', Number(e.target.value))}
           placeholder="+2"
           disabled={!insert.proficiencyBonusOverride}
           style={{ flex: 1 }}
@@ -86,7 +91,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
         <Checkbox
           label="Override"
           checked={insert.proficiencyBonusOverride}
-          onChange={(e) => onUpdateBoolean('proficiencyBonusOverride', e.currentTarget.checked)}
+          onChange={(e) => onUpdate('proficiencyBonusOverride', e.currentTarget.checked)}
           mb={4}
         />
       </Group>
@@ -123,7 +128,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
         <TextInput
           label="Darkvision (ft)"
           value={insert.darkvision}
-          onChange={(e) => onUpdate('darkvision', e.target.value)}
+          onChange={(e) => onUpdate('darkvision', Number(e.target.value))}
           type="number"
           min={0}
           disabled={!insert.darkvisionOverride}
@@ -132,7 +137,7 @@ export function PlayerForm({ insert, onUpdate, onUpdateBoolean, preferences }: P
         <Checkbox
           label="Override"
           checked={insert.darkvisionOverride}
-          onChange={(e) => onUpdateBoolean('darkvisionOverride', e.currentTarget.checked)}
+          onChange={(e) => onUpdate('darkvisionOverride', e.currentTarget.checked)}
           mb={4}
         />
       </Group>

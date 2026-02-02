@@ -87,38 +87,37 @@ function App() {
     setInsertInputs((arr) => [...arr, { ...emptyInsert, id: generateId() }]);
   }, []);
 
-  const updateInsert = useCallback(
-    (id: string, field: keyof InsertInputs, value: string | string[] | number | null | any) => {
-      setInsertInputs((arr) =>
-        arr.map((input) => {
-          if (input.id !== id) return input;
+  const updateInsert = useCallback(<K extends keyof InsertInputs>(id: string, field: K, value: InsertInputs[K]) => {
+    setInsertInputs((arr) =>
+      arr.map((input) => {
+        if (input.id !== id) return input;
 
-          let processedValue: string | string[] | number | null = value;
-
-          // Handle array fields
-          const arrayFields = ['damageImmunities', 'damageResistances', 'damageVulnerabilities', 'conditionImmunities'];
-          if (arrayFields.includes(field)) {
-            processedValue = Array.isArray(value)
+        let processedValue: InsertInputs[K] = value;
+        // Handle array fields
+        const arrayFields: Array<keyof InsertInputs> = [
+          'damageImmunities',
+          'damageResistances',
+          'damageVulnerabilities',
+          'conditionImmunities',
+        ];
+        if (arrayFields.includes(field)) {
+          processedValue = (
+            Array.isArray(value)
               ? value
-              : value
+              : (value as string)
                   .split(',')
-                  .map((item: string) => item.trim())
-                  .filter((item: string) => item.length > 0);
-          }
-          // Handle saving throw fields
-          else if (field.startsWith('savingThrow')) {
-            processedValue = value === '' || value === null ? null : Number(value);
-          }
+                  .map((item) => item.trim())
+                  .filter((item) => item.length > 0)
+          ) as InsertInputs[K];
+        }
+        // Handle saving throw fields
+        else if (field.startsWith('savingThrow')) {
+          processedValue = (value === '' || value === null ? null : Number(value)) as InsertInputs[K];
+        }
 
-          return { ...input, [field]: processedValue };
-        })
-      );
-    },
-    []
-  );
-
-  const updateInsertBoolean = useCallback((id: string, field: keyof InsertInputs, value: boolean) => {
-    setInsertInputs((arr) => arr.map((input) => (input.id === id ? { ...input, [field]: value } : input)));
+        return { ...input, [field]: processedValue };
+      })
+    );
   }, []);
 
   const removeInsert = useCallback((id: string) => {
@@ -180,7 +179,6 @@ function App() {
             insertInput={input}
             index={i}
             onUpdate={updateInsert}
-            onUpdateBoolean={updateInsertBoolean}
             onRemove={removeInsert}
             preferences={preferences}
           />

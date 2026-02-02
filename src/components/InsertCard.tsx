@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 import type { InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
 import { getCardDimensions } from '../utils/cardHelpers';
-import { calculateMonsterValues } from '../utils/monsterCalculations';
-import { calculateAdvancedPlayerValues } from '../utils/playerCalculations';
+import { calculateInsertValues } from '../utils/insertCalculations';
 import { MonsterInsertCard } from './MonsterInsertCard';
 import { PlayerInsertCard } from './PlayerInsertCard';
 
@@ -15,13 +14,7 @@ interface InsertCardProps {
 
 export function InsertCard({ insertInput, preferences }: InsertCardProps) {
   // Calculate Insert values from inputs - only recalculates when insertInput changes
-  const insert = useMemo(
-    () =>
-      insertInput.cardType === 'player'
-        ? calculateAdvancedPlayerValues(insertInput)
-        : calculateMonsterValues(insertInput),
-    [insertInput]
-  );
+  const insert = useMemo(() => calculateInsertValues(insertInput), [insertInput]);
 
   const isLarge = insert.size === 'large';
   const isMonster = insert.cardType === 'monster';
