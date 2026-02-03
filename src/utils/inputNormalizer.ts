@@ -81,18 +81,21 @@ export function normalizeInsertInputs(partial: Partial<InsertInputs>): InsertInp
  * Safely handles undefined/null ability scores in calculations
  */
 export function safeAbilityScore(value: number | undefined | null): number {
-  if (typeof value === 'number' && !Number.isNaN(value)) {
-    return value;
-  }
-  return 10; // Default ability score
+  return safeNumericValue(value, 10);
 }
 
 /**
  * Safely handles undefined/null numeric values
  */
-export function safeNumericValue(value: number | undefined | null, defaultValue: number = 0): number {
+export function safeNumericValue(value: number | string | undefined | null, defaultValue: number = 0): number {
   if (typeof value === 'number' && !Number.isNaN(value)) {
     return value;
+  }
+  if (typeof value === 'string') {
+    const parsed = Number(value);
+    if (!Number.isNaN(parsed)) {
+      return parsed;
+    }
   }
   return defaultValue;
 }
