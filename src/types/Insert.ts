@@ -49,6 +49,8 @@ export type SkillName =
   | 'stealth'
   | 'survival';
 
+export type CardType = 'player' | 'monster';
+
 /**
  * InsertInputs represents the data that is stored in localStorage.
  * This includes user inputs and override flags, but excludes calculated values.
@@ -58,7 +60,7 @@ export interface InsertInputs {
   id: string; // Unique identifier for the insert
   name: string;
   image: string;
-  cardType: 'player' | 'monster';
+  cardType: CardType;
   size: 'small' | 'large';
   selected: boolean;
 

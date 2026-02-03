@@ -1,6 +1,7 @@
 import type { Insert, InsertInputs } from '../types/Insert';
 import type { ProficiencyLevel } from '../types/Shared';
 import { calculateSkillBonus, getAbilityScore } from './abilityHelpers';
+import { safeAbilityScore, safeNumericValue } from './inputNormalizer';
 import { calculateMaxHP, calculateProficiencyBonus } from './levelCalculations';
 import { getDarkvisionForRace } from './raceConfig';
 import { ALL_SKILLS } from './skillConfig';
@@ -30,12 +31,17 @@ export function calculateInsertValues(inputs: InsertInputs): Insert {
   if (isPlayer) {
     // Calculate proficiency bonus if not overridden
     if (!result.proficiencyBonusOverride && result.level) {
-      result.proficiencyBonus = calculateProficiencyBonus(result.level);
+      const level = safeNumericValue(result.level, 1);
+      result.proficiencyBonus = calculateProficiencyBonus(level);
     }
 
     // Calculate max HP if not overridden
     if (!result.maxHPOverride && result.level && result.class && result.con) {
-      result.hp = calculateMaxHP(result.level, result.class, result.con);
+      const level = safeNumericValue(result.level, 1);
+      const con = safeAbilityScore(result.con);
+      if (level > 0 && con > 0) {
+        result.hp = calculateMaxHP(level, result.class, con);
+      }
     }
 
     // Calculate darkvision if not overridden
@@ -44,24 +50,40 @@ export function calculateInsertValues(inputs: InsertInputs): Insert {
     }
   }
 
+  // Ensure we have valid skills object
+  if (!result.skills || typeof result.skills !== 'object') {
+    return result; // Skip skill calculations if no valid skills object
+  }
+
   // Determine skill calculation mode for monsters
   const shouldAutoCalcMonster =
-    !isPlayer && !ALL_SKILLS.some((skillInfo) => inputs.skills[skillInfo.key]?.modifier !== 0);
+    !isPlayer &&
+    !ALL_SKILLS.some((skillInfo) => {
+      const skill = inputs.skills?.[skillInfo.key];
+      return skill && typeof skill.modifier === 'number' && skill.modifier !== 0;
+    });
 
   // Calculate skill values
   for (const skillInfo of ALL_SKILLS) {
     const skillName = skillInfo.key;
     const skill = result.skills[skillName];
-    const abilityScore = getAbilityScore(result, skillInfo.ability);
+
+    // Skip if skill doesn't exist or is invalid
+    if (!skill || typeof skill !== 'object') {
+      continue;
+    }
+
+    const abilityScore = safeAbilityScore(getAbilityScore(result, skillInfo.ability));
 
     if (shouldAutoCalcMonster || isPlayer) {
       // Auto-calculate skill bonus (ability mod + proficiency + manual mod)
-      if (abilityScore && result.proficiencyBonus !== undefined) {
+      const proficiencyBonus = safeNumericValue(result.proficiencyBonus, 2);
+      if (abilityScore && proficiencyBonus !== undefined) {
         const skillBonusValue = calculateSkillBonus(
           abilityScore,
-          skill.proficiency as ProficiencyLevel,
-          result.proficiencyBonus,
-          skill.modifier || 0
+          (skill.proficiency || 'none') as ProficiencyLevel,
+          proficiencyBonus,
+          safeNumericValue(skill.modifier, 0)
         );
         result.skills[skillName] = {
           ...skill,
@@ -72,7 +94,7 @@ export function calculateInsertValues(inputs: InsertInputs): Insert {
       // Monster: Pre-calculated mode - copy modifier to value
       result.skills[skillName] = {
         ...skill,
-        value: skill.modifier,
+        value: safeNumericValue(skill.modifier, 0),
       };
     }
   }

@@ -70,10 +70,15 @@ function applyProficiencyMultiplier(profLevel: ProficiencyLevel, baseProfBonus: 
 
 /**
  * Get ability score value from an object containing ability scores
+ * Safely handles undefined or invalid values
  * @param abilities - Object with ability score properties
  * @param abilityType - Which ability to retrieve (str, dex, con, int, wis, cha)
- * @returns The ability score value
+ * @returns The ability score value, defaulting to 10 if invalid
  */
-export function getAbilityScore(abilities: { [K in AbilityType]: number }, abilityType: AbilityType): number {
-  return abilities[abilityType];
+export function getAbilityScore(abilities: { [K in AbilityType]?: number }, abilityType: AbilityType): number {
+  const value = abilities[abilityType];
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    return value;
+  }
+  return 10; // Default ability score
 }

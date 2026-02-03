@@ -7,56 +7,8 @@ import { useUserPreferences } from './hooks/useUserPreferences';
 import type { InsertInputs } from './types/Insert';
 import { exportCardsToJSON, triggerImportCards } from './utils/cardIO';
 import { generateId } from './utils/idGenerator';
-import { createEmptySkills } from './utils/skillHelpers';
+import { normalizeInsertInputs } from './utils/inputNormalizer';
 import './App.css';
-
-const emptyInsert: InsertInputs = {
-  id: '', // Will be generated when added
-  name: '',
-  image: '',
-  cardType: 'player',
-  size: 'small',
-  race: 'Human',
-  class: 'Fighter',
-  ac: 0,
-  hp: 0,
-  darkvision: 0,
-  level: 1,
-  str: 10,
-  dex: 10,
-  con: 10,
-  int: 10,
-  wis: 10,
-  cha: 10,
-  proficiencyBonus: 2,
-  proficiencyBonusOverride: true,
-  maxHPOverride: true,
-  darkvisionOverride: true,
-  skills: createEmptySkills(),
-  monsterSize: 'Medium',
-  monsterType: 'Humanoid',
-  monsterTypeTag: '',
-  cr: '',
-  speed: '',
-  acType: '',
-  hpFormula: '',
-  savingThrowStr: null,
-  savingThrowDex: null,
-  savingThrowCon: null,
-  savingThrowInt: null,
-  savingThrowWis: null,
-  savingThrowCha: null,
-  damageImmunities: [],
-  damageResistances: [],
-  damageVulnerabilities: [],
-  conditionImmunities: [],
-  senses: '',
-  languages: '',
-  traits: '',
-  actions: '',
-  bonusActions: '',
-  selected: true,
-};
 
 const STORAGE_KEY = 'rpg-inserts';
 
@@ -69,12 +21,7 @@ function App() {
 
     try {
       const parsed = JSON.parse(saved);
-      return parsed.map((insert: any) => ({
-        ...insert,
-        skills: insert.skills || createEmptySkills(),
-        id: insert.id || generateId(),
-        selected: insert.selected ?? true,
-      }));
+      return parsed.map((insert: any) => normalizeInsertInputs(insert));
     } catch {
       return [];
     }
@@ -85,7 +32,7 @@ function App() {
   }, [insertInputs]);
 
   const addEmptyCard = useCallback(() => {
-    setInsertInputs((arr) => [...arr, { ...emptyInsert, id: generateId() }]);
+    setInsertInputs((arr) => [...arr, normalizeInsertInputs({})]);
   }, []);
 
   const updateInsert = useCallback(<K extends keyof InsertInputs>(id: string, field: K, value: InsertInputs[K]) => {
@@ -149,7 +96,7 @@ function App() {
       const cardsWithNewIds = importedCards.map((card) => ({
         ...card,
         id: generateId(),
-        skills: card.skills || createEmptySkills(),
+        skills: card.skills,
         selected: true,
       }));
       setInsertInputs((arr) => [...arr, ...cardsWithNewIds]);

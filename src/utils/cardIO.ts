@@ -1,4 +1,5 @@
 import type { InsertInputs, Skill } from '../types/Insert';
+import { normalizeInsertInputs } from './inputNormalizer';
 
 // Type declarations for File System Access API
 interface FilePickerAcceptType {
@@ -209,19 +210,22 @@ function importCardsFromJSON(file: File): Promise<InsertInputs[]> {
 
         // Validate that it's an array
         if (!Array.isArray(parsed)) {
-          // If it's a single card object, wrap it in an array
+          // If it's a single card object, wrap it in an array and normalize
           if (typeof parsed === 'object' && parsed !== null && 'cardType' in parsed) {
-            resolve([parsed as InsertInputs]);
+            const normalized = normalizeInsertInputs(parsed);
+            resolve([normalized]);
             return;
           }
           reject(new Error('Invalid JSON format: Expected an array or single card object'));
           return;
         }
 
-        // Validate each card has required fields
-        const validCards = parsed.filter((card: any) => {
-          return typeof card === 'object' && card !== null && 'cardType' in card && 'id' in card;
-        });
+        // Validate each card has required fields and normalize
+        const validCards = parsed
+          .filter((card: any) => {
+            return typeof card === 'object' && card !== null && 'cardType' in card;
+          })
+          .map((card: any) => normalizeInsertInputs(card));
 
         if (validCards.length === 0) {
           reject(new Error('No valid cards found in JSON file'));
