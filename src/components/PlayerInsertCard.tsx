@@ -57,13 +57,13 @@ export function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, pref
           <b>{insert.hp || '-'}</b>
         </div>
 
-        {visibleSkills.map(([skillKey, skillInfo]) => {
+        {visibleSkills.map((skillInfo) => {
           const Icon = skillInfo.icon;
           const skillBonus = insert.skills[skillInfo.key]?.value;
           // Display as passive value (skill bonus + 10)
           const passiveValue = skillBonus !== undefined ? skillBonus + 10 : undefined;
           return (
-            <div key={skillKey} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
+            <div key={skillInfo.key} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
               <Icon size="4.5mm" />
               <b>{passiveValue || '-'}</b>
             </div>

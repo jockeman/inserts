@@ -7,8 +7,8 @@ import { ALL_SKILLS } from './skillConfig';
 export function createEmptySkills(): Record<SkillName, Skill> {
   const skills: Record<string, Skill> = {};
 
-  for (const skillName of Object.keys(ALL_SKILLS) as SkillName[]) {
-    skills[skillName] = {
+  for (const skillInfo of ALL_SKILLS) {
+    skills[skillInfo.key] = {
       proficiency: 'none',
       modifier: 0,
     };

@@ -22,18 +22,12 @@ export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate
   };
 
   const selectAll = () => {
-    const allTrue = Object.fromEntries((Object.keys(ALL_SKILLS) as SkillName[]).map((key) => [key, true])) as Record<
-      SkillName,
-      boolean
-    >;
+    const allTrue = Object.fromEntries(ALL_SKILLS.map((info) => [info.key, true])) as Record<SkillName, boolean>;
     onUpdate({ skillVisibility: allTrue });
   };
 
   const deselectAll = () => {
-    const allFalse = Object.fromEntries((Object.keys(ALL_SKILLS) as SkillName[]).map((key) => [key, false])) as Record<
-      SkillName,
-      boolean
-    >;
+    const allFalse = Object.fromEntries(ALL_SKILLS.map((info) => [info.key, false])) as Record<SkillName, boolean>;
     onUpdate({ skillVisibility: allFalse });
   };
 
@@ -51,8 +45,8 @@ export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate
     cha: [],
   };
 
-  for (const [key, info] of Object.entries(ALL_SKILLS)) {
-    skillsByAbility[info.ability].push(key);
+  for (const info of ALL_SKILLS) {
+    skillsByAbility[info.ability].push(info.key);
   }
 
   const abilityLabels: Record<AbilityType, string> = {
@@ -95,14 +89,17 @@ export function SkillVisibilitySettings({ opened, onClose, preferences, onUpdate
                 {label}
               </Text>
               <Stack gap="xs">
-                {abilitySkills.map((skillKey) => (
-                  <Checkbox
-                    key={skillKey}
-                    label={ALL_SKILLS[skillKey as SkillName].label}
-                    checked={preferences.skillVisibility[skillKey as SkillName]}
-                    onChange={(e) => handleToggle(skillKey, e.currentTarget.checked)}
-                  />
-                ))}
+                {abilitySkills.map((skillKey) => {
+                  const skillInfo = ALL_SKILLS.find((s) => s.key === skillKey)!;
+                  return (
+                    <Checkbox
+                      key={skillKey}
+                      label={skillInfo.label}
+                      checked={preferences.skillVisibility[skillKey as SkillName]}
+                      onChange={(e) => handleToggle(skillKey, e.currentTarget.checked)}
+                    />
+                  );
+                })}
               </Stack>
             </div>
           );

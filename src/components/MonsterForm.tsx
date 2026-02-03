@@ -231,13 +231,12 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         </Button>
         <Collapse in={showSkills}>
           <Stack gap="md">
-            {Object.entries(ALL_SKILLS).map(([skillKey, skillInfo]) => {
-              const skillName = skillKey as SkillName;
-              const skill = insert.skills[skillName];
+            {ALL_SKILLS.map((skillInfo) => {
+              const skill = insert.skills[skillInfo.key];
               return (
                 <SkillInput
-                  key={skillKey}
-                  skillName={skillName}
+                  key={skillInfo.key}
+                  skillName={skillInfo.key}
                   skillInfo={skillInfo}
                   skill={skill}
                   onUpdate={handleSkillUpdate}

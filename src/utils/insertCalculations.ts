@@ -1,4 +1,4 @@
-import type { Insert, InsertInputs, SkillName } from '../types/Insert';
+import type { Insert, InsertInputs } from '../types/Insert';
 import type { ProficiencyLevel } from '../types/Shared';
 import { calculateSkillBonus, getAbilityScore } from './abilityHelpers';
 import { calculateMaxHP, calculateProficiencyBonus } from './levelCalculations';
@@ -46,13 +46,11 @@ export function calculateInsertValues(inputs: InsertInputs): Insert {
 
   // Determine skill calculation mode for monsters
   const shouldAutoCalcMonster =
-    !isPlayer &&
-    !Object.values(ALL_SKILLS).some((skillInfo) => inputs.skills[skillInfo.key as SkillName]?.modifier !== 0) &&
-    inputs.proficiencyBonus > 0;
+    !isPlayer && !ALL_SKILLS.some((skillInfo) => inputs.skills[skillInfo.key]?.modifier !== 0);
 
   // Calculate skill values
-  for (const [skillKey, skillInfo] of Object.entries(ALL_SKILLS)) {
-    const skillName = skillKey as SkillName;
+  for (const skillInfo of ALL_SKILLS) {
+    const skillName = skillInfo.key;
     const skill = result.skills[skillName];
     const abilityScore = getAbilityScore(result, skillInfo.ability);
 

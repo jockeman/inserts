@@ -111,11 +111,11 @@ export function PlayerForm({ insert, onUpdate, preferences }: PlayerFormProps) {
       <Text size="sm" fw={600} mt="md">
         Skills
       </Text>
-      {visibleSkills.map(([skillKey, skillInfo]) => {
+      {visibleSkills.map((skillInfo) => {
         const skill = insert.skills[skillInfo.key];
         return (
           <SkillInput
-            key={skillKey}
+            key={skillInfo.key}
             skillName={skillInfo.key}
             skillInfo={skillInfo}
             skill={skill}
