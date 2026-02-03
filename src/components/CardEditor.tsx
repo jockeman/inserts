@@ -2,6 +2,7 @@ import { Avatar, Button, Checkbox, Collapse, Group, Paper, Title } from '@mantin
 import { memo, useMemo, useState } from 'react';
 import type { InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
+import { exportCardToJSON } from '../utils/cardIO';
 import { calculateInsertValues } from '../utils/insertCalculations';
 import { InsertCard } from './InsertCard';
 import { InsertForm } from './InsertForm';
@@ -25,6 +26,10 @@ export const CardEditor = memo(function CardEditor({
 
   // Calculate Insert values from inputs - only recalculates when insertInput changes
   const insert = useMemo(() => calculateInsertValues(insertInput), [insertInput]);
+
+  const handleExport = async () => {
+    await exportCardToJSON(insertInput);
+  };
 
   return (
     <Paper
@@ -51,6 +56,9 @@ export const CardEditor = memo(function CardEditor({
         </Title>
         <Button onClick={() => setIsExpanded(!isExpanded)} variant="subtle" size="xs" style={{ marginLeft: 'auto' }}>
           {isExpanded ? 'Collapse' : 'Expand'}
+        </Button>
+        <Button onClick={handleExport} variant="light" size="xs">
+          Export
         </Button>
         <Button onClick={onRemove} color="red" size="xs" pos="absolute" style={{ marginLeft: 'auto', right: 10 }}>
           Remove

@@ -5,6 +5,7 @@ import { PrintArea } from './components/PrintArea';
 import { SkillVisibilitySettings } from './components/SkillVisibilitySettings';
 import { useUserPreferences } from './hooks/useUserPreferences';
 import type { InsertInputs } from './types/Insert';
+import { exportCardsToJSON, triggerImportCards } from './utils/cardIO';
 import { generateId } from './utils/idGenerator';
 import { createEmptySkills } from './utils/skillHelpers';
 import './App.css';
@@ -134,6 +135,31 @@ function App() {
     setInsertInputs((arr) => arr.map((input) => ({ ...input, selected: false })));
   }, []);
 
+  const handleExport = useCallback(() => {
+    const selectedCards = insertInputs.filter((input) => input.selected);
+    const cardsToExport = selectedCards.length > 0 ? selectedCards : insertInputs;
+    const filename = `inserts-${new Date().toISOString().split('T')[0]}.json`;
+    exportCardsToJSON(cardsToExport, filename);
+  }, [insertInputs]);
+
+  const handleImport = useCallback(async () => {
+    try {
+      const importedCards = await triggerImportCards();
+      // Generate new IDs to avoid conflicts
+      const cardsWithNewIds = importedCards.map((card) => ({
+        ...card,
+        id: generateId(),
+        skills: card.skills || createEmptySkills(),
+        selected: true,
+      }));
+      setInsertInputs((arr) => [...arr, ...cardsWithNewIds]);
+    } catch (error) {
+      if (error instanceof Error && error.message !== 'Import cancelled') {
+        alert(`Failed to import cards: ${error.message}`);
+      }
+    }
+  }, []);
+
   return (
     <div>
       <Title order={1} className="screen-only" mb="xl">
@@ -144,8 +170,14 @@ function App() {
         <Button onClick={addEmptyCard} size="md">
           + Add New Card
         </Button>
+        <Button onClick={handleImport} size="md" variant="default">
+          Import Cards
+        </Button>
         {insertInputs.length > 0 && (
           <>
+            <Button onClick={handleExport} size="md" variant="default">
+              Export Cards
+            </Button>
             <Button onClick={() => window.print()} size="md" variant="default">
               Print All Inserts
             </Button>
