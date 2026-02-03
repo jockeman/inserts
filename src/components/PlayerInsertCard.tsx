@@ -19,7 +19,7 @@ export function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, pref
       style={{
         position: 'absolute',
         left: '2mm',
-        top: 0,
+        top: '2mm',
         width: dmContentWidth,
         height: dmContentHeight,
         background: '#fff',
@@ -69,19 +69,31 @@ export function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, pref
             </div>
           );
         })}
-        {insert?.senses && Object.keys(insert.senses).length > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
-            <FaMoon size="4.5mm" />
-            <b>
-              {Object.entries(insert.senses)
-                .map(([sense, range]) => {
-                  const senseName = sense.charAt(0).toUpperCase() + sense.slice(1);
-                  return range ? `${senseName} ${range}` : senseName;
-                })
-                .join(', ')}
-            </b>
-          </div>
-        )}
+        {insert?.senses &&
+          Object.keys(insert.senses).length > 0 &&
+          Object.entries(insert.senses).map(([sense, range]) => {
+            const senseKey = sense.toLowerCase();
+            const isDarkvision = senseKey === 'darkvision';
+
+            if (isDarkvision) {
+              return (
+                <div key={sense} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
+                  <FaMoon size="4.5mm" />
+                  <b>{range}</b>
+                </div>
+              );
+            }
+
+            // For other senses, show name and range
+            const senseName = sense.charAt(0).toUpperCase() + sense.slice(1);
+            return (
+              <div key={sense} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
+                <b style={{ fontSize: '2.8mm' }}>
+                  {senseName} {range}
+                </b>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

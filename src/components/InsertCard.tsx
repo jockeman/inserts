@@ -53,7 +53,7 @@ export function InsertCard({ insertInput, preferences }: InsertCardProps) {
           border: '1px solid #333',
           borderRadius: '2mm',
           overflow: 'hidden',
-          background: '#f8f8f8',
+          background: insert.backgroundColor || '#f8f8f8',
           boxShadow: '0 0 2mm #0002',
         }}
       >
@@ -103,7 +103,7 @@ export function InsertCard({ insertInput, preferences }: InsertCardProps) {
           border: '1px solid #333',
           borderRadius: '2mm',
           overflow: 'hidden',
-          background: '#f3f3f3',
+          background: insert.backgroundColor || '#f8f8f8',
           boxShadow: '0 0 2mm #0002',
         }}
       >

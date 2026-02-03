@@ -52,7 +52,7 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
       style={{
         position: 'absolute',
         left: '2mm',
-        top: 0,
+        top: '2mm',
         width: dmContentWidth,
         height: dmContentHeight,
         background: '#fff',

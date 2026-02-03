@@ -64,22 +64,23 @@ export const SensesInput = memo(function SensesInput({ senses, onUpdate }: Sense
           const isEnabled = rangeValue > 0;
 
           return (
-            <Group key={value} gap="xs" align="center">
+            <Group key={value} gap="xs" align="center" wrap="nowrap">
               <ActionIcon
                 variant={isEnabled ? 'filled' : 'light'}
                 color={isEnabled ? 'blue' : 'gray'}
                 onClick={() => handleToggleSense(value)}
                 title={isEnabled ? `Disable ${label}` : `Enable ${label}`}
+                style={{ flexShrink: 0 }}
               >
                 {isEnabled ? <FaEye size={16} /> : <FaEyeSlash size={16} />}
               </ActionIcon>
 
-              <Text size="sm" style={{ minWidth: '100px' }}>
+              <Text size="sm" style={{ minWidth: '100px', flexShrink: 0 }}>
                 {label}
               </Text>
 
               {isEnabled ? (
-                <Group gap="xs">
+                <Group gap="xs" wrap="nowrap" style={{ marginLeft: 'auto' }}>
                   <ActionIcon
                     variant="light"
                     size="sm"
@@ -94,7 +95,7 @@ export const SensesInput = memo(function SensesInput({ senses, onUpdate }: Sense
                     min={0}
                     max={999}
                     step={10}
-                    style={{ width: '80px' }}
+                    style={{ width: '70px', flexShrink: 0 }}
                     size="xs"
                     hideControls
                     suffix=" ft."
@@ -105,7 +106,7 @@ export const SensesInput = memo(function SensesInput({ senses, onUpdate }: Sense
                   </ActionIcon>
                 </Group>
               ) : (
-                <Text size="xs" c="dimmed">
+                <Text size="xs" c="dimmed" style={{ marginLeft: 'auto' }}>
                   Not enabled
                 </Text>
               )}

@@ -1,4 +1,4 @@
-import { Group, Select, Stack, TextInput } from '@mantine/core';
+import { ColorInput, Group, Select, Stack, TextInput } from '@mantine/core';
 import { useCallback } from 'react';
 import type { Insert, InsertInputs } from '../types/Insert';
 import type { UserPreferences } from '../types/UserPreferences';
@@ -42,6 +42,8 @@ export function InsertForm({ insert, onUpdate, preferences }: InsertFormProps) {
 
   const handleImageChange = useCallback((val: string) => onUpdate('image', val), [onUpdate]);
 
+  const handleBackgroundColorChange = useCallback((value: string) => onUpdate('backgroundColor', value), [onUpdate]);
+
   return (
     <Stack gap="md">
       <TextInput label="Name" value={insert.name} onChange={handleNameChange} />
@@ -50,6 +52,14 @@ export function InsertForm({ insert, onUpdate, preferences }: InsertFormProps) {
         <Select label="Card Type" value={insert.cardType} onChange={handleCardTypeChange} data={CARD_TYPE_OPTIONS} />
         <Select label="Size" value={insert.size} onChange={handleSizeChange} data={SIZE_OPTIONS} />
       </Group>
+
+      <ColorInput
+        label="Background Color"
+        value={insert.backgroundColor}
+        onChange={handleBackgroundColorChange}
+        format="hex"
+        swatches={['#f8f8f8', '#ffffff', '#e8f4f8', '#f0e8f8', '#f8f0e8', '#e8f8f0', '#f8e8e8']}
+      />
 
       {isMonster ? (
         <MonsterForm insert={insert} onUpdate={onUpdate} />

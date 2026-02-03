@@ -63,6 +63,7 @@ export interface InsertInputs {
   cardType: CardType;
   size: 'small' | 'large';
   selected: boolean;
+  backgroundColor: string; // Background color for the outer card area
 
   // Player/Monster common fields (inputs)
   race: RaceName;

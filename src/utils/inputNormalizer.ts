@@ -103,6 +103,7 @@ export function normalizeInsertInputs(partial: Partial<InsertInputs>): InsertInp
     cardType: input.cardType === 'monster' ? 'monster' : 'player',
     size: input.size === 'large' ? 'large' : 'small',
     selected: input.selected ?? true,
+    backgroundColor: input.backgroundColor || '#f8f8f8',
 
     // Player/Monster common fields
     race: input.race || 'Human',
