@@ -34,6 +34,9 @@ jobs:
       - name: Lint check
         run: npm run lint
       
+      - name: Run tests
+        run: npm run test:run
+      
       - name: Check for unused dependencies and exports
         run: npm run knip
       

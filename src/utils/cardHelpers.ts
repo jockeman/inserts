@@ -18,7 +18,7 @@ export const formatModifierOnly = (stat: number): string => {
 
 // Helper function to format bonus with + sign
 export const formatBonus = (bonus: number | string): string => {
-  if (bonus === 0 || !bonus) return '';
+  if (Number(bonus) === 0 || !bonus) return '';
   const value = typeof bonus === 'number' ? bonus : Number.parseInt(bonus.trim(), 10);
   if (Number.isNaN(value)) return '';
   return value >= 0 ? `+${value}` : `${value}`;
