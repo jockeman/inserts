@@ -35,7 +35,7 @@ jobs:
         run: npm run lint
       
       - name: Check for unused dependencies and exports
-        run: npx knip
+        run: npm run knip
       
       - name: Build project
         run: npm run build
