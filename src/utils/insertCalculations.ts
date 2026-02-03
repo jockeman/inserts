@@ -44,9 +44,15 @@ export function calculateInsertValues(inputs: InsertInputs): Insert {
       }
     }
 
-    // Calculate darkvision if not overridden
-    if (!result.darkvisionOverride && result.race) {
-      result.darkvision = getDarkvisionForRace(result.race);
+    // Add darkvision to senses from race (if not already present)
+    if (result.race) {
+      const raceDarkvision = getDarkvisionForRace(result.race);
+      if (raceDarkvision > 0 && !result.senses.darkvision) {
+        result.senses = {
+          ...result.senses,
+          darkvision: `${raceDarkvision} ft.`,
+        };
+      }
     }
   }
 

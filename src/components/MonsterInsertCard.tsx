@@ -242,14 +242,17 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
             <b>Condition Immunities</b> {insert.conditionImmunities.join(', ')}
           </div>
         )}
-        {insert.senses && (
+        {insert.senses && Object.keys(insert.senses).length > 0 && (
           <div>
-            <b>Senses</b> {insert.senses}
+            <b>Senses</b>{' '}
+            {Object.entries(insert.senses)
+              .map(([sense, range]) => (range ? `${sense} ${range}` : sense))
+              .join(', ')}
           </div>
         )}
-        {insert.languages && (
+        {insert.languages && insert.languages.length > 0 && (
           <div>
-            <b>Languages</b> {insert.languages}
+            <b>Languages</b> {insert.languages.join(', ')}
           </div>
         )}
         {insert.proficiencyBonus && (

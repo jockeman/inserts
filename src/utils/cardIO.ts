@@ -120,7 +120,6 @@ function filterEmptyFields(card: InsertInputs): Partial<InsertInputs> {
     if (filtered.proficiencyBonus === 2) delete filtered.proficiencyBonus;
     if (filtered.ac === 0) delete filtered.ac;
     if (filtered.hp === 0) delete filtered.hp;
-    if (filtered.darkvision === 0) delete filtered.darkvision;
   } else {
     // Remove player-specific fields for monsters
     delete filtered.level;
@@ -128,7 +127,6 @@ function filterEmptyFields(card: InsertInputs): Partial<InsertInputs> {
     delete filtered.class;
     delete filtered.proficiencyBonusOverride;
     delete filtered.maxHPOverride;
-    delete filtered.darkvisionOverride;
   }
 
   // Remove selected flag if true (default for most uses)

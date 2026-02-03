@@ -66,7 +66,7 @@ describe('inputNormalizer', () => {
       expect(result.class).toBe('Fighter');
       expect(result.ac).toBe(0);
       expect(result.hp).toBe(0);
-      expect(result.darkvision).toBe(0);
+      expect(result.senses).toEqual({});
       expect(result.level).toBe(1);
 
       // Check ability scores
@@ -227,14 +227,12 @@ describe('inputNormalizer', () => {
       const input = {
         proficiencyBonusOverride: false,
         maxHPOverride: false,
-        darkvisionOverride: false,
       };
 
       const result = normalizeInsertInputs(input);
 
       expect(result.proficiencyBonusOverride).toBe(false);
       expect(result.maxHPOverride).toBe(false);
-      expect(result.darkvisionOverride).toBe(false);
     });
 
     it('provides default false values for missing boolean overrides', () => {
@@ -244,7 +242,6 @@ describe('inputNormalizer', () => {
 
       expect(result.proficiencyBonusOverride).toBe(false);
       expect(result.maxHPOverride).toBe(false);
-      expect(result.darkvisionOverride).toBe(false);
     });
   });
 });

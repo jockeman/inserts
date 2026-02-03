@@ -1,14 +1,15 @@
 import { Button, Collapse, Group, Paper, Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { useCallback, useState } from 'react';
-import type { Insert, InsertInputs, SkillName } from '../types/Insert';
+import type { Insert, InsertInputs, MonsterSize, MonsterType, SkillName } from '../types/Insert';
 import { parseMonsterStatBlock } from '../utils/monsterParser';
 import { ALL_SKILLS } from '../utils/skillConfig';
 import { AbilityInput } from './AbilityInput';
+import { SensesInput } from './SensesInput';
 import { SkillInput } from './SkillInput';
 
 interface MonsterFormProps {
   insert: Insert;
-  onUpdate: (field: keyof InsertInputs, value: string) => void;
+  onUpdate: <K extends keyof InsertInputs>(field: K, value: InsertInputs[K]) => void;
 }
 
 export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
@@ -76,7 +77,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         <Select
           label="Size"
           value={insert.monsterSize}
-          onChange={(value) => onUpdate('monsterSize', value || 'Medium')}
+          onChange={(value) => onUpdate('monsterSize', (value || 'Medium') as MonsterSize)}
           data={[
             { value: 'Tiny', label: 'Tiny' },
             { value: 'Small', label: 'Small' },
@@ -89,7 +90,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         <Select
           label="Type"
           value={insert.monsterType}
-          onChange={(value) => onUpdate('monsterType', value || 'Humanoid')}
+          onChange={(value) => onUpdate('monsterType', (value || 'Humanoid') as MonsterType)}
           data={[
             { value: 'Aberration', label: 'Aberration' },
             { value: 'Beast', label: 'Beast' },
@@ -133,7 +134,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
       </Group>
 
       <Group grow>
-        <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', e.target.value)} />
+        <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', Number(e.target.value))} />
         <TextInput
           label="AC Type"
           value={insert.acType}
@@ -146,7 +147,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         <TextInput
           label="HP"
           value={insert.hp}
-          onChange={(e) => onUpdate('hp', e.target.value)}
+          onChange={(e) => onUpdate('hp', Number(e.target.value))}
           placeholder="e.g., 365"
         />
         <TextInput
@@ -179,21 +180,21 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
               <TextInput
                 label="STR Save"
                 value={insert.savingThrowStr ?? ''}
-                onChange={(e) => onUpdate('savingThrowStr', e.target.value)}
+                onChange={(e) => onUpdate('savingThrowStr', e.target.value ? Number(e.target.value) : null)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="DEX Save"
                 value={insert.savingThrowDex ?? ''}
-                onChange={(e) => onUpdate('savingThrowDex', e.target.value)}
+                onChange={(e) => onUpdate('savingThrowDex', e.target.value ? Number(e.target.value) : null)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="CON Save"
                 value={insert.savingThrowCon ?? ''}
-                onChange={(e) => onUpdate('savingThrowCon', e.target.value)}
+                onChange={(e) => onUpdate('savingThrowCon', e.target.value ? Number(e.target.value) : null)}
                 placeholder="+0"
                 type="number"
               />
@@ -202,21 +203,21 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
               <TextInput
                 label="INT Save"
                 value={insert.savingThrowInt ?? ''}
-                onChange={(e) => onUpdate('savingThrowInt', e.target.value)}
+                onChange={(e) => onUpdate('savingThrowInt', e.target.value ? Number(e.target.value) : null)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="WIS Save"
                 value={insert.savingThrowWis ?? ''}
-                onChange={(e) => onUpdate('savingThrowWis', e.target.value)}
+                onChange={(e) => onUpdate('savingThrowWis', e.target.value ? Number(e.target.value) : null)}
                 placeholder="+0"
                 type="number"
               />
               <TextInput
                 label="CHA Save"
                 value={insert.savingThrowCha ?? ''}
-                onChange={(e) => onUpdate('savingThrowCha', e.target.value)}
+                onChange={(e) => onUpdate('savingThrowCha', e.target.value ? Number(e.target.value) : null)}
                 placeholder="+0"
                 type="number"
               />
@@ -252,7 +253,14 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         value={
           Array.isArray(insert.damageImmunities) ? insert.damageImmunities.join(', ') : insert.damageImmunities || ''
         }
-        onChange={(e) => onUpdate('damageImmunities', e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          const array = value
+            .split(/[,;]/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0);
+          onUpdate('damageImmunities', array);
+        }}
         placeholder="e.g., poison, psychic"
       />
 
@@ -261,7 +269,14 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         value={
           Array.isArray(insert.damageResistances) ? insert.damageResistances.join(', ') : insert.damageResistances || ''
         }
-        onChange={(e) => onUpdate('damageResistances', e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          const array = value
+            .split(/[,;]/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0);
+          onUpdate('damageResistances', array);
+        }}
         placeholder="e.g., cold, slashing"
       />
 
@@ -272,7 +287,14 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
             ? insert.damageVulnerabilities.join(', ')
             : insert.damageVulnerabilities || ''
         }
-        onChange={(e) => onUpdate('damageVulnerabilities', e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          const array = value
+            .split(/[,;]/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0);
+          onUpdate('damageVulnerabilities', array);
+        }}
         placeholder="e.g., fire, radiant"
       />
 
@@ -283,23 +305,37 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
             ? insert.conditionImmunities.join(', ')
             : insert.conditionImmunities || ''
         }
-        onChange={(e) => onUpdate('conditionImmunities', e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          const array = value
+            .split(/[,;]/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0);
+          onUpdate('conditionImmunities', array);
+        }}
         placeholder="e.g., charmed, frightened"
       />
 
-      <TextInput
-        label="Senses"
-        value={insert.senses}
-        onChange={(e) => onUpdate('senses', e.target.value)}
-        placeholder="e.g., darkvision 60 ft., passive Perception 14"
-      />
+      <SensesInput senses={insert.senses} onUpdate={(senses) => onUpdate('senses', senses)} />
 
       <Group grow>
-        <TextInput label="Languages" value={insert.languages} onChange={(e) => onUpdate('languages', e.target.value)} />
+        <TextInput
+          label="Languages"
+          value={insert.languages.join(', ')}
+          onChange={(e) => {
+            const languagesText = e.target.value;
+            const languages = languagesText
+              .split(/[,;]/)
+              .map((lang) => lang.trim())
+              .filter((lang) => lang.length > 0);
+            onUpdate('languages', languages);
+          }}
+          placeholder="e.g., Common, Draconic"
+        />
         <TextInput
           label="Proficiency Bonus"
           value={insert.proficiencyBonus}
-          onChange={(e) => onUpdate('proficiencyBonus', e.target.value)}
+          onChange={(e) => onUpdate('proficiencyBonus', Number(e.target.value))}
           placeholder="e.g., +2"
         />
       </Group>

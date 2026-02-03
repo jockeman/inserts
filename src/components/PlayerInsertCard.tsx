@@ -69,10 +69,17 @@ export function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, pref
             </div>
           );
         })}
-        {(insert?.darkvision ?? 0) > 0 && (
+        {insert?.senses && Object.keys(insert.senses).length > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
             <FaMoon size="4.5mm" />
-            <b>{insert.darkvision}ft</b>
+            <b>
+              {Object.entries(insert.senses)
+                .map(([sense, range]) => {
+                  const senseName = sense.charAt(0).toUpperCase() + sense.slice(1);
+                  return range ? `${senseName} ${range}` : senseName;
+                })
+                .join(', ')}
+            </b>
           </div>
         )}
       </div>

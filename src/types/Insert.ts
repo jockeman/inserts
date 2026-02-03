@@ -75,12 +75,10 @@ export interface InsertInputs {
   // Player - override flags (inputs)
   proficiencyBonusOverride: boolean;
   maxHPOverride: boolean;
-  darkvisionOverride: boolean;
 
   // Player - manual override values (inputs when override is true)
   proficiencyBonus: number;
   hp: number;
-  darkvision: number;
 
   // Skills - stored as a keyed entity
   skills: Record<SkillName, Skill>;
@@ -111,8 +109,8 @@ export interface InsertInputs {
   damageResistances: string[]; // Array of damage resistances
   damageVulnerabilities: string[]; // Array of damage vulnerabilities
   conditionImmunities: string[]; // Array of condition immunities
-  senses: string;
-  languages: string;
+  senses: Record<string, string>; // e.g., { "darkvision": "60 ft.", "tremorsense": "30 ft." }
+  languages: string[]; // Array of languages (e.g., ["Common", "Draconic"])
   traits: string;
   actions: string;
   bonusActions: string;

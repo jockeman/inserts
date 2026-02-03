@@ -7,6 +7,7 @@ import { CLASS_OPTIONS } from '../utils/classConfig';
 import { RACE_OPTIONS } from '../utils/raceConfig';
 import { getVisibleSkills } from '../utils/skillConfig';
 import { AbilityInput } from './AbilityInput';
+import { SensesInput } from './SensesInput';
 import { SkillInput } from './SkillInput';
 
 interface PlayerFormProps {
@@ -124,23 +125,7 @@ export function PlayerForm({ insert, onUpdate, preferences }: PlayerFormProps) {
         );
       })}
 
-      <Group align="flex-end" gap="xs">
-        <TextInput
-          label="Darkvision (ft)"
-          value={insert.darkvision}
-          onChange={(e) => onUpdate('darkvision', Number(e.target.value))}
-          type="number"
-          min={0}
-          disabled={!insert.darkvisionOverride}
-          style={{ flex: 1 }}
-        />
-        <Checkbox
-          label="Override"
-          checked={insert.darkvisionOverride}
-          onChange={(e) => onUpdate('darkvisionOverride', e.currentTarget.checked)}
-          mb={4}
-        />
-      </Group>
+      <SensesInput senses={insert.senses} onUpdate={(senses) => onUpdate('senses', senses)} />
     </Stack>
   );
 }

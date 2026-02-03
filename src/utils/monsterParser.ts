@@ -315,13 +315,57 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
 
     // Senses
     if (line.startsWith('Senses ')) {
-      result.senses = line.replace('Senses ', '');
+      const sensesText = line.replace('Senses ', '');
+      const senses: Record<string, string> = {};
+      let passivePerception: number | null = null;
+
+      const parts = sensesText.split(',').map((s) => s.trim());
+      for (const part of parts) {
+        // Check for passive Perception
+        const passiveMatch = part.match(/passive\s+perception\s+(\d+)/i);
+        if (passiveMatch) {
+          passivePerception = Number.parseInt(passiveMatch[1], 10);
+          continue;
+        }
+
+        // Parse sense with range (e.g., \"darkvision 60 ft.\")
+        const senseMatch = part.match(/^([a-z\s]+?)\s+(\d+\s*ft\.?)$/i);
+        if (senseMatch) {
+          const senseName = senseMatch[1].trim().toLowerCase();
+          const range = senseMatch[2].trim();
+          senses[senseName] = range;
+        } else if (part.trim()) {
+          // Store as-is if it doesn't match expected format
+          senses[part.trim()] = '';
+        }
+      }
+
+      result.senses = senses;
+
+      // Convert passive perception to perception skill modifier
+      if (passivePerception !== null && result.skills) {
+        // Passive Perception = 10 + Perception modifier
+        const perceptionModifier = passivePerception - 10;
+        result.skills.perception = {
+          ...result.skills.perception,
+          modifier: perceptionModifier,
+        };
+      }
       continue;
     }
 
     // Languages
     if (line.startsWith('Languages ')) {
-      result.languages = line.replace('Languages ', '');
+      const languagesText = line.replace('Languages ', '');
+      // Handle special cases
+      if (languagesText === '—' || languagesText === '-' || languagesText.toLowerCase() === 'none') {
+        result.languages = [];
+      } else {
+        result.languages = languagesText
+          .split(/[,;]/)
+          .map((lang) => lang.trim())
+          .filter((lang) => lang.length > 0);
+      }
       continue;
     }
 
