@@ -219,8 +219,8 @@ describe('inputNormalizer', () => {
       expect(result.damageResistances).toEqual([]);
       expect(result.damageVulnerabilities).toEqual([]);
       expect(result.conditionImmunities).toEqual([]);
-      expect(result.languages).toBe('');
-      expect(result.senses).toBe('');
+      expect(result.languages).toEqual([]);
+      expect(result.senses).toEqual({});
     });
 
     it('handles boolean overrides correctly', () => {
