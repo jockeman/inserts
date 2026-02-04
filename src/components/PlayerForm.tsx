@@ -32,19 +32,21 @@ export function PlayerForm({ insert, onUpdate, preferences }: PlayerFormProps) {
 
   return (
     <Stack gap="md">
-      <Select
-        label="Race"
-        value={insert.race}
-        onChange={(value) => onUpdate('race', (value || '') as RaceName)}
-        data={RACE_OPTIONS}
-      />
+      <Group grow>
+        <Select
+          label="Race"
+          value={insert.race}
+          onChange={(value) => onUpdate('race', (value || '') as RaceName)}
+          data={RACE_OPTIONS}
+        />
 
-      <Select
-        label="Class"
-        value={insert.class}
-        onChange={(value) => onUpdate('class', (value || '') as ClassName)}
-        data={CLASS_OPTIONS}
-      />
+        <Select
+          label="Class"
+          value={insert.class}
+          onChange={(value) => onUpdate('class', (value || '') as ClassName)}
+          data={CLASS_OPTIONS}
+        />
+      </Group>
 
       <Group grow>
         <TextInput
