@@ -223,27 +223,6 @@ describe('inputNormalizer', () => {
       expect(result.senses).toEqual({});
     });
 
-    it('handles boolean overrides correctly', () => {
-      const input = {
-        proficiencyBonusOverride: false,
-        maxHPOverride: false,
-      };
-
-      const result = normalizeInsertInputs(input);
-
-      expect(result.proficiencyBonusOverride).toBe(false);
-      expect(result.maxHPOverride).toBe(false);
-    });
-
-    it('provides default false values for missing boolean overrides', () => {
-      const input = { name: 'Basic Character' };
-
-      const result = normalizeInsertInputs(input);
-
-      expect(result.proficiencyBonusOverride).toBe(false);
-      expect(result.maxHPOverride).toBe(false);
-    });
-
     it('normalizes speed from string to Record', () => {
       const input = {
         speed: '30 ft., fly 60 ft., swim 40 ft.' as any,

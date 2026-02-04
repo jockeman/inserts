@@ -31,13 +31,13 @@ export function calculateInsertValues(inputs: InsertInputs): Insert {
   // Player-specific calculations
   if (isPlayer) {
     // Calculate proficiency bonus if not overridden
-    if (!result.proficiencyBonusOverride && result.level) {
+    if (!result.proficiencyBonus && result.level) {
       const level = safeNumericValue(result.level, 1);
       result.proficiencyBonus = calculateProficiencyBonus(level);
     }
 
     // Calculate max HP if not overridden
-    if (!result.maxHPOverride && result.level && result.class && result.con) {
+    if (!result.hp && result.level && result.class && result.con) {
       const level = safeNumericValue(result.level, 1);
       const con = safeAbilityScore(result.con);
       if (level > 0 && con > 0) {

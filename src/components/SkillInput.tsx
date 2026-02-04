@@ -1,4 +1,4 @@
-import { Badge, Group, SegmentedControl, Text, TextInput } from '@mantine/core';
+import { Badge, Group, NumberInput, SegmentedControl, Text } from '@mantine/core';
 import { memo, useCallback } from 'react';
 import type { Skill, SkillName } from '../types/Insert';
 import type { SkillInfo } from '../utils/skillConfig';
@@ -29,8 +29,8 @@ export const SkillInput = memo(function SkillInput({ skillName, skillInfo, skill
   );
 
   const handleModifierChange = useCallback(
-    (value: string) => {
-      onUpdate(skillName, skill.proficiency, Number(value) || 0);
+    (value: string | number) => {
+      onUpdate(skillName, skill.proficiency, Number(value));
     },
     [onUpdate, skillName, skill.proficiency]
   );
@@ -53,13 +53,15 @@ export const SkillInput = memo(function SkillInput({ skillName, skillInfo, skill
             fullWidth
           />
         </div>
-        <TextInput
+        <NumberInput
           placeholder="+0"
           value={skill?.modifier || 0}
-          onChange={(e) => handleModifierChange(e.target.value)}
+          onChange={handleModifierChange}
           style={modInputStyle}
           size="xs"
           label="Mod"
+          hideControls
+          allowDecimal={false}
         />
         <Badge
           size="lg"

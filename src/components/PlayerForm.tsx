@@ -1,4 +1,4 @@
-import { Checkbox, Group, NumberInput, Select, Stack, Text } from '@mantine/core';
+import { Group, NumberInput, Select, Stack, Text } from '@mantine/core';
 import { useCallback } from 'react';
 import type { Insert, InsertInputs, SkillName } from '../types/Insert';
 import type { ClassName, RaceName } from '../types/Shared';
@@ -69,42 +69,26 @@ export function PlayerForm({ insert, onUpdate, preferences }: PlayerFormProps) {
         />
       </Group>
 
-      <Group align="flex-end" gap="xs">
+      <Group grow>
         <NumberInput
           label="Max HP"
           value={insert.hp}
           onChange={(val) => onUpdate('hp', Number(val) || 0)}
-          disabled={!insert.maxHPOverride}
           style={{ flex: 1 }}
           allowDecimal={false}
           allowNegative={false}
           hideControls
         />
-        <Checkbox
-          label="Override"
-          checked={insert.maxHPOverride}
-          onChange={(e) => onUpdate('maxHPOverride', e.currentTarget.checked)}
-          mb={4}
-        />
-      </Group>
 
-      <Group align="flex-end" gap="xs">
         <NumberInput
           label="Proficiency Bonus"
           value={insert.proficiencyBonus}
           onChange={(val) => onUpdate('proficiencyBonus', Number(val) || 0)}
           placeholder="+2"
-          disabled={!insert.proficiencyBonusOverride}
           style={{ flex: 1 }}
           allowDecimal={false}
           allowNegative={false}
           hideControls
-        />
-        <Checkbox
-          label="Override"
-          checked={insert.proficiencyBonusOverride}
-          onChange={(e) => onUpdate('proficiencyBonusOverride', e.currentTarget.checked)}
-          mb={4}
         />
       </Group>
 

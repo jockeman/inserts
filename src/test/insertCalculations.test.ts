@@ -18,8 +18,6 @@ describe('insertCalculations', () => {
         wis: 13,
         cha: 10,
         proficiencyBonus: 0,
-        proficiencyBonusOverride: false,
-        maxHPOverride: false,
         skills: {
           acrobatics: { proficiency: 'none', modifier: 0 },
           animalHandling: { proficiency: 'none', modifier: 0 },

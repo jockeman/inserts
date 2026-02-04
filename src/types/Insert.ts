@@ -79,10 +79,6 @@ export interface InsertInputs {
   // Player fields
   level: number;
 
-  // Player - override flags (inputs)
-  proficiencyBonusOverride: boolean;
-  maxHPOverride: boolean;
-
   // Player - manual override values (inputs when override is true)
   proficiencyBonus: number;
   hp: number;

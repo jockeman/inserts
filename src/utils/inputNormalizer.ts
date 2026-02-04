@@ -177,10 +177,6 @@ export function normalizeInsertInputs(partial: Partial<InsertInputs>): InsertInp
     // Player fields
     level: safeNumericValue(input.level, 1),
 
-    // Player - override flags
-    proficiencyBonusOverride: input.proficiencyBonusOverride ?? false,
-    maxHPOverride: input.maxHPOverride ?? false,
-
     // Player - manual override values
     proficiencyBonus: safeNumericValue(input.proficiencyBonus, 2),
     hp: safeNumericValue(input.hp, 0),
