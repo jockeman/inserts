@@ -1,5 +1,7 @@
-import { Button, Group, Title } from '@mantine/core';
+import { AppShell, Burger, Button, Group, NavLink, Stack, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { useCallback, useEffect, useState } from 'react';
+import { FaFileExport, FaFileImport, FaTrash } from 'react-icons/fa';
 import { CardEditorWrapper } from './components/CardEditorWrapper';
 import { PrintArea } from './components/PrintArea';
 import { SkillVisibilitySettings } from './components/SkillVisibilitySettings';
@@ -13,6 +15,7 @@ import './App.css';
 const STORAGE_KEY = 'rpg-inserts';
 
 function App() {
+  const [navbarOpened, { toggle: toggleNavbar, close: closeNavbar }] = useDisclosure();
   const [preferences, updatePreferences] = useUserPreferences();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [insertInputs, setInsertInputs] = useState<InsertInputs[]>(() => {
@@ -108,38 +111,88 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <Title order={1} className="screen-only" mb="xl">
-        RPG Initiative Tracker Inserts
-      </Title>
+    <>
+      <AppShell
+        header={{ height: 70 }}
+        navbar={{ width: 250, breakpoint: 'sm', collapsed: { mobile: !navbarOpened, desktop: !navbarOpened } }}
+        padding="md"
+        className="screen-only"
+      >
+        <AppShell.Header p="md">
+          <Group justify="space-between">
+            <Group>
+              <Burger opened={navbarOpened} onClick={toggleNavbar} size="sm" />
+              <Title order={1}>RPG Initiative Tracker Inserts</Title>
+            </Group>
 
-      <Group className="screen-only" mb="xl" gap="md">
-        <Button onClick={addEmptyCard} size="md">
-          + Add New Card
-        </Button>
-        <Button onClick={handleImport} size="md" variant="default">
-          Import Cards
-        </Button>
-        {insertInputs.length > 0 && (
-          <>
-            <Button onClick={handleExport} size="md" variant="default">
-              Export Cards
-            </Button>
-            <Button onClick={() => window.print()} size="md" variant="default">
-              Print All Inserts
-            </Button>
-            <Button onClick={deselectAll} size="md" variant="default">
-              Deselect All
-            </Button>
-            <Button onClick={clearAll} size="md" color="red" variant="light">
-              Clear All
-            </Button>
-          </>
-        )}
-        <Button onClick={() => setSettingsOpen(true)} size="md" variant="light">
-          Skill Settings
-        </Button>
-      </Group>
+            <Group gap="md">
+              <Button onClick={addEmptyCard} size="md">
+                + Add New Card
+              </Button>
+              <Button onClick={deselectAll} size="md" variant="default" disabled={insertInputs.length === 0}>
+                Deselect All
+              </Button>
+              <Button onClick={() => window.print()} size="md" variant="default">
+                Print Inserts
+              </Button>
+              <Button onClick={() => setSettingsOpen(true)} size="md" variant="light">
+                Skill Settings
+              </Button>
+            </Group>
+          </Group>
+        </AppShell.Header>
+
+        <AppShell.Navbar p="md">
+          <Stack gap="xs">
+            <NavLink
+              label="Import Cards"
+              leftSection={<FaFileImport size="1rem" />}
+              onClick={() => {
+                handleImport();
+              }}
+            />
+            <NavLink
+              label="Export Cards"
+              leftSection={<FaFileExport size="1rem" />}
+              onClick={() => {
+                handleExport();
+              }}
+              disabled={insertInputs.length === 0}
+            />
+            <NavLink
+              label="Clear All"
+              leftSection={<FaTrash size="1rem" color="red" />}
+              onClick={() => {
+                clearAll();
+              }}
+              disabled={insertInputs.length === 0}
+            />
+          </Stack>
+        </AppShell.Navbar>
+
+        <AppShell.Main>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 32,
+              justifyContent: 'flex-start',
+              alignContent: 'flex-start',
+            }}
+          >
+            {insertInputs.map((input, i) => (
+              <CardEditorWrapper
+                key={input.id}
+                insertInput={input}
+                index={i}
+                onUpdate={updateInsert}
+                onRemove={removeInsert}
+                preferences={preferences}
+              />
+            ))}
+          </div>
+        </AppShell.Main>
+      </AppShell>
 
       <SkillVisibilitySettings
         opened={settingsOpen}
@@ -148,24 +201,8 @@ function App() {
         onUpdate={updatePreferences}
       />
 
-      <div
-        className="cards-editor screen-only"
-        style={{ display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'flex-start', alignContent: 'flex-start' }}
-      >
-        {insertInputs.map((input, i) => (
-          <CardEditorWrapper
-            key={input.id}
-            insertInput={input}
-            index={i}
-            onUpdate={updateInsert}
-            onRemove={removeInsert}
-            preferences={preferences}
-          />
-        ))}
-      </div>
-
       <PrintArea insertInputs={insertInputs} preferences={preferences} />
-    </div>
+    </>
   );
 }
 
