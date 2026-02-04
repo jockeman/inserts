@@ -79,7 +79,7 @@ describe('Monster HP Calculation Integration', () => {
       cardType: 'player',
       name: 'Test Player',
       hitDice: 5, // This should be ignored for players
-      characterClass: 'Fighter',
+      class: 'Fighter',
       level: 5,
       con: 16,
     };
