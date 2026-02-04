@@ -1,4 +1,4 @@
-import { Badge, TextInput } from '@mantine/core';
+import { Badge, NumberInput } from '@mantine/core';
 import type { InsertInputs } from '../types/Insert';
 import type { AbilityType } from '../types/Shared';
 import { ABILITY_LABELS, calculateAbilityModifier, formatModifier } from '../utils/abilityHelpers';
@@ -16,12 +16,14 @@ export function AbilityInput({ ability, value, onUpdate, placeholder }: AbilityI
 
   return (
     <div style={{ position: 'relative' }}>
-      <TextInput
+      <NumberInput
         label={ABILITY_LABELS[ability]}
-        value={value.toString()}
-        onChange={(e) => onUpdate(ability, Number(e.target.value))}
-        type="number"
+        value={value}
+        onChange={(val) => onUpdate(ability, Number(val) || 0)}
         placeholder={placeholder}
+        allowDecimal={false}
+        allowNegative={false}
+        hideControls
       />
       {score > 0 && (
         <Badge

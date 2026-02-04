@@ -1,4 +1,4 @@
-import { Checkbox, Group, Select, Stack, Text, TextInput } from '@mantine/core';
+import { Checkbox, Group, NumberInput, Select, Stack, Text } from '@mantine/core';
 import { useCallback } from 'react';
 import type { Insert, InsertInputs, SkillName } from '../types/Insert';
 import type { ClassName, RaceName } from '../types/Shared';
@@ -49,30 +49,36 @@ export function PlayerForm({ insert, onUpdate, preferences }: PlayerFormProps) {
       </Group>
 
       <Group grow>
-        <TextInput
+        <NumberInput
           label="Level"
           value={insert.level}
-          onChange={(e) => onUpdate('level', Number(e.target.value))}
-          type="number"
+          onChange={(val) => onUpdate('level', Number(val) || 1)}
           min={1}
           max={20}
+          allowDecimal={false}
+          allowNegative={false}
+          hideControls
         />
-        <TextInput
+        <NumberInput
           label="AC"
           value={insert.ac}
-          onChange={(e) => onUpdate('ac', Number(e.target.value))}
-          type="number"
+          onChange={(val) => onUpdate('ac', Number(val) || 0)}
+          allowDecimal={false}
+          allowNegative={false}
+          hideControls
         />
       </Group>
 
       <Group align="flex-end" gap="xs">
-        <TextInput
+        <NumberInput
           label="Max HP"
           value={insert.hp}
-          onChange={(e) => onUpdate('hp', Number(e.target.value))}
-          type="number"
+          onChange={(val) => onUpdate('hp', Number(val) || 0)}
           disabled={!insert.maxHPOverride}
           style={{ flex: 1 }}
+          allowDecimal={false}
+          allowNegative={false}
+          hideControls
         />
         <Checkbox
           label="Override"
@@ -83,13 +89,16 @@ export function PlayerForm({ insert, onUpdate, preferences }: PlayerFormProps) {
       </Group>
 
       <Group align="flex-end" gap="xs">
-        <TextInput
+        <NumberInput
           label="Proficiency Bonus"
           value={insert.proficiencyBonus}
-          onChange={(e) => onUpdate('proficiencyBonus', Number(e.target.value))}
+          onChange={(val) => onUpdate('proficiencyBonus', Number(val) || 0)}
           placeholder="+2"
           disabled={!insert.proficiencyBonusOverride}
           style={{ flex: 1 }}
+          allowDecimal={false}
+          allowNegative={false}
+          hideControls
         />
         <Checkbox
           label="Override"

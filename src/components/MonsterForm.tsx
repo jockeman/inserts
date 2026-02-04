@@ -1,4 +1,4 @@
-import { Button, Collapse, Group, Paper, Select, Stack, Textarea, TextInput } from '@mantine/core';
+import { Button, Collapse, Group, NumberInput, Paper, Select, Stack, Textarea, TextInput } from '@mantine/core';
 import { useCallback, useState } from 'react';
 import type { Insert, InsertInputs, MonsterSize, MonsterType, SkillName } from '../types/Insert';
 import { parseMonsterStatBlock } from '../utils/monsterParser';
@@ -131,7 +131,14 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
       <SpeedInput speed={insert.speed} onUpdate={(speed) => onUpdate('speed', speed)} />
 
       <Group grow>
-        <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', Number(e.target.value))} />
+        <NumberInput
+          label="AC"
+          value={insert.ac}
+          onChange={(val) => onUpdate('ac', Number(val) || 0)}
+          allowDecimal={false}
+          allowNegative={false}
+          hideControls
+        />
         <TextInput
           label="AC Type"
           value={insert.acType}
@@ -141,19 +148,23 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
       </Group>
 
       <Group grow>
-        <TextInput
+        <NumberInput
           label="Hit Dice"
           value={insert.hitDice || 0}
-          onChange={(value) => onUpdate('hitDice', typeof value === 'number' ? value : 0)}
+          onChange={(val) => onUpdate('hitDice', Number(val) || 0)}
           placeholder="e.g., 33"
-          min={0}
-          // description="HP will be auto-calculated from hit dice + CON"
+          allowDecimal={false}
+          allowNegative={false}
+          hideControls
         />
-        <TextInput
+        <NumberInput
           label="HP"
           value={insert.hp}
-          onChange={(e) => onUpdate('hp', Number(e.target.value))}
+          onChange={(val) => onUpdate('hp', Number(val) || 0)}
           placeholder="e.g., 365"
+          allowDecimal={false}
+          allowNegative={false}
+          hideControls
         />
         <TextInput
           label="HP Formula"
@@ -182,49 +193,61 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         <Collapse in={showSaves}>
           <Stack gap="sm">
             <Group grow>
-              <TextInput
+              <NumberInput
                 label="STR Save"
-                value={insert.savingThrowStr ?? ''}
-                onChange={(e) => onUpdate('savingThrowStr', e.target.value ? Number(e.target.value) : null)}
+                value={insert.savingThrowStr ?? undefined}
+                onChange={(val) => onUpdate('savingThrowStr', val ? Number(val) : null)}
                 placeholder="+0"
-                type="number"
+                allowDecimal={false}
+                allowNegative={true}
+                hideControls
               />
-              <TextInput
+              <NumberInput
                 label="DEX Save"
-                value={insert.savingThrowDex ?? ''}
-                onChange={(e) => onUpdate('savingThrowDex', e.target.value ? Number(e.target.value) : null)}
+                value={insert.savingThrowDex ?? undefined}
+                onChange={(val) => onUpdate('savingThrowDex', val ? Number(val) : null)}
                 placeholder="+0"
-                type="number"
+                allowDecimal={false}
+                allowNegative={true}
+                hideControls
               />
-              <TextInput
+              <NumberInput
                 label="CON Save"
-                value={insert.savingThrowCon ?? ''}
-                onChange={(e) => onUpdate('savingThrowCon', e.target.value ? Number(e.target.value) : null)}
+                value={insert.savingThrowCon ?? undefined}
+                onChange={(val) => onUpdate('savingThrowCon', val ? Number(val) : null)}
                 placeholder="+0"
-                type="number"
+                allowDecimal={false}
+                allowNegative={true}
+                hideControls
               />
             </Group>
             <Group grow>
-              <TextInput
+              <NumberInput
                 label="INT Save"
-                value={insert.savingThrowInt ?? ''}
-                onChange={(e) => onUpdate('savingThrowInt', e.target.value ? Number(e.target.value) : null)}
+                value={insert.savingThrowInt ?? undefined}
+                onChange={(val) => onUpdate('savingThrowInt', val ? Number(val) : null)}
                 placeholder="+0"
-                type="number"
+                allowDecimal={false}
+                allowNegative={true}
+                hideControls
               />
-              <TextInput
+              <NumberInput
                 label="WIS Save"
-                value={insert.savingThrowWis ?? ''}
-                onChange={(e) => onUpdate('savingThrowWis', e.target.value ? Number(e.target.value) : null)}
+                value={insert.savingThrowWis ?? undefined}
+                onChange={(val) => onUpdate('savingThrowWis', val ? Number(val) : null)}
                 placeholder="+0"
-                type="number"
+                allowDecimal={false}
+                allowNegative={true}
+                hideControls
               />
-              <TextInput
+              <NumberInput
                 label="CHA Save"
-                value={insert.savingThrowCha ?? ''}
-                onChange={(e) => onUpdate('savingThrowCha', e.target.value ? Number(e.target.value) : null)}
+                value={insert.savingThrowCha ?? undefined}
+                onChange={(val) => onUpdate('savingThrowCha', val ? Number(val) : null)}
                 placeholder="+0"
-                type="number"
+                allowDecimal={false}
+                allowNegative={true}
+                hideControls
               />
             </Group>
           </Stack>
@@ -337,11 +360,14 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
           }}
           placeholder="e.g., Common, Draconic"
         />
-        <TextInput
+        <NumberInput
           label="Proficiency Bonus"
           value={insert.proficiencyBonus}
-          onChange={(e) => onUpdate('proficiencyBonus', Number(e.target.value))}
+          onChange={(val) => onUpdate('proficiencyBonus', Number(val) || 0)}
           placeholder="e.g., +2"
+          allowDecimal={false}
+          allowNegative={false}
+          hideControls
         />
       </Group>
 
