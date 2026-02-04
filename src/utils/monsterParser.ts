@@ -1,4 +1,5 @@
 import type { Insert, MonsterSize, MonsterType, SkillName } from '../types/Insert';
+import { parseHitDiceFromFormula } from './monsterHPCalculations';
 import { createEmptySkills } from './skillHelpers';
 
 // Valid D&D 5e monster sizes
@@ -133,7 +134,14 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
       if (hpMatch) result.hp = Number.parseInt(hpMatch[1], 10);
       // Extract the dice formula from parentheses (e.g., "33d20 + 330" from "365 (33d20 + 330)")
       const formulaMatch = hpLine.match(/\(([^)]+)\)/);
-      if (formulaMatch) result.hpFormula = formulaMatch[1];
+      if (formulaMatch) {
+        result.hpFormula = formulaMatch[1];
+        // Extract hit dice count from formula
+        const hitDice = parseHitDiceFromFormula(formulaMatch[1]);
+        if (hitDice > 0) {
+          result.hitDice = hitDice;
+        }
+      }
       continue;
     }
 

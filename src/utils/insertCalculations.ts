@@ -1,8 +1,9 @@
 import type { Insert, InsertInputs } from '../types/Insert';
 import type { ProficiencyLevel } from '../types/Shared';
-import { calculateSkillBonus, getAbilityScore } from './abilityHelpers';
+import { calculateAbilityModifier, calculateSkillBonus, getAbilityScore } from './abilityHelpers';
 import { safeAbilityScore, safeNumericValue } from './inputNormalizer';
 import { calculateMaxHP, calculateProficiencyBonus } from './levelCalculations';
+import { calculateMonsterHP, generateHPFormula, getHitDieSize } from './monsterHPCalculations';
 import { getDarkvisionForRace } from './raceConfig';
 import { ALL_SKILLS } from './skillConfig';
 
@@ -54,6 +55,15 @@ export function calculateInsertValues(inputs: InsertInputs): Insert {
         };
       }
     }
+  }
+
+  // Calculate HP and formula for monsters if hitDice is provided
+  if (!isPlayer && result.hitDice && result.hitDice > 0 && result.monsterSize) {
+    const dieSize = getHitDieSize(result.monsterSize);
+    const conModifier = calculateAbilityModifier(safeAbilityScore(result.con));
+
+    result.hp = calculateMonsterHP(result.hitDice, dieSize, conModifier);
+    result.hpFormula = generateHPFormula(result.hitDice, dieSize, conModifier);
   }
 
   // Ensure we have valid skills object

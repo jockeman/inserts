@@ -99,7 +99,8 @@ export interface InsertInputs {
   cr: string; // Challenge Rating (e.g., "1/4", "2", "10")
   speed: string;
   acType: string; // Armor type (e.g., "natural armor", "leather armor")
-  hpFormula: string; // Dice formula for HP (e.g., "33d20 + 330")
+  hitDice: number; // Number of hit dice (e.g., 33 for 33d20)
+  hpFormula: string; // Dice formula for HP (e.g., "33d20 + 330") - can be auto-calculated
   savingThrowStr: number | null;
   savingThrowDex: number | null;
   savingThrowCon: number | null;

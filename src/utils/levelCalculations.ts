@@ -1,4 +1,5 @@
 import type { ClassName } from '../types/Shared';
+import { calculateAbilityModifier } from './abilityHelpers';
 import { getHitDieForClass } from './classConfig';
 
 export function calculateProficiencyBonus(level: number): number {
@@ -15,7 +16,7 @@ export function calculateMaxHP(level: number, className: ClassName, con: number)
   if (Number.isNaN(con)) return 0;
 
   const hitDie = getHitDieForClass(className);
-  const conModifier = Math.floor((con - 10) / 2);
+  const conModifier = calculateAbilityModifier(con);
 
   // Fixed value = average die roll rounded up
   const fixedIncrease = Math.ceil((hitDie + 1) / 2);

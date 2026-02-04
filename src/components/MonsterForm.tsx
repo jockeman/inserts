@@ -145,6 +145,14 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
 
       <Group grow>
         <TextInput
+          label="Hit Dice"
+          value={insert.hitDice || 0}
+          onChange={(value) => onUpdate('hitDice', typeof value === 'number' ? value : 0)}
+          placeholder="e.g., 33"
+          min={0}
+          // description="HP will be auto-calculated from hit dice + CON"
+        />
+        <TextInput
           label="HP"
           value={insert.hp}
           onChange={(e) => onUpdate('hp', Number(e.target.value))}

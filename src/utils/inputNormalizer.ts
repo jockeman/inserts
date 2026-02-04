@@ -156,6 +156,7 @@ export function normalizeInsertInputs(partial: Partial<InsertInputs>): InsertInp
     cr: input.cr || '',
     speed: input.speed || '',
     acType: input.acType || '',
+    hitDice: safeNumericValue(input.hitDice, 0),
     hpFormula: input.hpFormula || '',
     savingThrowStr: input.savingThrowStr ?? null,
     savingThrowDex: input.savingThrowDex ?? null,
