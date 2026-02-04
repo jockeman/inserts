@@ -61,7 +61,12 @@ export const SkillInput = memo(function SkillInput({ skillName, skillInfo, skill
           size="xs"
           label="Mod"
         />
-        <Badge size="lg" color="blue" variant="filled" style={badgeStyle}>
+        <Badge
+          size="lg"
+          color={skillValue !== undefined && skillValue >= 0 ? 'blue' : 'red'}
+          variant="light"
+          style={badgeStyle}
+        >
           {skillValue !== undefined ? skillValue : '-'}
         </Badge>
       </Group>
