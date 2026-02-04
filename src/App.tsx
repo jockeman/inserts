@@ -15,7 +15,7 @@ import './App.css';
 const STORAGE_KEY = 'rpg-inserts';
 
 function App() {
-  const [navbarOpened, { toggle: toggleNavbar, close: closeNavbar }] = useDisclosure();
+  const [navbarOpened, { toggle: toggleNavbar }] = useDisclosure();
   const [preferences, updatePreferences] = useUserPreferences();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [insertInputs, setInsertInputs] = useState<InsertInputs[]>(() => {
