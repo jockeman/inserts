@@ -1,26 +1,41 @@
-import type { InsertInputs } from '../types/Insert';
+import type { InsertInputs, SenseType, SpeedType } from '../types/Insert';
 import { generateId } from './idGenerator';
 import { createEmptySkills } from './skillHelpers';
 
 /**
- * Normalizes senses input to Record<string, string> format.
+ * Normalizes senses input to Partial<Record<SenseType, number>> format.
  * Handles both string and record inputs, and extracts passive perception to convert to perception skill.
  */
-function normalizeSenses(input: string | Record<string, string> | undefined): {
-  senses: Record<string, string>;
+function normalizeSenses(
+  input: string | Record<string, string | number> | Partial<Record<SenseType, number>> | undefined
+): {
+  senses: Partial<Record<SenseType, number>>;
   passivePerception: number | null;
 } {
   if (!input) {
     return { senses: {}, passivePerception: null };
   }
 
-  // If already a record, return it
+  // If already a proper record with numbers, return it
   if (typeof input === 'object' && !Array.isArray(input)) {
-    return { senses: input, passivePerception: null };
+    const senses: Partial<Record<SenseType, number>> = {};
+    for (const [key, value] of Object.entries(input)) {
+      if (['blindsight', 'darkvision', 'tremorsense', 'truesight'].includes(key)) {
+        if (typeof value === 'number') {
+          senses[key as SenseType] = value;
+        } else if (typeof value === 'string') {
+          const match = value.match(/(\d+)/);
+          if (match) {
+            senses[key as SenseType] = Number.parseInt(match[1], 10);
+          }
+        }
+      }
+    }
+    return { senses, passivePerception: null };
   }
 
   // Parse string format (e.g., "darkvision 60 ft., tremorsense 30 ft., passive Perception 14")
-  const senses: Record<string, string> = {};
+  const senses: Partial<Record<SenseType, number>> = {};
   let passivePerception: number | null = null;
 
   const inputStr = input as string;
@@ -34,14 +49,13 @@ function normalizeSenses(input: string | Record<string, string> | undefined): {
     }
 
     // Parse sense with range (e.g., "darkvision 60 ft.")
-    const senseMatch = part.match(/^([a-z\s]+?)\s+(\d+\s*ft\.?)$/i);
+    const senseMatch = part.match(/^([a-z\s]+?)\s+(\d+)\s*ft\.?$/i);
     if (senseMatch) {
       const senseName = senseMatch[1].trim().toLowerCase();
-      const range = senseMatch[2].trim();
-      senses[senseName] = range;
-    } else if (part.trim()) {
-      // Store as-is if it doesn't match expected format
-      senses[part.trim()] = '';
+      const range = Number.parseInt(senseMatch[2], 10);
+      if (['blindsight', 'darkvision', 'tremorsense', 'truesight'].includes(senseName)) {
+        senses[senseName as SenseType] = range;
+      }
     }
   }
 
@@ -75,6 +89,56 @@ function normalizeLanguages(input: string | string[] | undefined): string[] {
 }
 
 /**
+ * Normalizes speed input to Partial<Record<SpeedType, number>> format.
+ * Handles both string and Record inputs.
+ */
+function normalizeSpeed(
+  input: string | Record<string, string | number> | Partial<Record<SpeedType, number>> | undefined
+): Partial<Record<SpeedType, number>> {
+  if (!input) {
+    return {};
+  }
+
+  // If already a proper record, convert strings to numbers if needed
+  if (typeof input === 'object' && !Array.isArray(input)) {
+    const speed: Partial<Record<SpeedType, number>> = {};
+    for (const [key, value] of Object.entries(input)) {
+      if (['walk', 'fly', 'swim', 'burrow', 'climb'].includes(key)) {
+        if (typeof value === 'number') {
+          speed[key as SpeedType] = value;
+        } else if (typeof value === 'string') {
+          const match = value.match(/(\d+)/);
+          if (match) {
+            speed[key as SpeedType] = Number.parseInt(match[1], 10);
+          }
+        }
+      }
+    }
+    return speed;
+  }
+
+  // Parse string format (e.g., "30 ft., fly 60 ft., swim 30 ft.")
+  const speed: Partial<Record<SpeedType, number>> = {};
+
+  // Split by comma and parse each speed type
+  const parts = (input as string).split(',').map((s: string) => s.trim());
+
+  for (const part of parts) {
+    // Match patterns like "fly 60 ft." or just "30 ft."
+    const match = part.match(/^(?:(\w+)\s+)?(\d+)\s*ft\.?/i);
+    if (match) {
+      const speedType = match[1] ? match[1].toLowerCase() : 'walk';
+      const speedValue = Number.parseInt(match[2], 10);
+      if (['walk', 'fly', 'swim', 'burrow', 'climb'].includes(speedType)) {
+        speed[speedType as SpeedType] = speedValue;
+      }
+    }
+  }
+
+  return speed;
+}
+
+/**
  * Creates a complete InsertInputs object with all required fields populated.
  * Takes a partial input and fills in missing values with sensible defaults.
  * This prevents crashes when importing incomplete JSON data or working with partial objects.
@@ -90,7 +154,7 @@ export function normalizeInsertInputs(partial: Partial<InsertInputs>): InsertInp
   const migratedSenses = { ...parsedSenses };
   const legacyDarkvision = (input as any).darkvision;
   if (legacyDarkvision && typeof legacyDarkvision === 'number' && legacyDarkvision > 0) {
-    migratedSenses.darkvision = `${legacyDarkvision} ft.`;
+    migratedSenses.darkvision = legacyDarkvision;
   }
 
   // Parse languages
@@ -154,7 +218,7 @@ export function normalizeInsertInputs(partial: Partial<InsertInputs>): InsertInp
     monsterType: input.monsterType || 'Humanoid',
     monsterTypeTag: input.monsterTypeTag || '',
     cr: input.cr || '',
-    speed: input.speed || '',
+    speed: normalizeSpeed(input.speed),
     acType: input.acType || '',
     hitDice: safeNumericValue(input.hitDice, 0),
     hpFormula: input.hpFormula || '',

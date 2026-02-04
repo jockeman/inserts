@@ -6,7 +6,7 @@ import { ABILITY_LABELS, calculateAbilityModifier, formatModifier } from '../uti
 interface AbilityInputProps {
   ability: AbilityType;
   value: number;
-  onUpdate: (field: keyof InsertInputs, value: string) => void;
+  onUpdate: (field: keyof InsertInputs, value: number) => void;
   placeholder?: string;
 }
 
@@ -19,7 +19,7 @@ export function AbilityInput({ ability, value, onUpdate, placeholder }: AbilityI
       <TextInput
         label={ABILITY_LABELS[ability]}
         value={value.toString()}
-        onChange={(e) => onUpdate(ability, e.target.value)}
+        onChange={(e) => onUpdate(ability, Number(e.target.value))}
         type="number"
         placeholder={placeholder}
       />

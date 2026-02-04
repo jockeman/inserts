@@ -6,6 +6,7 @@ import { ALL_SKILLS } from '../utils/skillConfig';
 import { AbilityInput } from './AbilityInput';
 import { SensesInput } from './SensesInput';
 import { SkillInput } from './SkillInput';
+import { SpeedInput } from './SpeedInput';
 
 interface MonsterFormProps {
   insert: Insert;
@@ -125,13 +126,9 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
           onChange={(e) => onUpdate('cr', e.target.value)}
           placeholder="e.g., 1/4"
         />
-        <TextInput
-          label="Speed"
-          value={insert.speed}
-          onChange={(e) => onUpdate('speed', e.target.value)}
-          placeholder="e.g., 20 ft., swim 30 ft."
-        />
       </Group>
+
+      <SpeedInput speed={insert.speed} onUpdate={(speed) => onUpdate('speed', speed)} />
 
       <Group grow>
         <TextInput label="AC" value={insert.ac} onChange={(e) => onUpdate('ac', Number(e.target.value))} />

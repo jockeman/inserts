@@ -43,7 +43,7 @@ describe('AbilityInput', () => {
     const input = screen.getByLabelText('INT');
     fireEvent.change(input, { target: { value: '16' } });
 
-    expect(mockOnUpdate).toHaveBeenCalledWith('int', '16');
+    expect(mockOnUpdate).toHaveBeenCalledWith('int', 16);
   });
 
   it('renders with placeholder when provided', () => {

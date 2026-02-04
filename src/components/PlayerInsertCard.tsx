@@ -79,7 +79,7 @@ export function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, pref
               return (
                 <div key={sense} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
                   <FaMoon size="4.5mm" />
-                  <b>{range}</b>
+                  <b>{range} ft.</b>
                 </div>
               );
             }
@@ -89,7 +89,7 @@ export function PlayerInsertCard({ insert, dmContentWidth, dmContentHeight, pref
             return (
               <div key={sense} style={{ display: 'flex', alignItems: 'center', gap: '1mm' }}>
                 <b style={{ fontSize: '2.8mm' }}>
-                  {senseName} {range}
+                  {senseName} {range} ft.
                 </b>
               </div>
             );

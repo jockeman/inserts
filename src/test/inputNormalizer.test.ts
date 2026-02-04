@@ -184,7 +184,7 @@ describe('inputNormalizer', () => {
         monsterSize: 'Large' as MonsterSize,
         monsterType: 'Dragon' as MonsterType,
         cr: '5',
-        speed: '30 ft., fly 60 ft.',
+        speed: '30 ft., fly 60 ft.' as any,
       };
 
       const result = normalizeInsertInputs(input);
@@ -193,7 +193,7 @@ describe('inputNormalizer', () => {
       expect(result.monsterSize).toBe('Large');
       expect(result.monsterType).toBe('Dragon');
       expect(result.cr).toBe('5');
-      expect(result.speed).toBe('30 ft., fly 60 ft.');
+      expect(result.speed).toEqual({ walk: 30, fly: 60 });
     });
 
     it('handles arrays properly', () => {
@@ -242,6 +242,50 @@ describe('inputNormalizer', () => {
 
       expect(result.proficiencyBonusOverride).toBe(false);
       expect(result.maxHPOverride).toBe(false);
+    });
+
+    it('normalizes speed from string to Record', () => {
+      const input = {
+        speed: '30 ft., fly 60 ft., swim 40 ft.' as any,
+      };
+
+      const result = normalizeInsertInputs(input);
+
+      expect(result.speed).toEqual({
+        walk: 30,
+        fly: 60,
+        swim: 40,
+      });
+    });
+
+    it('normalizes speed with just walking speed', () => {
+      const input = {
+        speed: '25 ft.' as any,
+      };
+
+      const result = normalizeInsertInputs(input);
+
+      expect(result.speed).toEqual({
+        walk: 25,
+      });
+    });
+
+    it('handles speed as empty object when undefined', () => {
+      const input = { name: 'Basic Character' };
+
+      const result = normalizeInsertInputs(input);
+
+      expect(result.speed).toEqual({});
+    });
+
+    it('preserves speed when already a Record', () => {
+      const input = {
+        speed: { walk: 30, fly: 60 },
+      };
+
+      const result = normalizeInsertInputs(input);
+
+      expect(result.speed).toEqual({ walk: 30, fly: 60 });
     });
   });
 });

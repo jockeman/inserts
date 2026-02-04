@@ -124,9 +124,18 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
             </span>
           </div>
         )}
-        {insert.speed && (
+        {Object.keys(insert.speed).length > 0 && (
           <div>
-            <b>Speed</b> {insert.speed}
+            <b>Speed</b>{' '}
+            {Object.entries(insert.speed)
+              .map(([type, value]) => {
+                // Don't show label for walking speed, show it for others
+                if (type === 'walk') {
+                  return `${value} ft.`;
+                }
+                return `${type} ${value} ft.`;
+              })
+              .join(', ')}
           </div>
         )}
 
@@ -246,7 +255,7 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
           <div>
             <b>Senses</b>{' '}
             {Object.entries(insert.senses)
-              .map(([sense, range]) => (range ? `${sense} ${range}` : sense))
+              .map(([sense, range]) => `${sense} ${range} ft.`)
               .join(', ')}
           </div>
         )}

@@ -1,4 +1,4 @@
-import type { Insert, MonsterSize, MonsterType, SkillName } from '../types/Insert';
+import type { Insert, MonsterSize, MonsterType, SenseType, SkillName, SpeedType } from '../types/Insert';
 import { parseHitDiceFromFormula } from './monsterHPCalculations';
 import { createEmptySkills } from './skillHelpers';
 
@@ -147,7 +147,25 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
 
     // Speed
     if (line.startsWith('Speed ')) {
-      result.speed = line.replace('Speed ', '');
+      const speedStr = line.replace('Speed ', '');
+      const speed: Partial<Record<SpeedType, number>> = {};
+
+      // Split by comma and parse each speed type
+      const parts = speedStr.split(',').map((s) => s.trim());
+
+      for (const part of parts) {
+        // Match patterns like "fly 60 ft." or just "30 ft."
+        const match = part.match(/^(?:(\w+)\s+)?(\d+)\s*ft\.?/i);
+        if (match) {
+          const speedType = match[1] ? match[1].toLowerCase() : 'walk';
+          const speedValue = Number.parseInt(match[2], 10);
+          if (['walk', 'fly', 'swim', 'burrow', 'climb'].includes(speedType)) {
+            speed[speedType as SpeedType] = speedValue;
+          }
+        }
+      }
+
+      result.speed = speed;
       continue;
     }
 
@@ -324,7 +342,7 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
     // Senses
     if (line.startsWith('Senses ')) {
       const sensesText = line.replace('Senses ', '');
-      const senses: Record<string, string> = {};
+      const senses: Partial<Record<SenseType, number>> = {};
       let passivePerception: number | null = null;
 
       const parts = sensesText.split(',').map((s) => s.trim());
@@ -336,15 +354,14 @@ export function parseMonsterStatBlock(text: string): Partial<Insert> {
           continue;
         }
 
-        // Parse sense with range (e.g., \"darkvision 60 ft.\")
-        const senseMatch = part.match(/^([a-z\s]+?)\s+(\d+\s*ft\.?)$/i);
+        // Parse sense with range (e.g., "darkvision 60 ft.")
+        const senseMatch = part.match(/^([a-z\s]+?)\s+(\d+)\s*ft\.?$/i);
         if (senseMatch) {
           const senseName = senseMatch[1].trim().toLowerCase();
-          const range = senseMatch[2].trim();
-          senses[senseName] = range;
-        } else if (part.trim()) {
-          // Store as-is if it doesn't match expected format
-          senses[part.trim()] = '';
+          const range = Number.parseInt(senseMatch[2], 10);
+          if (['blindsight', 'darkvision', 'tremorsense', 'truesight'].includes(senseName)) {
+            senses[senseName as SenseType] = range;
+          }
         }
       }
 

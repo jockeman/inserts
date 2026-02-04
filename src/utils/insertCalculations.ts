@@ -51,7 +51,7 @@ export function calculateInsertValues(inputs: InsertInputs): Insert {
       if (raceDarkvision > 0 && !result.senses.darkvision) {
         result.senses = {
           ...result.senses,
-          darkvision: `${raceDarkvision} ft.`,
+          darkvision: raceDarkvision,
         };
       }
     }

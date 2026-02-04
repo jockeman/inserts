@@ -20,6 +20,12 @@ export type MonsterType =
   | 'Plant'
   | 'Undead';
 
+// D&D 5e Sense Types
+export type SenseType = 'blindsight' | 'darkvision' | 'tremorsense' | 'truesight';
+
+// D&D 5e Speed Types
+export type SpeedType = 'walk' | 'fly' | 'swim' | 'burrow' | 'climb';
+
 /**
  * Skill data structure containing proficiency level, modifier, and optional calculated value
  */
@@ -97,7 +103,7 @@ export interface InsertInputs {
   monsterType: MonsterType;
   monsterTypeTag: string; // Subtype/tag (e.g., "goblinoid", "shapechanger")
   cr: string; // Challenge Rating (e.g., "1/4", "2", "10")
-  speed: string;
+  speed: Partial<Record<SpeedType, number>>; // Speed in feet (e.g., {walk: 30, fly: 60})
   acType: string; // Armor type (e.g., "natural armor", "leather armor")
   hitDice: number; // Number of hit dice (e.g., 33 for 33d20)
   hpFormula: string; // Dice formula for HP (e.g., "33d20 + 330") - can be auto-calculated
@@ -111,7 +117,7 @@ export interface InsertInputs {
   damageResistances: string[]; // Array of damage resistances
   damageVulnerabilities: string[]; // Array of damage vulnerabilities
   conditionImmunities: string[]; // Array of condition immunities
-  senses: Record<string, string>; // e.g., { "darkvision": "60 ft.", "tremorsense": "30 ft." }
+  senses: Partial<Record<SenseType, number>>; // Sense ranges in feet (e.g., {darkvision: 60, tremorsense: 30})
   languages: string[]; // Array of languages (e.g., ["Common", "Draconic"])
   traits: string;
   actions: string;
