@@ -83,7 +83,7 @@ function CollapsibleMetricInputComponent<T extends string>({
           )}
         </Group>
 
-        <Collapse in={isOpen}>
+        <Collapse expanded={isOpen}>
           <Stack gap="xs" mt="xs">
             {metricTypes.map(({ value, label }) => {
               const metricValue = getMetricValue(value);

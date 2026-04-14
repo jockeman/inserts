@@ -65,7 +65,7 @@ export const CardEditor = memo(function CardEditor({
         </Button>
       </Group>
 
-      <Collapse in={isExpanded}>
+      <Collapse expanded={isExpanded}>
         <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
           {/* Input Form */}
           <div style={{ flex: '1 1 300px' }}>

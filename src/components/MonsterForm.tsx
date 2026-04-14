@@ -190,7 +190,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         <Button onClick={() => setShowSaves(!showSaves)} fullWidth variant="light" mb={showSaves ? 'md' : 0}>
           {showSaves ? '▼' : '▶'} Saving Throws
         </Button>
-        <Collapse in={showSaves}>
+        <Collapse expanded={showSaves}>
           <Stack gap="sm">
             <Group grow>
               <NumberInput
@@ -258,7 +258,7 @@ export function MonsterForm({ insert, onUpdate }: MonsterFormProps) {
         <Button onClick={() => setShowSkills(!showSkills)} fullWidth variant="light" mb={showSkills ? 'md' : 0}>
           {showSkills ? '▼' : '▶'} Skills
         </Button>
-        <Collapse in={showSkills}>
+        <Collapse expanded={showSkills}>
           <Stack gap="md">
             {ALL_SKILLS.map((skillInfo) => {
               const skill = insert.skills[skillInfo.key];
