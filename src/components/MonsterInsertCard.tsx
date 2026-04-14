@@ -276,7 +276,13 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
               .split('\n')
               .filter((t) => t.trim())
               .map((trait, i) => (
-                <div key={`trait-${i}-${trait.substring(0, 20)}`} style={{ marginBottom: '0.5mm' }}>
+                <div
+                  key={`trait-${
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Only used for static content that won't change order
+                    i
+                  }-${trait.substring(0, 20)}`}
+                  style={{ marginBottom: '0.5mm' }}
+                >
                   {formatAbilityText(trait)}
                 </div>
               ))}
@@ -290,7 +296,13 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
               .split('\n')
               .filter((a) => a.trim())
               .map((action, i) => (
-                <div key={`action-${i}-${action.substring(0, 20)}`} style={{ marginBottom: '0.5mm' }}>
+                <div
+                  key={`action-${
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Only used for static content that won't change order
+                    i
+                  }-${action.substring(0, 20)}`}
+                  style={{ marginBottom: '0.5mm' }}
+                >
                   {formatAbilityText(action)}
                 </div>
               ))}
@@ -304,7 +316,13 @@ export function MonsterInsertCard({ insert, isLarge, dmContentWidth, dmContentHe
               .split('\n')
               .filter((b) => b.trim())
               .map((bonus, i) => (
-                <div key={`bonus-${i}-${bonus.substring(0, 20)}`} style={{ marginBottom: '0.5mm' }}>
+                <div
+                  key={`bonus-${
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Only used for static content that won't change order
+                    i
+                  }-${bonus.substring(0, 20)}`}
+                  style={{ marginBottom: '0.5mm' }}
+                >
                   {formatAbilityText(bonus)}
                 </div>
               ))}
